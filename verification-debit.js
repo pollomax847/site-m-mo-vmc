@@ -404,7 +404,55 @@ document.addEventListener('DOMContentLoaded', function() {
       
       if (btnConvert) {
         btnConvert.addEventListener('click', () => {
-          // ...existing code for conversion...
+          if (!valueToConvert || !fromUnit || !toUnit || !conversionResult) {
+            return;
+          }
+          
+          const valeur = parseFloat(valueToConvert.value);
+          if (isNaN(valeur)) {
+            conversionResult.innerHTML = '<span class="error">Veuillez entrer un nombre valide</span>';
+            return;
+          }
+          
+          const from = fromUnit.value;
+          const to = toUnit.value;
+          let resultat;
+          let unite = getUniteAffichage(to);
+          
+          // Conversion entre m³/h et m/s (nécessite un diamètre)
+          if (from === 'm3h' && to === 'ms') {
+            const diam = parseFloat(diametreConversion.value);
+            if (isNaN(diam) || diam <= 0) {
+              conversionResult.innerHTML = '<span class="error">Diamètre invalide</span>';
+              return;
+            }
+            resultat = conversions.m3h_to_ms(valeur, diam);
+          } 
+          else if (from === 'ms' && to === 'm3h') {
+            const diam = parseFloat(diametreConversion.value);
+            if (isNaN(diam) || diam <= 0) {
+              conversionResult.innerHTML = '<span class="error">Diamètre invalide</span>';
+              return;
+            }
+            resultat = conversions.ms_to_m3h(valeur, diam);
+          }
+          // Conversion entre Pa et mmCE
+          else if (from === 'pa' && to === 'mmce') {
+            resultat = conversions.pa_to_mmce(valeur);
+          }
+          else if (from === 'mmce' && to === 'pa') {
+            resultat = conversions.mmce_to_pa(valeur);
+          }
+          // Même unité
+          else if (from === to) {
+            resultat = valeur;
+          } 
+          else {
+            conversionResult.innerHTML = '<span class="error">Conversion non supportée</span>';
+            return;
+          }
+          
+          conversionResult.innerHTML = `<strong>Résultat:</strong> ${valeur} ${getUniteAffichage(from)} = ${resultat.toFixed(2)} ${unite}`;
         });
       }
       
@@ -416,6 +464,17 @@ document.addEventListener('DOMContentLoaded', function() {
               diametreContainer.classList.remove('hidden');
             } else {
               diametreContainer.classList.add('hidden');
+            }
+            
+            // Pour une meilleure expérience mobile, faire défiler jusqu'au tableau
+            // après changement d'unité pour voir les résultats actualisés
+            if (window.innerWidth <= 768) {
+              setTimeout(() => {
+                const tableRef = document.getElementById('reference-table-container');
+                if (tableRef) {
+                  tableRef.scrollIntoView({ behavior: 'smooth' });
+                }
+              }, 300);
             }
           });
         }

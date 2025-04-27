@@ -125,6 +125,176 @@ header h1 {
     display: block;
     overflow-x: auto;
   }
+  
+  body {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  header {
+    padding: 10px 5px;
+    margin-bottom: 15px;
+  }
+  
+  #logo {
+    width: 80px;
+  }
+  
+  header h1 {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  
+  #mainMenu {
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+  
+  .section-container {
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .form-group {
+    margin-bottom: 10px;
+  }
+  
+  .form-control {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  select.form-control {
+    width: 100%;
+    height: 40px;
+  }
+  
+  #mainMenu.active {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 80%;
+    height: 100%;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+
+  #mainMenu.active::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+  }
+  
+  #mainMenu li {
+    border-bottom: 1px solid #eee;
+  }
+  
+  #mainMenu a {
+    padding: 15px;
+    font-size: 16px;
+  }
+  
+  .btn, button {
+    min-height: 44px;
+    padding: 10px 15px;
+  }
+  
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .radio-group label {
+    padding: 8px 0;
+  }
+  
+  .mesure-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .mesure-row .form-group {
+    width: 100%;
+  }
+  
+  .btn-remove {
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+  }
+  
+  .technical-table, .results-table {
+    font-size: 14px;
+  }
+  
+  .technical-table th, .technical-table td,
+  .results-table th, .results-table td {
+    padding: 8px 5px;
+  }
+  
+  .converter-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .install-banner {
+    padding: 10px;
+  }
+  
+  .update-notification {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 900;
+    text-align: center;
+  }
+  
+  .accordion-header {
+    padding: 12px 10px;
+  }
+  
+  .accordion-content.active {
+    padding: 10px;
+  }
+  
+  @media (max-width: 380px) {
+    body {
+      font-size: 14px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+    }
+    
+    .calculator-container {
+      padding: 10px;
+    }
+    
+    .technical-table, .results-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .results-summary h3 {
+      font-size: 18px;
+    }
+  }
 }
 
 @media (min-width: 769px) {
@@ -956,5 +1126,20 @@ footer {
     right: 20px;
     bottom: 20px;
     border-radius: 8px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  #mainMenu.active {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .section-container {
+    max-width: 95%;
+  }
+  
+  .mesure-row {
+    grid-template-columns: 1fr 1fr auto;
   }
 }
