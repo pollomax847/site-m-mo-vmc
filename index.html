@@ -3,12 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
+  <meta name="theme-color" content="#3498db">
   <title>Mémo Technique VMC</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="logo-192.png">
 </head>
 <body>
-  <h1>Mémo Technique - VMC par type d'installation</h1>
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Mémo VMC Logo" id="logo">
+    </div>
+    <h1>Mémo Technique - VMC par type d'installation</h1>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Rechercher...">
+      <button id="searchButton">Rechercher</button>
+    </div>
+    <button id="menuToggle" aria-label="Menu">☰</button>
+  </header>
+  
+  <nav id="mainMenu">
+    <ul>
+      <li><a href="#verification-debit">Vérification Débits</a></li>
+      <li><a href="#vmc-simple">VMC Simple Flux</a></li>
+      <li><a href="#vmc-double">VMC Double Flux</a></li>
+      <li><a href="#vmc-hygro">VMC Hygroréglable</a></li>
+      <li><a href="#vmc-thermo">VMC Thermodynamique</a></li>
+      <li><a href="#vmc-gaz">VMC Gaz</a></li>
+      <li><a href="#depannage">Méthodologie Dépannage</a></li>
+      <li><a href="#reglementation">Réglementation</a></li>
+      <li><a href="#entretien">Entretien</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </nav>
+  
   <div id="content"></div>
+  <div id="offline-status" class="hidden">Vous êtes hors ligne. Les contenus peuvent être consultés sans connexion Internet.</div>
+  <div id="local-mode-info" class="info-banner">Application exécutée en mode local - certaines fonctionnalités comme le Service Worker sont désactivées.</div>
+  
   <script src="script.js"></script>
+  <script src="verification-debit.js"></script>
+  <script src="sw-register.js"></script>
+  <script>
+    // Afficher un message si on est en mode local (file://)
+    if (location.protocol === 'file:') {
+      document.getElementById('local-mode-info').style.display = 'block';
+    } else {
+      document.getElementById('local-mode-info').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
