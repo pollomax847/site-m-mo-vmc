@@ -149,6 +149,88 @@ if ('serviceWorker' in navigator && (location.protocol === 'http:' || location.p
     };
     
     verifierInvitationInstallation();
+
+    // Vérifier les mises à jour périodiquement
+    let currentVersion = null;
+    
+    // Fonction pour vérifier les mises à jour
+    const checkForUpdates = () => {
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          action: 'CHECK_FOR_UPDATES'
+        });
+      }
+    };
+    
+    // Vérifier les mises à jour toutes les heures
+    setInterval(checkForUpdates, 60 * 60 * 1000);
+    
+    // Vérifier les mises à jour au chargement de la page et à la récupération de la connexion
+    window.addEventListener('online', checkForUpdates);
+    
+    // Pour les démos et le développement, vérifier aussi au focus de la fenêtre
+    window.addEventListener('focus', checkForUpdates);
+    
+    // Écouter les messages de mise à jour du service worker
+    navigator.serviceWorker.addEventListener('message', event => {
+      // Gestion des mises à jour
+      if (event.data && event.data.type === 'CURRENT_VERSION') {
+        const newVersion = event.data.version;
+        
+        if (currentVersion === null) {
+          // Première vérification, on stocke la version
+          currentVersion = newVersion;
+        } else if (currentVersion !== newVersion) {
+          // Nouvelle version détectée
+          console.log(`Nouvelle version disponible : ${currentVersion} -> ${newVersion}`);
+          
+          // Mise à jour automatique
+          appliquerMiseAJourAutomatique();
+        }
+      }
+      
+      // Lorsque le service worker nous informe qu'une mise à jour a été activée
+      if (event.data && event.data.type === 'UPDATE_ACTIVATED') {
+        console.log('Nouvelle version activée:', event.data.version);
+        // Rafraîchir toutes les pages pour appliquer la mise à jour
+        window.location.reload();
+      }
+    });
+    
+    // Fonction pour appliquer la mise à jour automatiquement
+    function appliquerMiseAJourAutomatique() {
+      // Afficher une notification temporaire
+      const notification = document.createElement('div');
+      notification.className = 'update-notification';
+      notification.innerHTML = `
+        <p>Mise à jour en cours...</p>
+        <div class="spinner" style="width: 20px; height: 20px;"></div>
+      `;
+      document.body.appendChild(notification);
+      
+      // Demander au service worker d'appliquer la mise à jour immédiatement
+      if (navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          action: 'FORCE_UPDATE'
+        });
+      }
+      
+      // Programmer un rechargement de la page après 2 secondes
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+    
+    // Détecter les mises à jour du service worker directement
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('Le contrôleur du service worker a changé, rechargement...');
+        // Si on n'a pas déjà prévu un rechargement
+        if (!isInstalling) {
+          window.location.reload();
+        }
+      });
+    }
   });
   
   // Fonctions utilitaires

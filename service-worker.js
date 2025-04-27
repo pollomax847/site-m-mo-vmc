@@ -1,10 +1,12 @@
 const CACHE_NAME = 'memo-vmc-cache-v1';
+const CACHE_VERSION = '1.0.1'; // Incrémenter cette valeur pour déclencher une mise à jour
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
   './verification-debit.js',
+  './cgu.js',
   './logo.png',
   './logo-192.png',
   './logo-512.png',
@@ -18,7 +20,8 @@ let loadedAssets = 0;
 
 // Installation du Service Worker avec suivi de la progression
 self.addEventListener('install', event => {
-  self.skipWaiting(); // Assure que le nouveau SW prend le contrôle immédiatement
+  console.log('[Service Worker] Installation avec version:', CACHE_VERSION);
+  self.skipWaiting(); // Force le nouveau SW à prendre le contrôle immédiatement
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -73,21 +76,33 @@ self.addEventListener('install', event => {
 
 // Activation du Service Worker
 self.addEventListener('activate', event => {
+  console.log('[Service Worker] Activation avec version:', CACHE_VERSION);
+  
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Suppression de l\'ancien cache:', cacheName);
+            console.log('[Service Worker] Suppression de l\'ancien cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('Service worker activé');
-      return self.clients.claim(); // Prendre le contrôle de toutes les pages
+      console.log('[Service Worker] Service worker activé');
+      return self.clients.claim(); // Prendre le contrôle de toutes les pages ouvertes
     })
   );
+  
+  // Notifier toutes les fenêtres clientes qu'une mise à jour a été activée
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'UPDATE_ACTIVATED',
+        version: CACHE_VERSION
+      });
+    });
+  });
 });
 
 // Interception des requêtes réseau
@@ -137,7 +152,35 @@ self.addEventListener('message', event => {
     event.source.postMessage({
       type: 'INSTALLATION_STATUS',
       isInstalled: true,
-      progress: Math.round((loadedAssets / totalAssets) * 100)
+      progress: Math.round((loadedAssets / totalAssets) * 100),
+      version: CACHE_VERSION
+    });
+  }
+  
+  // Gestion des demandes de vérification de mise à jour
+  if (event.data && event.data.action === 'CHECK_FOR_UPDATES') {
+    console.log('[Service Worker] Vérification des mises à jour...');
+    // Renvoie la version actuelle du service worker
+    event.source.postMessage({
+      type: 'CURRENT_VERSION',
+      version: CACHE_VERSION
+    });
+    
+    // Force l'update du service worker
+    self.registration.update()
+      .then(() => {
+        console.log('[Service Worker] Mise à jour vérifiée');
+      })
+      .catch(err => {
+        console.error('[Service Worker] Erreur lors de la vérification de mise à jour:', err);
+      });
+  }
+  
+  // Gestion des demandes de mise à jour immédiate
+  if (event.data && event.data.action === 'FORCE_UPDATE') {
+    console.log('[Service Worker] Mise à jour forcée demandée');
+    self.skipWaiting().then(() => {
+      console.log('[Service Worker] skipWaiting appliqué, les clients vont être rechargés');
     });
   }
 });

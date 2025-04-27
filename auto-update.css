@@ -1,0 +1,49 @@
+/* Styles pour notifications de mise à jour automatique */
+.update-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 15px 25px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  font-size: 16px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.update-notification p {
+  margin: 0;
+}
+
+.update-notification .spinner {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.update-complete {
+  background-color: rgba(40, 167, 69, 0.9) !important;
+  transition: background-color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .update-notification {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+    border-radius: 10px;
+    width: auto;
+  }
+}
