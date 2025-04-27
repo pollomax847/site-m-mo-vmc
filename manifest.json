@@ -6,6 +6,11 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3498db",
+  "orientation": "any",
+  "categories": ["utilities", "productivity", "technical"],
+  "lang": "fr-FR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./logo-192.png",
@@ -18,6 +23,20 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Écran principal de Mémo VMC"
+    },
+    {
+      "src": "screenshot2.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "label": "Outil de vérification des débits"
     }
   ]
 }

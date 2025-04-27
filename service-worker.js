@@ -1,21 +1,72 @@
 const CACHE_NAME = 'memo-vmc-cache-v1';
-const urlsToCache = [
+const ASSETS = [
   './',
   './index.html',
   './style.css',
   './script.js',
+  './verification-debit.js',
   './logo.png',
+  './logo-192.png',
+  './logo-512.png',
   './manifest.json',
   './sw-register.js'
 ];
 
-// Installation du Service Worker
+// Variables pour le suivi de la progression
+let totalAssets = ASSETS.length;
+let loadedAssets = 0;
+
+// Installation du Service Worker avec suivi de la progression
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Assure que le nouveau SW prend le contrôle immédiatement
+  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Mise en cache des ressources');
-        return cache.addAll(urlsToCache);
+        // Pour chaque ressource, nous effectuons un fetch et un cache.put
+        const cachePromises = ASSETS.map(url => {
+          return fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`Failed to fetch ${url}`);
+              }
+              
+              // Mettre en cache la ressource
+              const cacheResponse = cache.put(url, response.clone());
+              
+              // Mettre à jour la progression
+              loadedAssets++;
+              const progress = Math.round((loadedAssets / totalAssets) * 100);
+              
+              // Envoyer une notification de progression aux clients
+              self.clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                  client.postMessage({
+                    type: 'DOWNLOAD_PROGRESS',
+                    progress: progress
+                  });
+                });
+              });
+              
+              return cacheResponse;
+            })
+            .catch(error => {
+              console.error(`Cache error for ${url}: ${error.message}`);
+            });
+        });
+        
+        return Promise.all(cachePromises);
+      })
+      .then(() => {
+        console.log('Mise en cache terminée');
+        // Notification de fin de téléchargement
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'DOWNLOAD_COMPLETE'
+            });
+          });
+        });
       })
   );
 });
@@ -32,6 +83,9 @@ self.addEventListener('activate', event => {
           }
         })
       );
+    }).then(() => {
+      console.log('Service worker activé');
+      return self.clients.claim(); // Prendre le contrôle de toutes les pages
     })
   );
 });
@@ -74,4 +128,16 @@ self.addEventListener('fetch', event => {
         });
       })
   );
+});
+
+// Événement message pour communiquer avec les pages
+self.addEventListener('message', event => {
+  if (event.data && event.data.action === 'GET_INSTALLATION_STATUS') {
+    // Répond avec l'état d'installation actuel
+    event.source.postMessage({
+      type: 'INSTALLATION_STATUS',
+      isInstalled: true,
+      progress: Math.round((loadedAssets / totalAssets) * 100)
+    });
+  }
 });

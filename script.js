@@ -812,6 +812,54 @@ document.addEventListener('DOMContentLoaded', function() {
             <h3>Quelle VMC choisir pour une maison économe en énergie ?</h3>
             <p>La VMC double flux avec récupérateur de chaleur est la solution la plus efficace énergétiquement, bien que son coût d'installation soit plus élevé.</p>
           </div>
+          
+          <div class="faq-item">
+            <h3>Sources d'information et références</h3>
+            <p>Les informations techniques présentées dans cette application proviennent des sources suivantes :</p>
+            <ul class="source-list">
+              <li><a href="https://www.ademe.fr/expertises/batiment/elements-contexte/equipements-electriques/ventilation-mecanique-controlee-vmc" target="_blank">ADEME - Ventilation Mécanique Contrôlée</a></li>
+              <li><a href="https://www.qualit-enr.org" target="_blank">Qualit'EnR - Documentation technique</a></li>
+              <li><a href="https://www.effinergie.org" target="_blank">Effinergie - Normes et réglementations</a></li>
+              <li><a href="https://www.cerema.fr/fr/activites/batiment-energie/batiment-energie-climat-qualite-air" target="_blank">CEREMA - Bâtiment énergie et qualité de l'air</a></li>
+              <li><a href="https://www.rt-batiment.fr" target="_blank">RT Bâtiment - Réglementation thermique</a></li>
+              <li><a href="https://cstb.fr" target="_blank">CSTB - Centre Scientifique et Technique du Bâtiment</a></li>
+              <li><a href="https://www.uniclima.fr" target="_blank">UNICLIMA - Syndicat des industries thermiques, aérauliques et frigorifiques</a></li>
+            </ul>
+            <p>Les mesures de débit et caractéristiques techniques sont basées sur les normes en vigueur, notamment :</p>
+            <ul class="source-list">
+              <li>Arrêté du 24 mars 1982 modifié relatif à l'aération des logements</li>
+              <li>NF DTU 68.3 - Travaux de bâtiment - Installations de ventilation mécanique</li>
+              <li>Réglementation Thermique 2012 (RT 2012) et RE2020</li>
+              <li>Norme NF EN 14134 - Ventilation des bâtiments - Essais de performances et contrôles d'installation</li>
+            </ul>
+            <p class="disclaimer">Note : Cette documentation est fournie à titre informatif et ne remplace pas les normes et réglementations officielles qui doivent être consultées pour toute installation professionnelle.</p>
+          </div>
+        </div>
+      `
+    },
+    // Section de vérification de débit par défaut au cas où verification-debit.js n'est pas chargé
+    'verification-debit': {
+      title: 'Vérification des Débits VMC',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Chargement de l'outil de vérification...</h2>
+          <p>Si cette page reste affichée, assurez-vous que le fichier verification-debit.js est bien chargé.</p>
+        </div>
+      `
+    },
+    'cgu': {
+      title: 'Conditions Générales d\'Utilisation',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Conditions Générales d'Utilisation</h2>
+          <p>Bienvenue sur Mémo VMC. En utilisant ce site, vous acceptez les conditions suivantes :</p>
+          <ul>
+            <li>Le contenu est fourni à titre informatif et ne remplace pas l'avis d'un professionnel.</li>
+            <li>Nous ne sommes pas responsables des erreurs ou omissions dans les informations fournies.</li>
+            <li>Vous êtes responsable de l'utilisation des informations présentes sur ce site.</li>
+            <li>Le contenu est protégé par les droits d'auteur et ne peut être reproduit sans autorisation.</li>
+          </ul>
+          <p>Pour toute question, contactez-nous à <a href="mailto:memo.chaudiere@gmail.com">memo.chaudiere@gmail.com</a>.</p>
         </div>
       `
     }
@@ -822,14 +870,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Fonction pour charger le contenu
   function loadContent(section = 'verification-debit') {
+    // Vérifier si la section existe avant de l'afficher
+    if (!vmcContent[section]) {
+      console.error(`Section "${section}" non trouvée dans le contenu disponible`);
+      section = 'verification-debit';  // Section par défaut
+    }
     document.getElementById('content').innerHTML = vmcContent[section].content;
     // Sauvegarder la dernière section consultée dans localStorage
     localStorage.setItem('lastSection', section);
+    
+    // Mettre à jour le lien actif dans le menu
+    document.querySelectorAll('#mainMenu a').forEach(menuLink => {
+      menuLink.classList.remove('active');
+      if (menuLink.getAttribute('href') === '#' + section) {
+        menuLink.classList.add('active');
+      }
+    });
+
+    // Déclencher un événement pour indiquer que le contenu a été chargé
+    document.dispatchEvent(new CustomEvent('contentLoaded', { detail: { section } }));
+    
+    // Ajouter un footer avec lien vers les CGU si pas déjà présent
+    if (!document.getElementById('app-footer')) {
+      const footer = document.createElement('footer');
+      footer.id = 'app-footer';
+      footer.innerHTML = `
+        <div class="footer-content">
+          <p>© ${new Date().getFullYear()} Mémo VMC - <a href="#cgu" class="cgu-link">Conditions Générales d'Utilisation</a></p>
+          <p>Contact: <a href="mailto:memo.chaudiere@gmail.com">memo.chaudiere@gmail.com</a></p>
+        </div>
+      `;
+      document.body.appendChild(footer);
+      
+      // Ajouter l'event listener au lien CGU
+      document.querySelector('.cgu-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        loadContent('cgu');
+      });
+    }
   }
 
-  // Charger la dernière section consultée ou la section par défaut
-  const lastSection = localStorage.getItem('lastSection') || 'verification-debit';
-  loadContent(lastSection);
+  // Attendre que la page soit complètement chargée et que tous les scripts aient eu le temps de s'initialiser
+  window.addEventListener('load', function() {
+    // Toujours charger la page de vérification des débits en premier, peu importe la dernière section visitée
+    setTimeout(function() {
+      loadContent('verification-debit');
+    }, 200);  // Délai court pour s'assurer que verification-debit.js a eu le temps de s'exécuter
+  });
 
   // Navigation
   document.querySelectorAll('#mainMenu a').forEach(link => {

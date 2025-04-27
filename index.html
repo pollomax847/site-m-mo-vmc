@@ -26,7 +26,7 @@
   
   <nav id="mainMenu">
     <ul>
-      <li><a href="#verification-debit">Vérification Débits</a></li>
+      <li><a href="#verification-debit" class="active">Vérification Débits</a></li>
       <li><a href="#vmc-simple">VMC Simple Flux</a></li>
       <li><a href="#vmc-double">VMC Double Flux</a></li>
       <li><a href="#vmc-hygro">VMC Hygroréglable</a></li>
@@ -39,12 +39,22 @@
     </ul>
   </nav>
   
-  <div id="content"></div>
+  <div id="content">
+    <div class="section-container">
+      <h2 class="section-title">Chargement...</h2>
+      <p>Veuillez patienter pendant le chargement du contenu.</p>
+    </div>
+  </div>
   <div id="offline-status" class="hidden">Vous êtes hors ligne. Les contenus peuvent être consultés sans connexion Internet.</div>
   <div id="local-mode-info" class="info-banner">Application exécutée en mode local - certaines fonctionnalités comme le Service Worker sont désactivées.</div>
   
+  <script>
+    // Définir un objet global vmcContent vide pour éviter les erreurs
+    window.vmcContent = window.vmcContent || {};
+  </script>
   <script src="script.js"></script>
   <script src="verification-debit.js"></script>
+  <script src="cgu.js"></script>
   <script src="sw-register.js"></script>
   <script>
     // Afficher un message si on est en mode local (file://)
@@ -53,6 +63,20 @@
     } else {
       document.getElementById('local-mode-info').style.display = 'none';
     }
+    
+    // Afficher un message si la page met trop de temps à charger
+    const loadTimeout = setTimeout(function() {
+      const content = document.getElementById('content');
+      if (content.innerHTML.includes('Chargement...')) {
+        content.innerHTML = `
+          <div class="section-container">
+            <h2 class="section-title">Problème de chargement</h2>
+            <p>Le contenu prend plus de temps que prévu pour charger. Essayez de recharger la page.</p>
+            <button onclick="window.location.reload()">Recharger</button>
+          </div>
+        `;
+      }
+    }, 5000);
   </script>
 </body>
 </html>
