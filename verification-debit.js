@@ -367,6 +367,18 @@ document.addEventListener('DOMContentLoaded', function() {
       // Ajouter les champs de mesure selon le type de logement
       ajouterChampsMesure();
       
+      // Ajouter un événement sur le changement de type de logement
+      typeLogement.addEventListener('change', function() {
+        // Vider le conteneur de mesures
+        mesuresContainer.innerHTML = '';
+        // Ajouter les nouvelles mesures selon le nouveau type de logement
+        ajouterChampsMesure();
+        // Mettre à jour le tableau de référence
+        updateReferenceTable();
+        // Vérifier la conformité
+        verifierConformite();
+      });
+      
       // Attache les événements pour les mises à jour automatiques
       document.addEventListener('change', function(e) {
         if (e.target.classList.contains('auto-update') || 
@@ -383,13 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       // Gestionnaires d'événements
-      if (typeLogement) {
-        typeLogement.addEventListener('change', function() {
-          updateReferenceTable();
-          verifierConformite(); // Ajouter cette ligne pour mettre à jour les résultats immédiatement
-        });
-      }
-      
       if (typeVMC) {
         typeVMC.addEventListener('change', function() {
           updateReferenceTable();
@@ -556,6 +561,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const typeLogement = document.getElementById('typeLogement');
         const typeLogementVal = typeLogement ? typeLogement.value : 'T3';
         
+        console.log(`Ajout des champs de mesure pour le type de logement: ${typeLogementVal}`);
+        
         // Déterminer le nombre de bouches à ajouter selon le type de logement
         let piecesAAjouter = [];
         switch(typeLogementVal) {
@@ -582,6 +589,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (type) {
           piecesAAjouter = [type];
         }
+        
+        console.log(`Pièces à ajouter: ${piecesAAjouter.join(', ')}`);
         
         // Ajouter chaque pièce
         piecesAAjouter.forEach(pieceType => {
@@ -658,6 +667,9 @@ document.addEventListener('DOMContentLoaded', function() {
           
           mesuresContainer.appendChild(item);
         });
+        
+        // Vérifier la conformité après l'ajout des champs
+        setTimeout(verifierConformite, 100);
       }
       
       function verifierConformite() {
