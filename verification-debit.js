@@ -652,6 +652,8 @@ document.addEventListener('DOMContentLoaded', function() {
           const btnRemove = document.createElement('button');
           btnRemove.className = 'btn-remove';
           btnRemove.innerHTML = '&times;';
+          btnRemove.style.minHeight = '44px'; // Taille minimale recommandée pour les éléments tactiles
+          btnRemove.style.minWidth = '44px';
           btnRemove.addEventListener('click', function() {
             mesuresContainer.removeChild(item);
             verifierConformite();
@@ -840,4 +842,13 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log("Interface de vérification des débits initialisée avec succès");
     }
   }
+
+  // Ajouter une détection de l'orientation pour réagir aux changements d'orientation sur mobile
+  window.addEventListener('orientationchange', function() {
+    // Attendre que l'orientation soit complètement changée
+    setTimeout(() => {
+      updateReferenceTable();
+      verifierConformite();
+    }, 300);
+  });
 });
