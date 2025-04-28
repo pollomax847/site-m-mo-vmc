@@ -369,8 +369,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Ajouter un événement sur le changement de type de logement
       typeLogement.addEventListener('change', function() {
-        // Vider le conteneur de mesures
-        mesuresContainer.innerHTML = '';
         // Ajouter les nouvelles mesures selon le nouveau type de logement
         ajouterChampsMesure();
         // Mettre à jour le tableau de référence
@@ -562,6 +560,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const typeLogementVal = typeLogement ? typeLogement.value : 'T3';
         
         console.log(`Ajout des champs de mesure pour le type de logement: ${typeLogementVal}`);
+        
+        // Vider le conteneur de mesures existant si aucun type spécifique n'est demandé
+        if (!type) {
+          mesuresContainer.innerHTML = '';
+        }
         
         // Déterminer le nombre de bouches à ajouter selon le type de logement
         let piecesAAjouter = [];
