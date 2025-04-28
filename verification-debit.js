@@ -851,4 +851,56 @@ document.addEventListener('DOMContentLoaded', function() {
       verifierConformite();
     }, 300);
   });
+
+  // Correctif mobile pour la page de vérification des débits
+  function fixMobileVerificationDebit() {
+    if (/Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      console.log('Correctif mobile appliqué à la page de vérification des débits');
+      
+      // Assurer que la page entière est scrollable
+      const mainContainers = [
+        document.querySelector('.calculator-container'),
+        document.getElementById('mesures-container'),
+        document.getElementById('resultats'),
+        document.getElementById('reference-table-container')
+      ];
+      
+      mainContainers.forEach(container => {
+        if (container) {
+          container.style.maxHeight = 'none';
+          container.style.overflow = 'visible';
+          container.style.height = 'auto';
+        }
+      });
+      
+      // Améliorer l'interaction pour les boutons d'ajout et de suppression
+      const addButton = document.getElementById('btnAjouterPiece');
+      if (addButton) {
+        addButton.style.minHeight = '50px';
+        addButton.style.margin = '20px 0';
+      }
+      
+      // Agrandir les boutons de suppression pour faciliter le toucher
+      const removeButtons = document.querySelectorAll('.btn-remove');
+      removeButtons.forEach(btn => {
+        btn.style.minHeight = '44px';
+        btn.style.minWidth = '44px';
+        btn.style.fontSize = '20px';
+      });
+    }
+  }
+
+  // Exécuter après chargement
+  document.addEventListener('contentLoaded', function(event) {
+    if (event.detail.section === 'verification-debit') {
+      setTimeout(fixMobileVerificationDebit, 500);
+    }
+  });
+
+  // Vérifier également périodiquement
+  setInterval(function() {
+    if (document.querySelector('.calculator-container')) {
+      fixMobileVerificationDebit();
+    }
+  }, 2000);
 });
