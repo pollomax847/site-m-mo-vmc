@@ -1,0 +1,15 @@
+{
+  "name": "memo-vmc",
+  "version": "1.0.0",
+  "description": "Mémo technique VMC - Documentation technique pour les différents types d'installations VMC",
+  "scripts": {
+    "build": "echo 'Build completed'",
+    "start": "serve -s ."
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+} 

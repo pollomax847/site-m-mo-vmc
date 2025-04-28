@@ -360,9 +360,12 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Initialiser l'affichage
       updateReferenceTable();
-      ajouterChampsMesure('cuisine');
-      ajouterChampsMesure('salle-de-bain');
-      ajouterChampsMesure('wc');
+      
+      // Vider le conteneur de mesures existant
+      mesuresContainer.innerHTML = '';
+      
+      // Ajouter les champs de mesure selon le type de logement
+      ajouterChampsMesure();
       
       // Attache les événements pour les mises à jour automatiques
       document.addEventListener('change', function(e) {
@@ -550,78 +553,111 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       function ajouterChampsMesure(type = null) {
-        const item = document.createElement('div');
-        item.className = 'mesure-item';
+        const typeLogement = document.getElementById('typeLogement');
+        const typeLogementVal = typeLogement ? typeLogement.value : 'T3';
         
-        const row = document.createElement('div');
-        row.className = 'mesure-row';
+        // Déterminer le nombre de bouches à ajouter selon le type de logement
+        let piecesAAjouter = [];
+        switch(typeLogementVal) {
+          case 'T1':
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc'];
+            break;
+          case 'T2':
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc'];
+            break;
+          case 'T3':
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc', 'autre-sdb'];
+            break;
+          case 'T4':
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc', 'autre-sdb'];
+            break;
+          case 'T5+':
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc', 'autre-sdb'];
+            break;
+          default:
+            piecesAAjouter = ['cuisine', 'salle-de-bain', 'wc'];
+        }
         
-        // Sélection du type de pièce
-        const pieceGroup = document.createElement('div');
-        pieceGroup.className = 'form-group';
+        // Si un type spécifique est demandé, ne créer que cette pièce
+        if (type) {
+          piecesAAjouter = [type];
+        }
         
-        const pieceLabel = document.createElement('label');
-        pieceLabel.textContent = 'Type de pièce:';
-        
-        const pieceSelect = document.createElement('select');
-        pieceSelect.className = 'form-control piece-type auto-update';
-        
-        // Options types de pièces
-        const options = [
-          { value: 'cuisine', text: 'Cuisine' },
-          { value: 'salle-de-bain', text: 'Salle de bain principale' },
-          { value: 'wc', text: 'WC' },
-          { value: 'autre-sdb', text: 'Autre salle d\'eau' }
-        ];
-        
-        options.forEach(opt => {
-          const option = document.createElement('option');
-          option.value = opt.value;
-          option.textContent = opt.text;
-          if (type === opt.value) option.selected = true;
-          pieceSelect.appendChild(option);
+        // Ajouter chaque pièce
+        piecesAAjouter.forEach(pieceType => {
+          const item = document.createElement('div');
+          item.className = 'mesure-item';
+          
+          const row = document.createElement('div');
+          row.className = 'mesure-row';
+          
+          // Sélection du type de pièce
+          const pieceGroup = document.createElement('div');
+          pieceGroup.className = 'form-group';
+          
+          const pieceLabel = document.createElement('label');
+          pieceLabel.textContent = 'Type de pièce:';
+          
+          const pieceSelect = document.createElement('select');
+          pieceSelect.className = 'form-control piece-type auto-update';
+          
+          // Options types de pièces
+          const options = [
+            { value: 'cuisine', text: 'Cuisine' },
+            { value: 'salle-de-bain', text: 'Salle de bain principale' },
+            { value: 'wc', text: 'WC' },
+            { value: 'autre-sdb', text: 'Autre salle d\'eau' }
+          ];
+          
+          options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.value;
+            option.textContent = opt.text;
+            if (pieceType === opt.value) option.selected = true;
+            pieceSelect.appendChild(option);
+          });
+          
+          pieceGroup.appendChild(pieceLabel);
+          pieceGroup.appendChild(pieceSelect);
+          
+          // Champ débit mesuré
+          const debitGroup = document.createElement('div');
+          debitGroup.className = 'form-group';
+          
+          const debitLabel = document.createElement('label');
+          debitLabel.textContent = 'Débit mesuré:';
+          
+          const debitInput = document.createElement('input');
+          debitInput.type = 'number';
+          debitInput.className = 'form-control debit-mesure';
+          debitInput.min = '0';
+          debitInput.step = 'any';
+          
+          debitGroup.appendChild(debitLabel);
+          debitGroup.appendChild(debitInput);
+          
+          // Bouton de suppression
+          const btnRemove = document.createElement('button');
+          btnRemove.className = 'btn-remove';
+          btnRemove.innerHTML = '&times;';
+          btnRemove.addEventListener('click', function() {
+            mesuresContainer.removeChild(item);
+            verifierConformite();
+          });
+          
+          // Status de la mesure (sera rempli par la vérification)
+          const statusDiv = document.createElement('div');
+          statusDiv.className = 'mesure-status';
+          
+          row.appendChild(pieceGroup);
+          row.appendChild(debitGroup);
+          row.appendChild(btnRemove);
+          
+          item.appendChild(row);
+          item.appendChild(statusDiv);
+          
+          mesuresContainer.appendChild(item);
         });
-        
-        pieceGroup.appendChild(pieceLabel);
-        pieceGroup.appendChild(pieceSelect);
-        
-        // Champ débit mesuré
-        const debitGroup = document.createElement('div');
-        debitGroup.className = 'form-group';
-        
-        const debitLabel = document.createElement('label');
-        debitLabel.textContent = 'Débit mesuré:';
-        
-        const debitInput = document.createElement('input');
-        debitInput.type = 'number';
-        debitInput.className = 'form-control debit-mesure';
-        debitInput.min = '0';
-        debitInput.step = 'any';
-        
-        debitGroup.appendChild(debitLabel);
-        debitGroup.appendChild(debitInput);
-        
-        // Bouton de suppression
-        const btnRemove = document.createElement('button');
-        btnRemove.className = 'btn-remove';
-        btnRemove.innerHTML = '&times;';
-        btnRemove.addEventListener('click', function() {
-          mesuresContainer.removeChild(item);
-          verifierConformite();
-        });
-        
-        // Status de la mesure (sera rempli par la vérification)
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'mesure-status';
-        
-        row.appendChild(pieceGroup);
-        row.appendChild(debitGroup);
-        row.appendChild(btnRemove);
-        
-        item.appendChild(row);
-        item.appendChild(statusDiv);
-        
-        mesuresContainer.appendChild(item);
       }
       
       function verifierConformite() {
