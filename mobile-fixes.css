@@ -2,15 +2,20 @@
 
 /* Correction générale pour le défilement sur Android */
 @media screen and (max-width: 768px) {
-  html, body {
+  /* Let the browser handle default body scrolling */
+  /* html, body {
     height: auto !important;
     overflow-y: visible !important;
+  } */
+
+  body {
+    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS and some Android WebViews */
   }
   
   .section-container {
-    height: auto !important;
-    min-height: 100vh;
-    overflow-y: visible !important;
+    height: auto !important; /* Allow sections to grow */
+    min-height: 100vh; /* Ensure sections fill viewport height */
+    overflow-y: visible !important; /* Prevent internal scrolling */
   }
   
   /* Correction pour les tableaux */
@@ -24,7 +29,7 @@
   /* S'assurer que le conteneur de calculatrice est entièrement visible */
   .calculator-container {
     max-height: none !important;
-    overflow-y: visible !important;
+    overflow-y: visible !important; /* Ensure content isn't cut off */
   }
   
   /* Corriger les inputs et boutons pour faciliter l'interaction */
@@ -37,7 +42,7 @@
   /* Assurer que le conteneur de résultats est entièrement visible */
   #resultats, #reference-table-container {
     max-height: none !important;
-    overflow-y: visible !important;
+    overflow-y: visible !important; /* Ensure content isn't cut off */
   }
   
   /* Correction pour la dernière partie du contenu pour qu'elle soit accessible */
