@@ -16,6 +16,9 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html, body {
@@ -24,6 +27,9 @@ html, body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: transform;
 }
 
 body {
@@ -35,6 +41,10 @@ body {
   padding: 10px;
   max-width: 100%;
   overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
 }
 
 #content {
@@ -43,6 +53,8 @@ body {
   max-width: 100vw;
   position: relative;
   overflow-x: hidden;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 header {

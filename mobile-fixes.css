@@ -2,20 +2,26 @@
 
 /* Correction générale pour le défilement sur Android */
 @media screen and (max-width: 768px) {
-  /* Let the browser handle default body scrolling */
-  /* html, body {
-    height: auto !important;
-    overflow-y: visible !important;
-  } */
+  html, body {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
 
   body {
-    -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS and some Android WebViews */
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000;
   }
   
   .section-container {
-    height: auto !important; /* Allow sections to grow */
-    min-height: 100vh; /* Ensure sections fill viewport height */
-    overflow-y: visible !important; /* Prevent internal scrolling */
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    transform: translateZ(0);
+    will-change: transform;
   }
   
   /* Correction pour les tableaux */
@@ -24,25 +30,31 @@
     overflow-x: auto;
     display: block;
     max-width: 100vw;
+    -webkit-overflow-scrolling: touch;
   }
   
   /* S'assurer que le conteneur de calculatrice est entièrement visible */
   .calculator-container {
-    max-height: none !important;
-    overflow-y: visible !important; /* Ensure content isn't cut off */
+    max-height: none;
+    overflow-y: visible;
+    transform: translateZ(0);
   }
   
   /* Corriger les inputs et boutons pour faciliter l'interaction */
   input, select, button {
-    font-size: 16px !important; /* Empêche le zoom sur certains navigateurs */
+    font-size: 16px;
     height: auto;
     min-height: 40px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
   
   /* Assurer que le conteneur de résultats est entièrement visible */
   #resultats, #reference-table-container {
-    max-height: none !important;
-    overflow-y: visible !important; /* Ensure content isn't cut off */
+    max-height: none;
+    overflow-y: visible;
+    transform: translateZ(0);
   }
   
   /* Correction pour la dernière partie du contenu pour qu'elle soit accessible */
