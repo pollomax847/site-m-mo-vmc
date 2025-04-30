@@ -672,9 +672,6 @@ document.addEventListener('DOMContentLoaded', function() {
           
           mesuresContainer.appendChild(item);
         });
-        
-        // Vérifier la conformité après l'ajout des champs
-        setTimeout(verifierConformite, 100);
       }
       
       function verifierConformite() {
