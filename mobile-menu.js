@@ -3,17 +3,37 @@
  */
 
 (function() {
-  // Attendre que le document soit chargé
-  document.addEventListener('DOMContentLoaded', function() {
-    // Attendre un peu pour s'assurer que les autres éléments sont chargés
+  // S'assurer que le script s'exécute après le chargement complet du document
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
     setTimeout(initMobileMenu, 300);
+  } else {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(initMobileMenu, 300);
+    });
+  }
+  
+  // Ajouter également un événement au chargement de la fenêtre pour plus de sécurité
+  window.addEventListener('load', function() {
+    if (!document.querySelector('.menu-button')) {
+      setTimeout(initMobileMenu, 500);
+    }
   });
   
   function initMobileMenu() {
-    // Vérifier si le menu existe déjà pour éviter les doublons
-    if (document.querySelector('.menu-button')) {
+    // Attendre que le body soit disponible
+    if (!document.body) {
+      console.log('Body non disponible, nouvel essai dans 200ms');
+      setTimeout(initMobileMenu, 200);
       return;
     }
+
+    // Vérifier si le menu existe déjà pour éviter les doublons
+    if (document.querySelector('.menu-button')) {
+      console.log('Menu mobile déjà initialisé');
+      return;
+    }
+    
+    console.log('Initialisation du menu mobile...');
     
     // Créer les éléments du menu
     const menuButton = document.createElement('button');
@@ -46,18 +66,40 @@
       </nav>
     `;
     
-    // S'assurer que le menu est inséré au début du body pour être bien positionné
-    if (document.body.firstChild) {
-      document.body.insertBefore(menuOverlay, document.body.firstChild);
-      document.body.insertBefore(sideMenu, document.body.firstChild);
-      document.body.insertBefore(menuButton, document.body.firstChild);
-    } else {
-      document.body.appendChild(menuButton);
-      document.body.appendChild(sideMenu);
-      document.body.appendChild(menuOverlay);
-    }
+    // Ajouter un style inline critique pour s'assurer que le bouton est visible immédiatement
+    menuButton.style.position = 'fixed';
+    menuButton.style.top = '15px';
+    menuButton.style.left = '15px';
+    menuButton.style.width = '50px';
+    menuButton.style.height = '50px';
+    menuButton.style.backgroundColor = '#2196F3';
+    menuButton.style.color = 'white';
+    menuButton.style.borderRadius = '50%';
+    menuButton.style.border = 'none';
+    menuButton.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
+    menuButton.style.zIndex = '10000';
+    menuButton.style.display = 'flex';
+    menuButton.style.alignItems = 'center';
+    menuButton.style.justifyContent = 'center';
+    menuButton.style.cursor = 'pointer';
+    menuButton.style.fontSize = '30px';
     
-    console.log('Menu mobile initialisé');
+    // Insérer les éléments dans le DOM
+    try {
+      if (document.body.firstChild) {
+        document.body.insertBefore(menuOverlay, document.body.firstChild);
+        document.body.insertBefore(sideMenu, document.body.firstChild);
+        document.body.insertBefore(menuButton, document.body.firstChild);
+      } else {
+        document.body.appendChild(menuButton);
+        document.body.appendChild(sideMenu);
+        document.body.appendChild(menuOverlay);
+      }
+      
+      console.log('Menu mobile ajouté au DOM');
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout du menu mobile:', error);
+    }
     
     // Fonctionnalité d'ouverture/fermeture
     menuButton.addEventListener('click', function(e) {

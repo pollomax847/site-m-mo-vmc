@@ -69,6 +69,31 @@
       document.head.appendChild(adsScript);
     }
   </script>
+  
+  <!-- Style inline critique pour le menu mobile -->
+  <style>
+    .menu-button {
+      position: fixed !important;
+      top: 15px !important;
+      left: 15px !important;
+      width: 50px !important;
+      height: 50px !important;
+      background-color: #2196F3 !important;
+      color: white !important;
+      border-radius: 50% !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 2147483647 !important;
+      font-size: 30px !important;
+    }
+    
+    @media (min-width: 769px) {
+      .menu-button {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -81,6 +106,10 @@
       <button id="searchButton">Rechercher</button>
     </div>
   </header>
+  
+  <button class="menu-button" aria-label="Menu principal">
+    <span class="menu-icon">≡</span>
+  </button>
   
   <div id="content">
     <div class="section-container">
@@ -97,5 +126,14 @@
     // Définir un objet global vmcContent vide pour éviter les erreurs
     window.vmcContent = window.vmcContent || {};
   </script>
+  
+  <!-- Scripts dans le bon ordre -->
+  <script src="mobile-menu.js" defer></script>
+  <script src="script.js" defer></script>
+  <script src="verification-debit.js" defer></script>
+  <script src="aerations-help.js" defer></script>
+  <script src="cgu-module.js" defer></script>
+  <script src="fix-mobile-display.js" defer></script>
+  <script src="sw-register.js" defer></script>
 </body>
 </html>

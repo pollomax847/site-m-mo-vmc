@@ -516,6 +516,124 @@
   }
 }
 
+/* Styles spécifiques au menu mobile */
+.menu-button {
+  position: fixed !important;
+  top: 15px !important;
+  left: 15px !important;
+  width: 50px !important;
+  height: 50px !important;
+  background-color: #2196F3 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  border: none !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
+  z-index: 2147483647 !important; /* Maximum z-index possible */
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 30px !important;
+  padding: 0 !important;
+}
+
+.menu-icon {
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Menu latéral */
+.side-menu {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 85% !important;
+  max-width: 300px !important;
+  height: 100vh !important;
+  background-color: white !important;
+  z-index: 2147483646 !important;
+  transform: translateX(-100%) !important;
+  transition: transform 0.3s ease !important;
+  padding: 70px 0 20px !important;
+  overflow-y: auto !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
+}
+
+.side-menu.open {
+  transform: translateX(0) !important;
+}
+
+/* Overlay */
+.menu-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(0,0,0,0.5) !important;
+  z-index: 2147483645 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.menu-overlay.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Contenu du menu */
+.side-menu-header {
+  padding: 0 20px 15px !important;
+  margin-bottom: 15px !important;
+  border-bottom: 1px solid #e1e1e1 !important;
+}
+
+.side-menu-header h3 {
+  margin: 0 !important;
+  color: #2196F3 !important;
+  font-size: 20px !important;
+}
+
+.side-menu nav ul {
+  list-style-type: none !important;
+  padding: 0 15px !important;
+  margin: 0 !important;
+}
+
+.side-menu nav li {
+  margin-bottom: 10px !important;
+}
+
+.side-menu nav a {
+  display: block !important;
+  padding: 12px 15px !important;
+  background-color: #f5f5f5 !important;
+  border-radius: 8px !important;
+  color: #333 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.side-menu nav a:hover,
+.side-menu nav a:active {
+  background-color: #e0e0e0 !important;
+}
+
+/* Pour s'assurer que le bouton est visible sur tous les écrans */
+@media (max-width: 768px), (max-device-width: 768px) {
+  html, body {
+    /* S'assurer que le body a un z-index inférieur au bouton */
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Assurer que le bouton est visible même sur les appareils avec petit écran */
+  .menu-button {
+    display: flex !important;
+  }
+}
+
 /* Optimisations spécifiques pour petits écrans */
 @media (max-width: 480px) {
   .window-row {
