@@ -1,186 +1,162 @@
-const CACHE_NAME = 'memo-vmc-cache-v1';
-const CACHE_VERSION = '1.0.1'; // Incrémenter cette valeur pour déclencher une mise à jour
-const ASSETS = [
-  './',
-  './index.html',
-  './style.css',
-  './script.js',
-  './verification-debit.js',
-  './cgu.js',
-  './logo.png',
-  './logo-192.png',
-  './logo-512.png',
-  './manifest.json',
-  './sw-register.js'
+// Service Worker pour l'application Mémo VMC
+
+const CACHE_NAME = 'memo-vmc-cache-v2'; // Incrémenter la version du cache
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/style.css',
+  '/script.js',
+  '/logo.png',
+  '/verification-debit.js',
+  '/auto-update.js',
+  '/auto-update.css',
+  '/cgu.js',
+  '/fix-mobile-display.js'
+  // Ne pas mettre les ressources qui posent problème dans le cache initial
 ];
 
-// Variables pour le suivi de la progression
-let totalAssets = ASSETS.length;
-let loadedAssets = 0;
-
-// Installation du Service Worker avec suivi de la progression
-self.addEventListener('install', event => {
-  console.log('[Service Worker] Installation avec version:', CACHE_VERSION);
-  self.skipWaiting(); // Force le nouveau SW à prendre le contrôle immédiatement
+// Installation du service worker
+self.addEventListener('install', function(event) {
+  // Forcer l'activation immédiate sans attendre la fermeture des pages
+  self.skipWaiting();
   
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        // Pour chaque ressource, nous effectuons un fetch et un cache.put
-        const cachePromises = ASSETS.map(url => {
-          return fetch(url)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Failed to fetch ${url}`);
-              }
-              
-              // Mettre en cache la ressource
-              const cacheResponse = cache.put(url, response.clone());
-              
-              // Mettre à jour la progression
-              loadedAssets++;
-              const progress = Math.round((loadedAssets / totalAssets) * 100);
-              
-              // Envoyer une notification de progression aux clients
-              self.clients.matchAll().then(clients => {
-                clients.forEach(client => {
-                  client.postMessage({
-                    type: 'DOWNLOAD_PROGRESS',
-                    progress: progress
-                  });
-                });
-              });
-              
-              return cacheResponse;
-            })
-            .catch(error => {
-              console.error(`Cache error for ${url}: ${error.message}`);
-            });
-        });
-        
-        return Promise.all(cachePromises);
-      })
-      .then(() => {
-        console.log('Mise en cache terminée');
-        // Notification de fin de téléchargement
-        self.clients.matchAll().then(clients => {
-          clients.forEach(client => {
-            client.postMessage({
-              type: 'DOWNLOAD_COMPLETE'
-            });
-          });
-        });
+      .then(function(cache) {
+        console.log('Cache ouvert');
+        // On utilise Promise.allSettled pour continuer même si certaines ressources échouent
+        return Promise.allSettled(
+          urlsToCache.map(url => 
+            cache.add(url).catch(error => 
+              console.warn(`Échec de mise en cache pour ${url}:`, error)
+            )
+          )
+        );
       })
   );
 });
 
-// Activation du Service Worker
-self.addEventListener('activate', event => {
-  console.log('[Service Worker] Activation avec version:', CACHE_VERSION);
+// Activation du service worker
+self.addEventListener('activate', function(event) {
+  const cacheWhitelist = [CACHE_NAME];
   
+  // S'assurer que le service worker prend le contrôle immédiatement
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('[Service Worker] Suppression de l\'ancien cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      console.log('[Service Worker] Service worker activé');
-      return self.clients.claim(); // Prendre le contrôle de toutes les pages ouvertes
-    })
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames.map(function(cacheName) {
+            if (cacheWhitelist.indexOf(cacheName) === -1) {
+              console.log('Suppression de l\'ancien cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
   );
-  
-  // Notifier toutes les fenêtres clientes qu'une mise à jour a été activée
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({
-        type: 'UPDATE_ACTIVATED',
-        version: CACHE_VERSION
-      });
-    });
-  });
 });
 
-// Interception des requêtes réseau
-self.addEventListener('fetch', event => {
+// Interception des requêtes
+self.addEventListener('fetch', function(event) {
+  // Ne pas intercepter les requêtes WebSocket
+  if (event.request.url.includes('/ws')) {
+    return;
+  }
+
+  // Ignorer les requêtes publicitaires Google (pour éviter les erreurs CORS)
+  if (event.request.url.includes('googlesyndication.com')) {
+    return;
+  }
+
+  // Vérifier si la requête doit contourner le service worker
+  if (event.request.url.includes('bypass-sw=true')) {
+    return;
+  }
+
+  // Utiliser une stratégie network-first pour les ressources CSS problématiques
+  if (event.request.url.includes('/styles/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Mettre en cache la réponse fraîchement récupérée
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          // Essayer depuis le cache en cas d'échec du réseau
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Pour les autres ressources, utiliser une stratégie cache-first
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        // Cache hit - retourne la réponse du cache
+      .then(function(response) {
+        // Le cache a une réponse pour cette requête
         if (response) {
           return response;
         }
         
-        // Clone de la requête
+        // Cloner la requête
         const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(
-          response => {
-            // Vérification de la validité de la réponse
-            if(!response || response.status !== 200 || response.type !== 'basic') {
+
+        // Essayer de récupérer depuis le réseau
+        return fetch(fetchRequest)
+          .then(function(response) {
+            // Vérifier si nous avons reçu une réponse valide
+            if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
-            
-            // Clone de la réponse
+
+            // Cloner la réponse
             const responseToCache = response.clone();
-            
+
+            // Mettre en cache pour utilisation future
             caches.open(CACHE_NAME)
-              .then(cache => {
+              .then(function(cache) {
                 cache.put(event.request, responseToCache);
               });
-              
+
             return response;
-          }
-        ).catch(() => {
-          // Si la requête échoue (pas de réseau), essayer de servir la page offline
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
+          })
+          .catch(function(error) {
+            console.error('Erreur fetch:', error);
+            
+            // Gérer les erreurs selon le type de ressource
+            if (event.request.url.endsWith('.css')) {
+              return new Response('/* Feuille de style de secours */', {
+                headers: { 'Content-Type': 'text/css' }
+              });
+            }
+            
+            if (event.request.url.endsWith('.js')) {
+              return new Response('console.log("Script de secours chargé");', {
+                headers: { 'Content-Type': 'application/javascript' }
+              });
+            }
+            
+            if (event.request.url.endsWith('.png') || 
+                event.request.url.endsWith('.jpg') || 
+                event.request.url.endsWith('.jpeg')) {
+              // Pour les images, retourner une image transparente
+              return new Response('', {
+                headers: { 'Content-Type': 'image/png' }
+              });
+            }
+            
+            // Fallback générique
+            return new Response('Ressource non disponible', {
+              status: 408,
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          });
       })
   );
-});
-
-// Événement message pour communiquer avec les pages
-self.addEventListener('message', event => {
-  if (event.data && event.data.action === 'GET_INSTALLATION_STATUS') {
-    // Répond avec l'état d'installation actuel
-    event.source.postMessage({
-      type: 'INSTALLATION_STATUS',
-      isInstalled: true,
-      progress: Math.round((loadedAssets / totalAssets) * 100),
-      version: CACHE_VERSION
-    });
-  }
-  
-  // Gestion des demandes de vérification de mise à jour
-  if (event.data && event.data.action === 'CHECK_FOR_UPDATES') {
-    console.log('[Service Worker] Vérification des mises à jour...');
-    // Renvoie la version actuelle du service worker
-    event.source.postMessage({
-      type: 'CURRENT_VERSION',
-      version: CACHE_VERSION
-    });
-    
-    // Force l'update du service worker
-    self.registration.update()
-      .then(() => {
-        console.log('[Service Worker] Mise à jour vérifiée');
-      })
-      .catch(err => {
-        console.error('[Service Worker] Erreur lors de la vérification de mise à jour:', err);
-      });
-  }
-  
-  // Gestion des demandes de mise à jour immédiate
-  if (event.data && event.data.action === 'FORCE_UPDATE') {
-    console.log('[Service Worker] Mise à jour forcée demandée');
-    self.skipWaiting().then(() => {
-      console.log('[Service Worker] skipWaiting appliqué, les clients vont être rechargés');
-    });
-  }
 });

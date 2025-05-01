@@ -115,5 +115,37 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('contentLoaded', function() {
       setTimeout(fixScrolling, 300);
     });
+
+    // Vérifier que le menu mobile s'affiche correctement
+    function checkMobileMenu() {
+      if (window.innerWidth <= 768) {
+        // Vérifier si le bouton de menu existe
+        const menuButton = document.querySelector('.menu-button');
+        if (!menuButton) {
+          console.log("Initialisation du menu mobile...");
+          if (typeof initMobileMenu === 'function') {
+            initMobileMenu();
+          } else {
+            // Si la fonction n'est pas disponible, charger le script
+            const script = document.createElement('script');
+            script.src = 'mobile-menu.js';
+            document.head.appendChild(script);
+          }
+        } else {
+          // S'assurer que le bouton est visible et au bon endroit
+          menuButton.style.display = 'block';
+          menuButton.style.position = 'fixed';
+          menuButton.style.top = '15px';
+          menuButton.style.left = '15px';
+          menuButton.style.zIndex = '10000';
+        }
+      }
+    }
+
+    // Exécuter après un court délai pour s'assurer que la page est chargée
+    setTimeout(checkMobileMenu, 1000);
+
+    // Vérifier à nouveau lors du redimensionnement
+    window.addEventListener('resize', checkMobileMenu);
   }
 });

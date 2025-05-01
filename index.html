@@ -14,17 +14,24 @@
   
   <title>Mémo Technique VMC</title>
   
+  <!-- Scripts de correction (doivent être chargés avant tout) -->
+  <script src="error-handler.js"></script>
+  <script src="dom-fix.js"></script>
+  <script src="dev-utils.js"></script>
+  <script src="cleanup.js"></script>
+  
   <!-- Préchargement des ressources critiques -->
   <link rel="preload" href="style.css" as="style">
   <link rel="preload" href="script.js" as="script">
-  <link rel="preload" href="logo.png" as="image">
-  <link rel="preload" href="logo-192.png" as="image">
   
-  <!-- Styles -->
+  <!-- Styles (order matters for CSS overrides) -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="auto-update.css">
   <link rel="stylesheet" href="styles/mobile-fixes.css">
-  <link rel="stylesheet" href="styles/vendor-prefixes.css">
+  <link rel="stylesheet" href="css/unified-styles.css">
+  <link rel="stylesheet" href="css/firefox-fixes.css">
+  <link rel="stylesheet" href="css/windows-module.css">
+  <link rel="stylesheet" href="css/error-handling.css">
   
   <!-- Icônes et manifeste -->
   <link rel="icon" href="logo.png" type="image/png">
@@ -32,21 +39,35 @@
   <link rel="manifest" href="manifest.json">
   
   <!-- Scripts -->
+  <script src="mobile-menu.js"></script>
   <script defer src="script.js"></script>
   <script defer src="auto-update.js"></script>
   <script defer src="verification-debit.js"></script>
   <script defer src="cgu.js"></script>
   <script defer src="fix-mobile-display.js"></script>
+  <script defer src="aerations-help.js"></script>
   <script defer src="sw-register.js"></script>
   
-  <!-- Script AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791" crossorigin="anonymous"></script>
+  <!-- Scripts spécifiques -->
+  <script src="script.js"></script>
+  <script src="verification-debit.js"></script>
+  <script src="aerations-help.js"></script>
+  <script src="mobile-menu.js"></script>
+  <script src="cgu.js"></script>
+  <script src="fix-mobile-display.js"></script>
+  <script src="sw-register.js"></script>
+  
+  <!-- Script AdSense avec chargement conditionnel -->
   <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-      google_ad_client: "ca-pub-6664265722735791",
-      enable_page_level_ads: true,
-      overlays: {bottom: true}
-    });
+    // Déjà géré par dev-utils.js, on peut simplifier ici
+    if (!window.location.hostname.includes('192.168.') && 
+        !window.location.hostname.includes('localhost')) {
+      const adsScript = document.createElement('script');
+      adsScript.async = true;
+      adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791";
+      adsScript.crossOrigin = "anonymous";
+      document.head.appendChild(adsScript);
+    }
   </script>
 </head>
 <body>
@@ -66,6 +87,10 @@
       <h2 class="section-title">Chargement...</h2>
       <p>Veuillez patienter pendant le chargement du contenu.</p>
     </div>
+  </div>
+  
+  <div id="offline-status" class="hidden">
+    Mode hors ligne activé
   </div>
   
   <script>

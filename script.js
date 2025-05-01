@@ -1,4 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Créer une fonction sécurisée pour getElementById
+  const safeGetElementById = (id) => {
+    const element = document.getElementById(id);
+    if (!element) {
+      console.warn(`Élément avec ID "${id}" introuvable, création d'un élément temporaire.`);
+      const tempElement = document.createElement('div');
+      tempElement.id = id;
+      tempElement.style.display = 'none';
+      document.body.appendChild(tempElement);
+      return tempElement;
+    }
+    return element;
+  };
+
+  // Surcharger getElementById pour éviter les erreurs null
+  const originalGetElementById = document.getElementById;
+  document.getElementById = function(id) {
+    const element = originalGetElementById.call(document, id);
+    return element || safeGetElementById(id);
+  };
+
   // Contenu des sections VMC
   const vmcContent = {
     'vmc-simple': {
