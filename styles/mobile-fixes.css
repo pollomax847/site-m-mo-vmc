@@ -7,6 +7,8 @@ html, body {
   position: relative !important;
   -webkit-overflow-scrolling: touch !important;
   scroll-behavior: smooth !important;
+  touch-action: pan-y !important; /* Permet le défilement vertical avec un seul doigt */
+  overscroll-behavior: contain !important; /* Empêche le défilement excessif */
 }
 
 body {
@@ -16,6 +18,8 @@ body {
   backface-visibility: hidden !important;
   transform-style: preserve-3d !important;
   padding-bottom: 0 !important; /* Empêcher l'espace en bas */
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
 }
 
 /* Force tous les conteneurs parents à être scrollables */
@@ -26,6 +30,7 @@ body {
   overflow: visible !important;
   position: relative !important;
   transform: translateZ(0) !important;
+  touch-action: pan-y !important;
 }
 
 /* Optimisations pour les performances de défilement */
@@ -34,6 +39,7 @@ body {
   overflow-y: auto !important;
   transform: translateZ(0) !important;
   backface-visibility: hidden !important;
+  touch-action: pan-y !important;
 }
 
 /* Masquer explicitement les éléments de bas de page sur mobile */
