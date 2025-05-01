@@ -6,25 +6,18 @@
   <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
   <meta name="theme-color" content="#3498db">
   
-  <!-- Balises pour les robots -->
-  <meta name="robots" content="index, follow">
-  <meta name="googlebot" content="index, follow">
-  <meta name="google" content="notranslate">
-  <meta name="google-site-verification" content="your-verification-code">
+  <!-- Correctifs DOM critiques - doivent être chargés en tout premier -->
+  <script src="dom-fix-patch.js"></script>
   
-  <title>Mémo Technique VMC</title>
-  
-  <!-- Scripts de correction (doivent être chargés avant tout) -->
+  <!-- Reste des scripts de correction -->
   <script src="error-handler.js"></script>
   <script src="dom-fix.js"></script>
   <script src="dev-utils.js"></script>
   <script src="cleanup.js"></script>
   
-  <!-- Préchargement des ressources critiques -->
-  <link rel="preload" href="style.css" as="style">
-  <link rel="preload" href="script.js" as="script">
+  <title>Mémo Technique VMC</title>
   
-  <!-- Styles (order matters for CSS overrides) -->
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="auto-update.css">
   <link rel="stylesheet" href="styles/mobile-fixes.css">
@@ -33,44 +26,12 @@
   <link rel="stylesheet" href="css/windows-module.css">
   <link rel="stylesheet" href="css/error-handling.css">
   
-  <!-- Icônes et manifeste -->
+  <!-- Icônes -->
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="apple-touch-icon" href="logo-192.png">
   <link rel="manifest" href="manifest.json">
   
-  <!-- Scripts -->
-  <script src="mobile-menu.js"></script>
-  <script defer src="script.js"></script>
-  <script defer src="auto-update.js"></script>
-  <script defer src="verification-debit.js"></script>
-  <script defer src="cgu.js"></script>
-  <script defer src="fix-mobile-display.js"></script>
-  <script defer src="aerations-help.js"></script>
-  <script defer src="sw-register.js"></script>
-  
-  <!-- Scripts spécifiques -->
-  <script src="script.js"></script>
-  <script src="verification-debit.js"></script>
-  <script src="aerations-help.js"></script>
-  <script src="mobile-menu.js"></script>
-  <script src="cgu.js"></script>
-  <script src="fix-mobile-display.js"></script>
-  <script src="sw-register.js"></script>
-  
-  <!-- Script AdSense avec chargement conditionnel -->
-  <script>
-    // Déjà géré par dev-utils.js, on peut simplifier ici
-    if (!window.location.hostname.includes('192.168.') && 
-        !window.location.hostname.includes('localhost')) {
-      const adsScript = document.createElement('script');
-      adsScript.async = true;
-      adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791";
-      adsScript.crossOrigin = "anonymous";
-      document.head.appendChild(adsScript);
-    }
-  </script>
-  
-  <!-- Style inline critique pour le menu mobile -->
+  <!-- Style critique pour menu mobile -->
   <style>
     .menu-button {
       position: fixed !important;
@@ -81,99 +42,82 @@
       background-color: #2196F3 !important;
       color: white !important;
       border-radius: 50% !important;
+      z-index: 9999 !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      z-index: 2147483647 !important;
       font-size: 30px !important;
+      cursor: pointer !important;
+      border: none !important;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
     }
     
-    @media (min-width: 769px) {
-      .menu-button {
-        display: none !important;
-      }
+    .side-menu {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 85% !important;
+      max-width: 300px !important;
+      height: 100% !important;
+      background-color: white !important;
+      z-index: 998 !important;
+      transform: translateX(-100%) !important;
+      transition: transform 0.3s ease !important;
+      overflow-y: auto !important;
+      padding-top: 60px !important;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
+    }
+    
+    .side-menu.open {
+      transform: translateX(0) !important;
+    }
+    
+    .menu-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background-color: rgba(0,0,0,0.5) !important;
+      z-index: 997 !important;
+      display: none !important;
+    }
+  </style>
+  
+  <!-- Fix pour CSS problématiques -->
+  <style>
+    /* Correctifs pour les propriétés CSS problématiques */
+    * {
+      -webkit-font-smoothing: auto !important; 
+      -moz-osx-font-smoothing: auto !important;
+      -webkit-text-size-adjust: none !important;
+      text-size-adjust: none !important;
     }
   </style>
 </head>
 <body>
   <!-- Menu mobile -->
-  <button class="menu-button" id="menuButton" aria-label="Menu principal" style="position:fixed;top:15px;left:15px;width:50px;height:50px;background-color:#2196F3;color:white;border-radius:50%;border:none;box-shadow:0 2px 5px rgba(0,0,0,0.3);z-index:2147483647;display:flex;align-items:center;justify-content:center;font-size:30px;padding:0;cursor:pointer;">≡</button>
+  <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
   
-  <div class="side-menu" id="sideMenu" aria-hidden="true" style="position:fixed;top:0;left:0;width:85%;max-width:300px;height:100%;background-color:white;box-shadow:2px 0 10px rgba(0,0,0,0.3);z-index:2147483646;transform:translateX(-100%);transition:transform 0.3s ease;overflow-y:auto;padding:60px 0 20px;">
-    <div class="side-menu-header" style="padding:0 20px 15px;margin-bottom:15px;border-bottom:1px solid #e1e1e1;">
-      <h3 style="margin:0;color:#2196F3;font-size:20px;">Menu VMC</h3>
+  <div class="side-menu" id="sideMenu" aria-hidden="true">
+    <div class="side-menu-header">
+      <h3>Menu VMC</h3>
     </div>
     <nav>
-      <ul style="list-style:none;padding:0 15px;margin:0;">
-        <li style="margin-bottom:10px;"><a href="#" data-section="accueil" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Accueil</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="verification-debit" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Vérification des Débits</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="faq" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">FAQ VMC</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="methodologie" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Méthodologie d'Installation</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="depannage" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Guide de Dépannage</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="info" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Informations Techniques</a></li>
-        <li style="margin-bottom:10px;"><a href="#" data-section="cgu" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Conditions d'utilisation</a></li>
+      <ul>
+        <li><a href="#" data-section="accueil">Accueil</a></li>
+        <li><a href="#" data-section="verification-debit">Vérification des Débits</a></li>
+        <li><a href="#" data-section="faq">FAQ VMC</a></li>
+        <li><a href="#" data-section="methodologie">Méthodologie d'Installation</a></li>
+        <li><a href="#" data-section="depannage">Guide de Dépannage</a></li>
+        <li><a href="#" data-section="dsc-constructeurs">DSC par constructeur</a></li>
+        <li><a href="#" data-section="info">Informations Techniques</a></li>
+        <li><a href="#" data-section="cgu">Conditions d'utilisation</a></li>
       </ul>
     </nav>
   </div>
   
-  <div class="menu-overlay" id="menuOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:2147483645;display:none;"></div>
-  
-  <!-- Script minimal de menu, exécution immédiate -->
-  <script>
-    // Script minimal pour le menu, s'exécute immédiatement
-    (function() {
-      const menuButton = document.getElementById('menuButton');
-      const sideMenu = document.getElementById('sideMenu');
-      const menuOverlay = document.getElementById('menuOverlay');
-      
-      if (menuButton && sideMenu && menuOverlay) {
-        menuButton.addEventListener('click', function(e) {
-          e.preventDefault();
-          const isOpen = sideMenu.style.transform === 'translateX(0px)';
-          
-          if (isOpen) {
-            sideMenu.style.transform = 'translateX(-100%)';
-            menuOverlay.style.display = 'none';
-            document.body.style.overflow = '';
-          } else {
-            sideMenu.style.transform = 'translateX(0)';
-            menuOverlay.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-          }
-        });
-        
-        menuOverlay.addEventListener('click', function() {
-          sideMenu.style.transform = 'translateX(-100%)';
-          menuOverlay.style.display = 'none';
-          document.body.style.overflow = '';
-        });
-        
-        // Configurer les liens du menu
-        const menuLinks = sideMenu.querySelectorAll('nav a');
-        menuLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const section = this.getAttribute('data-section');
-            
-            if (typeof loadContent === 'function') {
-              loadContent(section);
-            } else {
-              console.log('Chargement de section:', section);
-              const event = new CustomEvent('sectionRequest', { 
-                detail: { section: section } 
-              });
-              document.dispatchEvent(event);
-            }
-            
-            // Fermer le menu
-            sideMenu.style.transform = 'translateX(-100%)';
-            menuOverlay.style.display = 'none';
-            document.body.style.overflow = '';
-          });
-        });
-      }
-    })();
-  </script>
+  <div class="menu-overlay" id="menuOverlay"></div>
   
   <header>
     <div class="logo-container">
@@ -186,10 +130,6 @@
     </div>
   </header>
   
-  <button class="menu-button" aria-label="Menu principal">
-    <span class="menu-icon">≡</span>
-  </button>
-  
   <div id="content">
     <div class="section-container">
       <h2 class="section-title">Chargement...</h2>
@@ -201,21 +141,77 @@
     Mode hors ligne activé
   </div>
   
+  <!-- Script initial pour éviter des erreurs -->
   <script>
-    // Définir un objet global vmcContent vide pour éviter les erreurs
+    // Garantir l'existence de l'espace de noms VMC
     window.vmcContent = window.vmcContent || {};
+    
+    // Initialisation du menu mobile
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuButton = document.getElementById('menuButton');
+      const sideMenu = document.getElementById('sideMenu');
+      const menuOverlay = document.getElementById('menuOverlay');
+      
+      if (menuButton && sideMenu && menuOverlay) {
+        menuButton.addEventListener('click', function() {
+          sideMenu.classList.toggle('open');
+          menuOverlay.style.display = sideMenu.classList.contains('open') ? 'block' : 'none';
+        });
+        
+        menuOverlay.addEventListener('click', function() {
+          sideMenu.classList.remove('open');
+          menuOverlay.style.display = 'none';
+        });
+        
+        // Configurer les liens du menu
+        const menuLinks = sideMenu.querySelectorAll('nav a');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const section = this.getAttribute('data-section');
+            if (typeof loadContent === 'function') {
+              loadContent(section);
+            } else {
+              console.log('Chargement de section:', section);
+              const event = new CustomEvent('sectionRequest', { 
+                detail: { section: section } 
+              });
+              document.dispatchEvent(event);
+            }
+            
+            // Fermer le menu
+            sideMenu.classList.remove('open');
+            menuOverlay.style.display = 'none';
+          });
+        });
+      }
+    });
   </script>
   
-  <!-- Scripts dans le bon ordre -->
-  <script src="mobile-menu.js" defer></script>
-  <script src="script.js" defer></script>
-  <script src="verification-debit.js" defer></script>
-  <script src="aerations-help.js" defer></script>
-  <script src="cgu-module.js" defer></script>
-  <script src="fix-mobile-display.js" defer></script>
-  <script src="sw-register.js" defer></script>
-  <script src="aerations-fenetres.js"></script>
-  <script src="relais-dsc.js"></script>
+  <!-- Scripts principaux, un seul exemplaire -->
+  <script src="script.js"></script>
+  <script src="verification-debit.js"></script>
+  <script src="cgu-module.js"></script>
+  <script src="aerations-help.js"></script>
   <script src="dsc-constructeurs.js"></script>
+  <script src="fix-mobile-display.js"></script>
+  <script src="sw-register.js"></script>
+  
+  <!-- Script AdSense avec attributs de sécurité -->
+  <script>
+    setTimeout(function() {
+      if (!window.location.hostname.includes('localhost') && 
+          !window.location.hostname.includes('192.168.')) {
+        const adsScript = document.createElement('script');
+        adsScript.async = true;
+        adsScript.defer = true;
+        adsScript.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+        adsScript.dataset.adClient = "ca-pub-6664265722735791";
+        adsScript.setAttribute('crossorigin', 'anonymous');
+        document.head.appendChild(adsScript);
+      }
+    }, 3000);
+  </script>
 </body>
 </html>

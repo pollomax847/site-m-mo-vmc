@@ -889,7 +889,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Exposer vmcContent pour qu'il soit accessible par d'autres scripts
   window.vmcContent = vmcContent;
 
-  // Fonction pour charger le contenu
+  // Fonction pour charger le contenu - S'assurer qu'elle est globale
   function loadContent(section = 'verification-debit') {
     // Vérifier si la section existe avant de l'afficher
     if (!vmcContent[section]) {
@@ -914,6 +914,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Déclencher un événement pour indiquer que le contenu a été chargé
     document.dispatchEvent(new CustomEvent('contentLoaded', { detail: { section } }));
   }
+
+  // S'assurer que loadContent est accessible globalement
+  window.loadContent = loadContent;
 
   // Attendre que la page soit complètement chargée
   window.addEventListener('load', function() {

@@ -49,9 +49,14 @@ body {
   flex-direction: column;
   transform-style: preserve-3d;
   text-size-adjust: 100%;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; /* Peut être garder car seul Firefox signale l'erreur */
-  -webkit-text-size-adjust: 100%;
+  /* Ces propriétés causent des avertissements sur certains navigateurs */
+  /* -webkit-font-smoothing: antialiased; */
+  /* -moz-osx-font-smoothing: grayscale; */
+  /* -webkit-text-size-adjust: 100%; */
+  
+  /* Utiliser des alternatives plus largement supportées */
+  font-smoothing: auto;
+  text-rendering: optimizeLegibility;
 }
 
 .scroll-container {

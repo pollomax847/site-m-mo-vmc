@@ -621,8 +621,19 @@ SCHNEIDER DSC
     `
   };
 
-  // Initialiser le module lorsque le DOM est chargé
-  document.addEventListener('DOMContentLoaded', function() {
+  // Initialiser le module lorsque le DOM est chargé de manière plus robuste
+  function whenDocumentReady(callback) {
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setTimeout(callback, 1);
+    } else {
+      document.addEventListener('DOMContentLoaded', callback);
+    }
+    // Fallback si DOMContentLoaded ne se déclenche jamais
+    window.addEventListener('load', callback);
+  }
+  
+  // Remplacer le document.addEventListener par notre fonction robuste
+  whenDocumentReady(function() {
     // Si la fonction loadContent existe, ajouter une option au menu
     if (typeof loadContent === 'function') {
       const mainMenu = document.getElementById('mainMenu');
@@ -635,33 +646,41 @@ SCHNEIDER DSC
     
     // Réagir aux événements de chargement de section
     document.addEventListener('contentLoaded', function(event) {
-      if (event.detail.section === 'dsc-constructeurs') {
+      if (event.detail && event.detail.section === 'dsc-constructeurs') {
         console.log('Section DSC par constructeur chargée');
         
-        // Initialiser l'accordéon
-        const accordionHeaders = document.querySelectorAll('.accordion-header');
-        accordionHeaders.forEach(header => {
-          header.addEventListener('click', function() {
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.maxHeight) {
-              content.style.maxHeight = null;
-            } else {
-              content.style.maxHeight = content.scrollHeight + "px";
-            }
-          });
-        });
+        // Initialiser l'accordéon avec une vérification
+        setTimeout(function() {
+          const accordionHeaders = document.querySelectorAll('.accordion-header');
+          if (accordionHeaders.length > 0) {
+            accordionHeaders.forEach(header => {
+              header.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content) {
+                  if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                  } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                  }
+                }
+              });
+            });
+          }
+        }, 200); // Petit délai pour s'assurer que le DOM est prêt
       }
     });
   });
   
-  // Ajouter au menu mobile également
+  // Ajouter au menu mobile également, mais de façon plus prudente
   document.addEventListener('mobileMenuCreated', function() {
-    const mobileMenu = document.querySelector('.side-menu nav ul');
-    if (mobileMenu) {
-      const mobileMenuItem = document.createElement('li');
-      mobileMenuItem.innerHTML = '<a href="#" data-section="dsc-constructeurs" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">DSC par constructeur</a>';
-      mobileMenu.appendChild(mobileMenuItem);
-    }
+    setTimeout(function() {
+      const mobileMenu = document.querySelector('.side-menu nav ul');
+      if (mobileMenu) {
+        const mobileMenuItem = document.createElement('li');
+        mobileMenuItem.innerHTML = '<a href="#" data-section="dsc-constructeurs" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">DSC par constructeur</a>';
+        mobileMenu.appendChild(mobileMenuItem);
+      }
+    }, 100);
   });
 })();
