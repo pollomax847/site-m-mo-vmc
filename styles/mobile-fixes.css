@@ -516,6 +516,77 @@
   }
 }
 
+/* Styles spécifiques pour le menu mobile */
+
+/* Ce style va compléter les styles inline critiques */
+.menu-button {
+  position: fixed !important;
+  top: 15px !important;
+  left: 15px !important;
+  width: 50px !important;
+  height: 50px !important;
+  background-color: #2196F3 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  border: none !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 30px !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+.menu-icon {
+  line-height: 1;
+}
+
+/* Style pour le menu ouvert */
+.menu-button.open .menu-icon::before {
+  content: "×";
+}
+
+/* Menu latéral */
+.side-menu {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 85% !important;
+  max-width: 300px !important;
+  height: 100% !important;
+  background-color: white !important;
+  z-index: 9999 !important;
+  transform: translateX(-100%) !important;
+  transition: transform 0.3s ease !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
+  overflow-y: auto !important;
+  padding-top: 60px !important;
+  padding-bottom: 20px !important;
+}
+
+.side-menu.open {
+  transform: translateX(0) !important;
+}
+
+/* Overlay */
+.menu-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0,0,0,0.5) !important;
+  z-index: 9998 !important;
+  display: none !important;
+}
+
+.menu-overlay.open {
+  display: block !important;
+}
+
 /* Styles spécifiques au menu mobile */
 .menu-button {
   position: fixed !important;

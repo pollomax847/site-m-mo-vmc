@@ -55,6 +55,15 @@
         // Initialisation spécifique ici si nécessaire
       }
     });
+
+    // Ajouter un gestionnaire pour le bouton latéral
+    const sideButton = document.querySelector('.side-button');
+    if (sideButton) {
+      sideButton.addEventListener('click', function() {
+        console.log('Bouton latéral cliqué');
+        // Logique supplémentaire pour le bouton latéral ici
+      });
+    }
     
     console.log('Module CGU prêt');
   });
