@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const content = document.getElementById('content');
       if (content) {
         content.style.minHeight = `${window.innerHeight * 0.7}px`;
+        content.style.transform = 'translateZ(0)';
+        content.style.willChange = 'transform';
       }
     }
     
@@ -34,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const content = document.getElementById('content');
       if (content && content.offsetHeight === 0) {
         content.style.display = 'block';
+        content.style.transform = 'translateZ(0)';
+        content.style.willChange = 'transform';
       }
     }
     
@@ -50,12 +54,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.documentElement.style.height = 'auto';
         document.body.style.height = 'auto';
         document.body.style.overflowY = 'visible';
+        document.body.style.transform = 'translateZ(0)';
+        document.body.style.willChange = 'transform';
         
         // Corriger le problème de défilement dans les calculateurs
         const calculators = document.querySelectorAll('.calculator-container');
         calculators.forEach(calc => {
           calc.style.maxHeight = 'none';
           calc.style.overflowY = 'visible';
+          calc.style.transform = 'translateZ(0)';
+          calc.style.willChange = 'transform';
         });
         
         // Corriger la hauteur pour la vérification des débits
@@ -65,12 +73,16 @@ document.addEventListener('DOMContentLoaded', function() {
           
           if (resultContainer) {
             resultContainer.style.maxHeight = 'none';
+            resultContainer.style.transform = 'translateZ(0)';
+            resultContainer.style.willChange = 'transform';
           }
           
           if (referenceContainer) {
             referenceContainer.style.maxHeight = 'none';
             referenceContainer.style.overflowX = 'auto';
             referenceContainer.style.overflowY = 'visible';
+            referenceContainer.style.transform = 'translateZ(0)';
+            referenceContainer.style.willChange = 'transform';
           }
         };
         

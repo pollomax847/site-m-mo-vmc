@@ -6,13 +6,33 @@
   <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
   <meta name="theme-color" content="#3498db">
   <title>Mémo Technique VMC</title>
+  
+  <!-- Préchargement des ressources critiques -->
+  <link rel="preload" href="style.css" as="style">
+  <link rel="preload" href="script.js" as="script">
+  <link rel="preload" href="logo.png" as="image">
+  <link rel="preload" href="logo-192.png" as="image">
+  
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="auto-update.css">
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="logo-192.png">
-  <!-- Charger le CSS de correction mobile en dernier pour qu'il ait priorité -->
   <link rel="stylesheet" href="styles/mobile-fixes.css">
+  
+  <!-- Icônes et manifeste -->
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="logo-192.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Scripts -->
+  <script defer src="script.js"></script>
+  <script defer src="auto-update.js"></script>
+  <script defer src="verification-debit.js"></script>
+  <script defer src="cgu.js"></script>
+  <script defer src="fix-mobile-display.js"></script>
+  <script defer src="sw-register.js"></script>
+  
+  <!-- Script AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791" crossorigin="anonymous"></script>
 </head>
 <body>
   <header>
@@ -24,23 +44,7 @@
       <input type="text" id="searchInput" placeholder="Rechercher...">
       <button id="searchButton">Rechercher</button>
     </div>
-    <button id="menuToggle" aria-label="Menu">☰</button>
   </header>
-  
-  <nav id="mainMenu">
-    <ul>
-      <li><a href="#verification-debit" class="active">Vérification Débits</a></li>
-      <li><a href="#vmc-simple">VMC Simple Flux</a></li>
-      <li><a href="#vmc-double">VMC Double Flux</a></li>
-      <li><a href="#vmc-hygro">VMC Hygroréglable</a></li>
-      <li><a href="#vmc-thermo">VMC Thermodynamique</a></li>
-      <li><a href="#vmc-gaz">VMC Gaz</a></li>
-      <li><a href="#depannage">Méthodologie Dépannage</a></li>
-      <li><a href="#reglementation">Réglementation</a></li>
-      <li><a href="#entretien">Entretien</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-  </nav>
   
   <div id="content">
     <div class="section-container">
@@ -48,40 +52,13 @@
       <p>Veuillez patienter pendant le chargement du contenu.</p>
     </div>
   </div>
-  <div id="offline-status" class="hidden">Vous êtes hors ligne. Les contenus peuvent être consultés sans connexion Internet.</div>
-  <div id="local-mode-info" class="info-banner">Application exécutée en mode local - certaines fonctionnalités comme le Service Worker sont désactivées.</div>
   
   <script>
     // Définir un objet global vmcContent vide pour éviter les erreurs
     window.vmcContent = window.vmcContent || {};
-  </script>
-  <script src="script.js"></script>
-  <script src="auto-update.js"></script>
-  <script src="verification-debit.js"></script>
-  <script src="cgu.js"></script>
-  <script src="fix-mobile-display.js"></script>
-  <script src="sw-register.js"></script>
-  <script>
-    // Afficher un message si on est en mode local (file://)
-    if (location.protocol === 'file:') {
-      document.getElementById('local-mode-info').style.display = 'block';
-    } else {
-      document.getElementById('local-mode-info').style.display = 'none';
-    }
     
-    // Afficher un message si la page met trop de temps à charger
-    const loadTimeout = setTimeout(function() {
-      const content = document.getElementById('content');
-      if (content.innerHTML.includes('Chargement...')) {
-        content.innerHTML = `
-          <div class="section-container">
-            <h2 class="section-title">Problème de chargement</h2>
-            <p>Le contenu prend plus de temps que prévu pour charger. Essayez de recharger la page.</p>
-            <button onclick="window.location.reload()">Recharger</button>
-          </div>
-        `;
-      }
-    }, 5000);
+    // Initialiser AdSense
+    (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 </body>
 </html>

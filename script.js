@@ -875,9 +875,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error(`Section "${section}" non trouvée dans le contenu disponible`);
       section = 'verification-debit';  // Section par défaut
     }
-    document.getElementById('content').innerHTML = vmcContent[section].content;
-    // Sauvegarder la dernière section consultée dans localStorage
-    localStorage.setItem('lastSection', section);
+    
+    // Nettoyer le contenu précédent
+    const contentDiv = document.getElementById('content');
+    if (contentDiv) {
+      contentDiv.innerHTML = vmcContent[section].content;
+    }
     
     // Mettre à jour le lien actif dans le menu
     document.querySelectorAll('#mainMenu a').forEach(menuLink => {
@@ -889,33 +892,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Déclencher un événement pour indiquer que le contenu a été chargé
     document.dispatchEvent(new CustomEvent('contentLoaded', { detail: { section } }));
-    
-    // Ajouter un footer avec lien vers les CGU si pas déjà présent
-    if (!document.getElementById('app-footer')) {
-      const footer = document.createElement('footer');
-      footer.id = 'app-footer';
-      footer.innerHTML = `
-        <div class="footer-content">
-          <p>© ${new Date().getFullYear()} Mémo VMC - <a href="#cgu" class="cgu-link">Conditions Générales d'Utilisation</a></p>
-          <p>Contact: <a href="mailto:memo.chaudiere@gmail.com">memo.chaudiere@gmail.com</a></p>
-        </div>
-      `;
-      document.body.appendChild(footer);
-      
-      // Ajouter l'event listener au lien CGU
-      document.querySelector('.cgu-link').addEventListener('click', function(e) {
-        e.preventDefault();
-        loadContent('cgu');
-      });
-    }
   }
 
-  // Attendre que la page soit complètement chargée et que tous les scripts aient eu le temps de s'initialiser
+  // Attendre que la page soit complètement chargée
   window.addEventListener('load', function() {
-    // Toujours charger la page de vérification des débits en premier, peu importe la dernière section visitée
     setTimeout(function() {
       loadContent('verification-debit');
-    }, 200);  // Délai court pour s'assurer que verification-debit.js a eu le temps de s'exécuter
+    }, 200);
   });
 
   // Navigation

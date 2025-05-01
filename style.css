@@ -15,21 +15,28 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
+  backface-visibility: hidden;
 }
 
 html, body {
   width: 100%;
-  min-height: 100%;
-  overflow-x: hidden;
+  height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+}
+
+/* Optimiser l'utilisation de will-change pour éviter la surconsommation de mémoire */
+.scroll-container {
   will-change: transform;
+  transform: translateZ(0);
 }
 
 body {
@@ -39,20 +46,20 @@ body {
   background-color: var(--light-color);
   position: relative;
   padding: 10px;
-  max-width: 100%;
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
 }
 
 #content {
-  min-height: 50vh; /* Assure une hauteur minimale au contenu */
+  flex: 1;
   width: 100%;
-  max-width: 100vw;
   position: relative;
-  overflow-x: hidden;
+  overflow-y: auto;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  -webkit-overflow-scrolling: touch;
   transform: translateZ(0);
   will-change: transform;
 }
@@ -64,6 +71,7 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: relative;
   margin-bottom: 30px;
+  width: 100%;
 }
 
 .logo-container {
@@ -976,52 +984,35 @@ th {
   margin-top: 15px;
 }
 
-/* Footer */
-footer {
-  background-color: var(--dark-color);
-  color: white;
-  padding: 2rem 1rem 1rem;
-  margin-top: 2rem;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-.footer-section {
-  flex: 1;
-  min-width: 200px;
-  margin-bottom: 1.5rem;
-  padding: 0 1rem;
-}
-
-.footer-section h3 {
-  margin-bottom: 1rem;
-  color: var(--secondary-color);
-}
-
-.footer-section ul {
-  list-style: none;
-}
-
-.footer-section a {
-  color: #ddd;
-  text-decoration: none;
-}
-
-.footer-section a:hover {
-  text-decoration: underline;
-}
-
+/* Footer et copyright */
+footer, 
+.footer-content,
+.footer-section,
+#app-footer,
 .copyright {
-  text-align: center;
-  padding-top: 1.5rem;
-  margin-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: none !important;
+}
+
+/* Style spécifique pour les CGU et contact en bas de page */
+.cgu-link,
+.contact-info {
+  display: none !important;
+}
+
+/* Masquer tous les éléments de bas de page non essentiels */
+body > *:last-child:not(.section-container):not(#content):not(.calculator-container) {
+  display: none !important;
+}
+
+/* Assurer que le contenu principal va jusqu'en bas */
+#content {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.section-container:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 20px !important;
 }
 
 /* Indication de mode hors ligne */
@@ -1264,4 +1255,86 @@ footer {
     width: 100%;
     padding: 10px;
   }
+}
+
+/* Styles pour les publicités */
+.ad-container {
+  margin: 20px 0;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header-ad {
+  width: 100%;
+  max-width: 728px;
+  margin: 20px auto;
+}
+
+.sidebar-ad {
+  float: right;
+  width: 300px;
+  margin-left: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .sidebar-ad {
+    float: none;
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  body {
+    padding: 5px;
+  }
+  
+  #content {
+    padding-bottom: 40px;
+  }
+}
+
+/* Masquer complètement le menu et les éléments de bas de page */
+#mainMenu,
+footer, 
+.footer-content,
+.footer-section,
+#app-footer,
+.copyright,
+.cgu-link,
+.contact-info,
+.ad-container,
+#offline-status,
+#local-mode-info {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Assurer que le contenu principal va jusqu'en bas */
+body {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  overflow-y: auto !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+}
+
+#content {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  min-height: calc(100vh - 100px) !important; /* Ajuster selon la hauteur du header */
+}
+
+.section-container:last-child {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Supprimer tout espace blanc en bas de la page */
+body::after {
+  content: none !important;
 }

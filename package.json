@@ -7,9 +7,9 @@
     "start": "serve -s ."
   },
   "dependencies": {
-    "serve": "^14.2.1"
+    "serve": "^14.2.4"
   },
   "engines": {
     "node": ">=18.x"
   }
-} 
+}
