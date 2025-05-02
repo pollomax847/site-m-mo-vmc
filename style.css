@@ -1276,40 +1276,44 @@ body > *:last-child:not(.section-container):not(#content):not(.calculator-contai
 
 /* Styles pour les publicités */
 .ad-container {
-  margin: 20px 0;
   text-align: center;
-  position: relative;
-  z-index: 1;
+  padding: 15px 0;
+  margin: 15px 0;
+  min-height: 90px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  clear: both;
 }
 
-.header-ad {
-  width: 100%;
-  max-width: 728px;
-  margin: 20px auto;
+.ad-container::before {
+  content: "Publicité";
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
 }
 
-.sidebar-ad {
-  float: right;
-  width: 300px;
-  margin-left: 20px;
+.top-ad {
+  margin-top: 0;
+}
+
+.bottom-ad {
   margin-bottom: 20px;
-  position: relative;
 }
 
-@media (max-width: 768px) {
-  .sidebar-ad {
-    float: none;
-    width: 100%;
-    margin-left: 0;
+/* Masquer les publicités sur les petits écrans */
+@media (max-width: 320px) {
+  .ad-container {
+    display: none;
   }
-  
-  body {
-    padding: 5px;
-  }
-  
-  #content {
-    padding-bottom: 40px;
-  }
+}
+
+/* Styles pour les annonces responsive */
+.adsbygoogle {
+  margin: 0 auto;
+  display: block;
+  text-align: center;
 }
 
 /* Masquer complètement le menu et les éléments de bas de page */
