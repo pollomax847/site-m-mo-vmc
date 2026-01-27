@@ -30,9 +30,18 @@ const server = http.createServer((req, res) => {
   }
 
   // Construire le chemin de fichier
-  let filePath = '.' + req.url;
-  if (filePath === './') {
-    filePath = './index.html';
+  let filePath = path.resolve('.' + req.url);
+  let rootPath = path.resolve('.');
+  
+  // Vérifier que le chemin est dans le répertoire racine pour éviter le path traversal
+  if (!filePath.startsWith(rootPath)) {
+    res.writeHead(403, { 'Content-Type': 'text/html' });
+    res.end('<h1>403 Forbidden</h1><p>Access denied.</p>');
+    return;
+  }
+  
+  if (filePath === rootPath) {
+    filePath = path.join(rootPath, 'index.html');
   }
 
   // Obtenir l'extension du fichier
