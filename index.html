@@ -211,7 +211,7 @@
   </script>
   
   <!-- Scripts principaux, un seul exemplaire -->
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
   <script src="verification-debit.js"></script>
   <script src="cgu-module.js"></script>
   <script src="aerations-help.js"></script>
@@ -219,38 +219,11 @@
   <script src="fix-mobile-display.js"></script>
   <script src="sw-register.js"></script>
   
-  <!-- Script AdSense avec attributs de sécurité -->
+  <!-- Script AdSense temporairement désactivé -->
   <script>
     (function() {
-      // Attendre que la page soit totalement chargée
-      window.addEventListener('load', function() {
-        // Ne pas charger les annonces en mode développement
-        if (window.location.hostname.includes('localhost') || 
-            window.location.hostname.includes('192.168.')) {
-          console.log('Mode développement : AdSense désactivé');
-          return;
-        }
-
-        // Charger le script AdSense
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791';
-        script.crossOrigin = 'anonymous';
-        
-        script.onload = function() {
-          // Initialiser toutes les annonces une fois le script chargé
-          const ads = document.querySelectorAll('.adsbygoogle');
-          ads.forEach(ad => {
-            try {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch(e) {
-              console.error('Erreur initialisation AdSense:', e);
-            }
-          });
-        };
-
-        document.head.appendChild(script);
-      });
+      // AdSense temporairement désactivé jusqu'à approbation du site
+      console.log('AdSense temporairement désactivé - site en développement');
     })();
   </script>
 </body>

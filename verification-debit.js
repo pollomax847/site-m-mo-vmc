@@ -324,9 +324,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Module de vérification des débits chargé avec succès');
     
+    // Variable pour éviter les initialisations multiples
+    let isInitialized = false;
+    
     // Initialiser la page de vérification des débits si elle est chargée
     document.addEventListener('contentLoaded', function(event) {
-      if (event.detail.section === 'verification-debit') {
+      if (event.detail.section === 'verification-debit' && !isInitialized) {
         console.log('Initialisation de l\'outil de vérification des débits');
         setTimeout(function() {
           initVerificationDebit();
@@ -336,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Vérifier également si le contenu est déjà chargé
     const contentLoaded = setInterval(() => {
-      if (document.querySelector('.calculator-container')) {
+      if (document.querySelector('.calculator-container') && !isInitialized) {
         clearInterval(contentLoaded);
         console.log('Container de calculatrice trouvé, initialisation...');
         initVerificationDebit();
@@ -345,6 +348,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Définissons la fonction initVerificationDebit correctement
     function initVerificationDebit() {
+      if (isInitialized) {
+        console.log('Interface déjà initialisée, skipping...');
+        return;
+      }
+      
       const typeLogement = document.getElementById('typeLogement');
       const typeVMC = document.getElementById('typeVMC');
       const unites = document.getElementsByName('unite');
@@ -362,6 +370,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       console.log("Initialisation de l'interface de vérification des débits...");
+      
+      isInitialized = true;
 
       // Pour la conversion
       const valueToConvert = document.getElementById('valueToConvert');
@@ -576,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function ajouterChampsMesure(type = null) {
       const typeLogement = document.getElementById('typeLogement');
-      const typeLogementVal = typeLogement ? typeLogement.value : 'T3';
+      const typeLogementVal = typeLogement ? (typeLogement.value || 'T3') : 'T3';
       const mesuresContainer = document.getElementById('mesures-container');
 
       console.log(`Ajout des champs de mesure pour le type de logement: ${typeLogementVal}`);

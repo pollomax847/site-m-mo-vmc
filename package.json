@@ -3,13 +3,30 @@
   "version": "1.0.0",
   "description": "Mémo technique VMC - Documentation technique pour les différents types d'installations VMC",
   "scripts": {
-    "build": "echo 'Build completed'",
-    "start": "serve -s ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest",
+    "start": "serve -s dist"
   },
-  "dependencies": {
+  "jest": {
+    "preset": "default",
+    "testEnvironment": "jsdom",
+    "transform": {},
+    "extensionsToTreatAsEsm": [".js"],
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    }
+  },
     "serve": "^14.2.4"
   },
   "engines": {
     "node": ">=18.x"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "vite": "^7.3.1"
   }
 }
