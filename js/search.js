@@ -22,7 +22,7 @@ export function search() {
   }
 
   resultsHtml += '</div>';
-  document.getElementById('content').innerHTML = resultsHtml;
+  document.getElementById('main-content').innerHTML = resultsHtml;
 }
 
 // Initialisation de la recherche

@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', function() {
   checkVmcContent();
   
   function initVerificationDebitModule() {
+    // Importer le module d'export PDF
+    import('./pdf-export.js').then(({ addExportButton }) => {
+      console.log('Module PDF export chargé');
+      window.addExportButton = addExportButton;
+    }).catch(error => {
+      console.warn('Erreur chargement module PDF:', error);
+    });
+
     // S'assurer que vmcContent existe dans l'objet window
     if (!window.vmcContent) {
       console.error('vmcContent non disponible - création d\'un objet vide');
@@ -216,27 +224,29 @@ document.addEventListener('DOMContentLoaded', function() {
           <h2 class="section-title">Assistant de Vérification des Débits VMC</h2>
           <p>Cet outil vous permet de vérifier si les débits mesurés sur une installation VMC sont conformes aux exigences réglementaires selon le type de logement et le système VMC.</p>
           
-          <div class="calculator-container">
+          <div class="calculator-container" role="main" aria-label="Outil de calcul des débits VMC">
             <div class="form-group">
-              <label for="typeLogement">Type de logement :</label>
-              <select id="typeLogement" class="form-control auto-update">
-                <option value="T1">T1</option>
-                <option value="T2">T2</option>
-                <option value="T3" selected>T3</option>
-                <option value="T4">T4</option>
-                <option value="T5+">T5 et plus</option>
+              <label for="typeLogement" id="label-typeLogement">Type de logement :</label>
+              <select id="typeLogement" class="form-control auto-update" aria-labelledby="label-typeLogement" aria-describedby="desc-typeLogement">
+                <option value="T1">T1 (1 pièce principale)</option>
+                <option value="T2">T2 (2 pièces principales)</option>
+                <option value="T3" selected>T3 (3 pièces principales)</option>
+                <option value="T4">T4 (4 pièces principales)</option>
+                <option value="T5+">T5 et plus (5 pièces principales et plus)</option>
               </select>
+              <span id="desc-typeLogement" class="sr-only">Sélectionnez le type de logement pour déterminer les débits réglementaires</span>
             </div>
             
             <div class="form-group">
-              <label for="typeVMC">Type de VMC :</label>
-              <select id="typeVMC" class="form-control auto-update">
+              <label for="typeVMC" id="label-typeVMC">Type de VMC :</label>
+              <select id="typeVMC" class="form-control auto-update" aria-labelledby="label-typeVMC" aria-describedby="desc-typeVMC">
                 <option value="simple-flux">VMC Simple Flux Autoréglable</option>
                 <option value="hygro-a">VMC Hygroréglable Type A</option>
                 <option value="hygro-b">VMC Hygroréglable Type B</option>
                 <option value="double-flux">VMC Double Flux</option>
                 <option value="vmc-gaz">VMC Gaz</option>
               </select>
+              <span id="desc-typeVMC" class="sr-only">Choisissez le type de système de ventilation mécanique contrôlée</span>
             </div>
             
             <div class="form-group">
@@ -817,6 +827,18 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       resultats.innerHTML = resumeHTML;
+
+      // Tracker le calcul effectué
+      if (window.analytics && mesures.length > 0) {
+        window.analytics.trackCalculation('debit_verification', pourcentageConformite);
+      }
+
+      // Ajouter le bouton d'export PDF si disponible
+      if (window.addExportButton && mesures.length > 0) {
+        setTimeout(() => {
+          window.addExportButton(resultats.parentElement, resultats, `resultats-vmc-${Date.now()}.pdf`);
+        }, 100);
+      }
     }
 
     function getNomPiece(piece) {

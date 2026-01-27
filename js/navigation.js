@@ -9,7 +9,7 @@ export function loadContent(section = 'verification-debit') {
   }
   
   // Nettoyer le contenu précédent
-  const contentDiv = document.getElementById('content');
+  const contentDiv = document.getElementById('main-content');
   if (contentDiv) {
     contentDiv.innerHTML = vmcContent[section].content;
   }

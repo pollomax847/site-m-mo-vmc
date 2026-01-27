@@ -97,6 +97,12 @@
   </style>
 </head>
 <body>
+  <!-- Skip link pour l'accessibilité -->
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+  
+  <!-- Bouton du mode sombre -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Basculer entre mode clair et sombre" title="Changer de thème">🌙</button>
+  
   <!-- Menu mobile -->
   <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
   
@@ -131,7 +137,7 @@
     </div>
   </header>
   
-  <div id="content">
+  <div id="main-content">
     <!-- Ajouter un conteneur dédié aux annonces en haut -->
     <div class="ad-container top-ad" id="top-ad">
       <ins class="adsbygoogle"

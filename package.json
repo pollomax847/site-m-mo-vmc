@@ -13,13 +13,18 @@
     "preset": "default",
     "testEnvironment": "jsdom",
     "transform": {},
-    "extensionsToTreatAsEsm": [".js"],
+    "extensionsToTreatAsEsm": [
+      ".js"
+    ],
     "globals": {
       "ts-jest": {
         "useESM": true
       }
     }
   },
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.0.0",
     "serve": "^14.2.4"
   },
   "engines": {
