@@ -99,13 +99,27 @@
 <body>
   <!-- Skip link pour l'accessibilité -->
   <a href="#main-content" class="skip-link">Aller au contenu principal</a>
-  
+
+  <!-- Menu principal desktop -->
+  <nav id="mainMenu" aria-label="Navigation principale">
+    <ul>
+      <li><a href="#accueil">Accueil</a></li>
+      <li><a href="#verification-debit">Vérification des Débits</a></li>
+      <li><a href="#faq">FAQ VMC</a></li>
+      <li><a href="#methodologie">Méthodologie d'Installation</a></li>
+      <li><a href="#depannage">Guide de Dépannage</a></li>
+      <li><a href="#dsc-constructeurs">DSC par constructeur</a></li>
+      <li><a href="#info">Informations Techniques</a></li>
+      <li><a href="#cgu">Conditions d'utilisation</a></li>
+    </ul>
+  </nav>
+
   <!-- Bouton du mode sombre -->
   <button class="theme-toggle" id="themeToggle" aria-label="Basculer entre mode clair et sombre" title="Changer de thème">🌙</button>
-  
+
   <!-- Menu mobile -->
   <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
-  
+
   <div class="side-menu" id="sideMenu" aria-hidden="true">
     <div class="side-menu-header">
       <h3>Menu VMC</h3>
@@ -123,7 +137,7 @@
       </ul>
     </nav>
   </div>
-  
+
   <div class="menu-overlay" id="menuOverlay"></div>
   
   <header>

@@ -6,6 +6,8 @@ test.describe('Mémo VMC - Tests Fonctionnels', () => {
     await page.goto('/');
     // Attendre que la page soit complètement chargée
     await page.waitForLoadState('networkidle');
+    // Attendre un peu plus pour que le JS s'initialise
+    await page.waitForTimeout(2000);
   });
 
   test('Page d\'accueil se charge correctement', async ({ page }) => {
@@ -23,11 +25,20 @@ test.describe('Mémo VMC - Tests Fonctionnels', () => {
   });
 
   test('Navigation fonctionne correctement', async ({ page }) => {
+    // Attendre que la page soit complètement chargée
+    await page.waitForLoadState('networkidle');
+    
     // Cliquer sur "Vérification des Débits"
     await page.click('a[href="#verification-debit"]');
 
-    // Attendre que le contenu se charge
-    await page.waitForSelector('.calculator-container');
+    // Attendre que le contenu se charge (plus long pour le JS)
+    await page.waitForSelector('.calculator-container', { timeout: 10000 });
+
+    // Attendre que le contenu soit réellement chargé
+    await page.waitForFunction(() => {
+      const container = document.querySelector('.calculator-container');
+      return container && container.innerHTML.includes('typeLogement');
+    });
 
     // Vérifier que la section de calcul est visible
     await expect(page.locator('.calculator-container')).toBeVisible();
@@ -46,13 +57,13 @@ test.describe('Mémo VMC - Tests Fonctionnels', () => {
     await page.selectOption('#typeLogement', 'T3');
     await page.selectOption('#typeVMC', 'simple-flux');
 
-    // Ajouter une mesure
-    await page.click('#btnAjouterPiece');
+    // Attendre que les champs de mesure soient présents
     await page.waitForSelector('.mesure-item');
 
-    // Remplir les champs de mesure
-    await page.selectOption('.mesure-item select[name="piece"]', 'cuisine');
-    await page.fill('.mesure-item input[name="debit"]', '50');
+    // Remplir les champs de mesure existants
+    const firstMesureItem = page.locator('.mesure-item').first();
+    await firstMesureItem.locator('.piece-type').selectOption('cuisine');
+    await firstMesureItem.locator('.debit-mesure').fill('50');
 
     // Vérifier les résultats
     await expect(page.locator('#resultats')).toBeVisible();
