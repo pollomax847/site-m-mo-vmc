@@ -1,0 +1,62 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - link "Aller au contenu principal" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Passer en mode sombre" [ref=e3] [cursor=pointer]: 🌙
+  - button "Menu principal" [ref=e4] [cursor=pointer]: ≡
+  - generic [ref=e5]:
+    - heading [level=3] [ref=e7]: Menu VMC
+    - navigation [ref=e8]:
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link [ref=e11] [cursor=pointer]:
+            - /url: "#"
+            - text: Accueil
+        - listitem [ref=e12]:
+          - link [ref=e13] [cursor=pointer]:
+            - /url: "#"
+            - text: Vérification des Débits
+        - listitem [ref=e14]:
+          - link [ref=e15] [cursor=pointer]:
+            - /url: "#"
+            - text: FAQ VMC
+        - listitem [ref=e16]:
+          - link [ref=e17] [cursor=pointer]:
+            - /url: "#"
+            - text: Méthodologie d'Installation
+        - listitem [ref=e18]:
+          - link [ref=e19] [cursor=pointer]:
+            - /url: "#"
+            - text: Guide de Dépannage
+        - listitem [ref=e20]:
+          - link [ref=e21] [cursor=pointer]:
+            - /url: "#"
+            - text: DSC par constructeur
+        - listitem [ref=e22]:
+          - link [ref=e23] [cursor=pointer]:
+            - /url: "#"
+            - text: Informations Techniques
+        - listitem [ref=e24]:
+          - link [ref=e25] [cursor=pointer]:
+            - /url: "#"
+            - text: Conditions d'utilisation
+  - banner [ref=e26]:
+    - img "Mémo VMC Logo" [ref=e28]
+    - heading "Mémo Technique - VMC par type d'installation" [level=1] [ref=e29]
+    - generic [ref=e30]:
+      - textbox "Rechercher..." [ref=e31]
+      - button "Rechercher" [ref=e32] [cursor=pointer]
+  - generic [ref=e33]:
+    - text: Publicité
+    - generic [ref=e34]:
+      - heading "Chargement..." [level=2] [ref=e35]
+      - paragraph [ref=e36]: Veuillez patienter pendant le chargement du contenu.
+    - text: Publicité
+  - generic [ref=e38]:
+    - paragraph [ref=e39]: Ce site utilise Google Analytics pour améliorer votre expérience. Acceptez-vous l'utilisation de cookies à des fins statistiques ?
+    - generic [ref=e40]:
+      - button "Accepter" [ref=e41] [cursor=pointer]
+      - button "Refuser" [ref=e42] [cursor=pointer]
+```
