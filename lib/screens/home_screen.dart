@@ -13,8 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  String _selectedLogo = 'lib/assets/icons/logo_memo_vmc_square.png';
 
   final List<Map<String, dynamic>> _sections = [
     {
@@ -34,26 +33,20 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
-  List<Map<String, dynamic>> get _filteredSections {
-    if (_searchQuery.isEmpty) {
-      return _sections;
-    }
-    return _sections.where((section) =>
-        section['title'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        section['subtitle'].toLowerCase().contains(_searchQuery.toLowerCase())).toList();
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mémo Technique VMC'),
+        title: Row(
+          children: [
+            Image.asset(
+              _selectedLogo,
+              height: 40,
+            ),
+            const SizedBox(width: 12),
+            const Text('Mémo Technique VMC'),
+          ],
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -73,6 +66,35 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Sélecteur de logo
+              Row(
+                children: [
+                  const Text('Logo : '),
+                  DropdownButton<String>(
+                    value: _selectedLogo,
+                    items: [
+                      DropdownMenuItem(
+                        value: 'lib/assets/icons/logo_memo_vmc_square.png',
+                        child: const Text('Carré'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'lib/assets/icons/logo_memo_vmc_round.png',
+                        child: const Text('Rond'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'lib/assets/icons/logo_memo_vmc_transparent.png',
+                        child: const Text('Transparent'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedLogo = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
               const Text(
                 'Bienvenue sur le Mémo Technique VMC',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -83,54 +105,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 32),
-              GridView.count(
-                crossAxisCount: MediaQuery.of(context).size.width > 768 ? 3 : 1,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: _sections.map((section) {
-                  return Card(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => section['screen']),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              section['title'],
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              section['subtitle'],
-                              style: const TextStyle(fontSize: 14, color: Colors.grey),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => section['screen']),
-                                );
-                              },
-                              child: const Text('Voir'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
+              ..._sections.map((section) => Card(
+                child: ListTile(
+                  title: Text(section['title']),
+                  subtitle: Text(section['subtitle']),
+                  trailing: const Icon(Icons.arrow_forward_ios),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => section['screen']),
+                    );
+                  },
+                ),
+              )),
             ],
           ),
         ),
