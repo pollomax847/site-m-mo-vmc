@@ -1,7 +1,13 @@
 {
-  "buildCommand": "flutter build web",
-  "outputDirectory": "build/web",
-  "rewrites": [
+  "version": 2,
+  "builds": [
+    {
+      "src": "Dockerfile",
+      "use": "@vercel/static-build"
+    }
+  ],
+  "routes": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "outputDirectory": "build/web"
 }
