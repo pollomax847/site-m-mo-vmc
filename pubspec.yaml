@@ -31,7 +31,7 @@ flutter:
 
 flutter_icons:
   android: true
-  ios: true
+  ios: false
   web:
     generate: true
   image_path: "lib/assets/icons/logo.png"
