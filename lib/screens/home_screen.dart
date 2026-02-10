@@ -67,44 +67,73 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Rechercher',
-                hintText: 'Tapez pour rechercher...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Bienvenue sur le Mémo Technique VMC',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
+              const SizedBox(height: 16),
+              const Text(
+                'Accédez à la documentation technique et au calculateur de débits réglementaires pour la ventilation mécanique contrôlée.',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 32),
+              GridView.count(
+                crossAxisCount: MediaQuery.of(context).size.width > 768 ? 3 : 1,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: _sections.map((section) {
+                  return Card(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => section['screen']),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              section['title'],
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              section['subtitle'],
+                              style: const TextStyle(fontSize: 14, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => section['screen']),
+                                );
+                              },
+                              child: const Text('Voir'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _filteredSections.length,
-              itemBuilder: (context, index) {
-                final section = _filteredSections[index];
-                return ListTile(
-                  title: Text(section['title']),
-                  subtitle: Text(section['subtitle']),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => section['screen']),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

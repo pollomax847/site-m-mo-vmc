@@ -49,63 +49,89 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Calculateur de débits'),
+        title: const Text('Calculateur de débits réglementaires'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DropdownButtonFormField<String>(
-              value: selectedVmcType,
-              decoration: const InputDecoration(labelText: 'Type de VMC'),
-              items: ['simple-flux', 'hygro-a', 'hygro-b']
-                  .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                  .toList(),
-              onChanged: (value) => setState(() => selectedVmcType = value),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedHousingType,
-              decoration: const InputDecoration(labelText: 'Type de logement'),
-              items: ['T1', 'T2', 'T3', 'T4', 'T5+']
-                  .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                  .toList(),
-              onChanged: (value) => setState(() => selectedHousingType = value),
-            ),
-            const SizedBox(height: 16),
-            ...controllers.entries.map((entry) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: TextFormField(
-                controller: entry.value,
-                decoration: InputDecoration(labelText: 'Nombre de ${entry.key}'),
-                keyboardType: TextInputType.number,
-              ),
-            )),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: calculate,
-              child: const Text('Calculer'),
-            ),
-            const SizedBox(height: 16),
-            if (isCalculated) ...[
-              const Text('Résultats:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ...results.entries.map((entry) => Text('${entry.key}: ${entry.value} m³/h')),
-              Text('Débit total: $totalFlow m³/h'),
-              Text('Débit minimum réglementaire: $minimumFlow m³/h'),
-              Text(
-                totalFlow >= minimumFlow ? 'Conforme' : 'Non conforme',
-                style: TextStyle(
-                  color: totalFlow >= minimumFlow ? Colors.green : Colors.red,
-                  fontWeight: FontWeight.bold,
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: selectedVmcType,
+                      decoration: const InputDecoration(labelText: 'Type de VMC'),
+                      items: ['simple-flux', 'hygro-a', 'hygro-b']
+                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                          .toList(),
+                      onChanged: (value) => setState(() => selectedVmcType = value),
+                    ),
+                    const SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: selectedHousingType,
+                      decoration: const InputDecoration(labelText: 'Type de logement'),
+                      items: ['T1', 'T2', 'T3', 'T4', 'T5+']
+                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                          .toList(),
+                      onChanged: (value) => setState(() => selectedHousingType = value),
+                    ),
+                    const SizedBox(height: 16),
+                    ...controllers.entries.map((entry) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: TextFormField(
+                        controller: entry.value,
+                        decoration: InputDecoration(labelText: 'Nombre de ${entry.key.replaceAll('-', ' ')}'),
+                        keyboardType: TextInputType.number,
+                      ),
+                    )),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: calculate,
+                      child: const Text('Calculer'),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => generatePdf(context, selectedVmcType!, selectedHousingType!, controllers, results, totalFlow, minimumFlow),
-                child: const Text('Exporter en PDF'),
+            ),
+            if (isCalculated) ...[
+              const SizedBox(height: 24),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('Résultats:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 16),
+                      ...results.entries.map((entry) => Text('${entry.key.replaceAll('-', ' ')}: ${entry.value} m³/h')),
+                      const SizedBox(height: 16),
+                      Text('Débit total: $totalFlow m³/h'),
+                      Text('Débit minimum réglementaire: $minimumFlow m³/h'),
+                      Text(
+                        totalFlow >= minimumFlow ? 'Conforme' : 'Non conforme',
+                        style: TextStyle(
+                          color: totalFlow >= minimumFlow ? Colors.green : Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => generatePdf(context, selectedVmcType!, selectedHousingType!, controllers, results, totalFlow, minimumFlow),
+                        child: const Text('Exporter en PDF'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Retour à l\'accueil'),
+            ),
           ],
         ),
       ),
