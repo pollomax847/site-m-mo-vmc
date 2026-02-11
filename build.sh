@@ -2,4 +2,6 @@
 git clone https://github.com/flutter/flutter.git -b stable --depth 1
 export PATH="$PATH:`pwd`/flutter/bin"
 flutter doctor
+flutter channel stable
+flutter upgrade
 flutter build web --output=dist
