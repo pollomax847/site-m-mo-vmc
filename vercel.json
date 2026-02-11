@@ -7,6 +7,8 @@
     }
   ],
   "routes": [
+    { "src": "/styles/(.*)", "headers": { "Content-Type": "text/css" } },
+    { "src": "/css/(.*)", "headers": { "Content-Type": "text/css" } },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
   "outputDirectory": "dist"
