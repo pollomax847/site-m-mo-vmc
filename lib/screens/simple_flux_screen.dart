@@ -15,18 +15,28 @@ class SimpleFluxScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Principe de fonctionnement',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('• Extraction mécanique de l\'air dans les pièces de service (cuisine, salle de bain, WC)'),
-                Text('• Entrée d\'air naturel par des grilles d\'aération dans les pièces de vie'),
-                Text('• Débit d\'extraction constant ou variable selon les besoins'),
-              ],
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Principe de fonctionnement',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('• Extraction mécanique de l\'air dans les pièces de service (cuisine, salle de bain, WC)'),
+                        Text('• Entrée d\'air naturel par des grilles d\'aération dans les pièces de vie'),
+                        Text('• Débit d\'extraction constant ou variable selon les besoins'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 24),
             const Text(

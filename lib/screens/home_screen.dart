@@ -14,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _selectedLogo = 'lib/assets/icons/logo_memo_vmc_square.png';
+  String _searchQuery = '';
 
   final List<Map<String, dynamic>> _sections = [
     {
@@ -60,6 +61,36 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF007BFF),
+              ),
+              child: Text(
+                'Navigation',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ..._sections.map((section) => ListTile(
+              title: Text(section['title']),
+              subtitle: Text(section['subtitle']),
+              onTap: () {
+                Navigator.pop(context); // Close drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => section['screen']),
+                );
+              },
+            )),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -95,6 +126,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 24),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Rechercher...',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) => setState(() => _searchQuery = value),
+              ),
+              const SizedBox(height: 24),
               const Text(
                 'Bienvenue sur le Mémo Technique VMC',
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -105,7 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 32),
-              ..._sections.map((section) => Card(
+              ..._sections.where((section) =>
+                section['title'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                section['subtitle'].toLowerCase().contains(_searchQuery.toLowerCase())
+              ).map((section) => Card(
                 child: ListTile(
                   title: Text(section['title']),
                   subtitle: Text(section['subtitle']),

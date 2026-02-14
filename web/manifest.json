@@ -1,11 +1,11 @@
 {
-    "name": "site_m_mo_vmc",
-    "short_name": "site_m_mo_vmc",
+    "name": "Mémo Technique VMC",
+    "short_name": "Mémo VMC",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#ffffff",
+    "theme_color": "#007BFF",
+    "description": "Documentation technique et calculateur de débits pour la ventilation mécanique contrôlée",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

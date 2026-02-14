@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../data/debits_reglementaires.dart';
 import '../widgets/pdf_generator.dart';
+import '../providers/calculation_provider.dart';
+import 'calculation_history_screen.dart';
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
@@ -25,7 +28,26 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   bool isCalculated = false;
 
   void calculate() {
-    if (selectedVmcType == null || selectedHousingType == null) return;
+    if (selectedVmcType == null || selectedHousingType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez sélectionner le type de VMC et de logement')),
+      );
+      return;
+    }
+
+    bool hasValidInput = false;
+    controllers.forEach((key, controller) {
+      if (controller.text.isNotEmpty && int.tryParse(controller.text) != null) {
+        hasValidInput = true;
+      }
+    });
+
+    if (!hasValidInput) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez entrer au moins un nombre de pièces')),
+      );
+      return;
+    }
 
     results.clear();
     totalFlow = 0;
@@ -40,6 +62,20 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     minimumFlow = minimumDebitsParLogement[selectedHousingType!] ?? 0;
 
+    final inputs = controllers.map((key, controller) => MapEntry(key, int.tryParse(controller.text) ?? 0));
+
+    final calculation = Calculation(
+      vmcType: selectedVmcType!,
+      housingType: selectedHousingType!,
+      inputs: inputs,
+      results: Map.from(results),
+      totalFlow: totalFlow,
+      minimumFlow: minimumFlow,
+      timestamp: DateTime.now(),
+    );
+
+    Provider.of<CalculationProvider>(context, listen: false).addCalculation(calculation);
+
     setState(() {
       isCalculated = true;
     });
@@ -50,6 +86,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calculateur de débits réglementaires'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CalculationHistoryScreen()),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -64,10 +109,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     DropdownButtonFormField<String>(
                       value: selectedVmcType,
                       decoration: const InputDecoration(labelText: 'Type de VMC'),
-                      items: ['simple-flux', 'hygro-a', 'hygro-b']
-                          .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                          .toList(),
+                      items: [
+                        const DropdownMenuItem(value: 'simple-flux', child: Text('Simple Flux')),
+                        const DropdownMenuItem(value: 'hygro-a', child: Text('Hygro A')),
+                        const DropdownMenuItem(value: 'hygro-b', child: Text('Hygro B')),
+                      ],
                       onChanged: (value) => setState(() => selectedVmcType = value),
+                      validator: (value) => value == null ? 'Sélectionnez un type de VMC' : null,
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
@@ -83,8 +131,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: TextFormField(
                         controller: entry.value,
-                        decoration: InputDecoration(labelText: 'Nombre de ${entry.key.replaceAll('-', ' ')}'),
+                        decoration: InputDecoration(
+                          labelText: 'Nombre de ${entry.key.replaceAll('-', ' ')}',
+                          hintText: '0',
+                        ),
                         keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value != null && value.isNotEmpty && int.tryParse(value) == null) {
+                            return 'Entrez un nombre valide';
+                          }
+                          return null;
+                        },
                       ),
                     )),
                     const SizedBox(height: 16),

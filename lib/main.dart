@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/calculation_provider.dart';
 import 'screens/home_screen.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => CalculationProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -47,6 +51,12 @@ class MyApp extends StatelessWidget {
             textTheme: const TextTheme(
               bodyLarge: TextStyle(fontSize: 16, color: Colors.black87),
               titleLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              border: OutlineInputBorder(),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xFF007BFF), width: 2),
+              ),
             ),
           ),
           darkTheme: ThemeData.dark().copyWith(
