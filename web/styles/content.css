@@ -1,4 +1,6 @@
-/* Content CSS - Basic styles (nettoyé et modernisé) */
+/* Content CSS - Basic styles (nettoyé et modernisé - v2.0) */
+/* Ce fichier a été nettoyé pour supprimer toutes les propriétés obsolètes */
+/* et sélecteurs problématiques. Rafraîchissez le cache du navigateur si nécessaire. */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
