@@ -9,11 +9,22 @@
     window.vmcContent = {};
   }
 
+  // Structured model data (indicative). Toujours vérifier la plaque signalétique et le manuel constructeur.
+  window.vmcDSCModels = window.vmcDSCModels || {
+    LEGRAND: { contact: 'NO', power: '230V', notes: 'Format DIN rail, vérifier référence exacte' },
+    ALDES: { contact: 'NF', power: '230V + transfo 24V', notes: 'Temporisation fixe 15s sur certains modèles' },
+    ATLANTIC: { contact: 'NO', power: '230V + transfo', notes: 'Versions avec/sans transfo selon modèle' }
+  };
+
   // Ajouter une section sur les branchements DSC par constructeur
   window.vmcContent['dsc-constructeurs'] = {
     title: 'Branchements DSC par Constructeur',
     content: `
       <div class="section-container">
+        <div class="warning-box">
+          <h3>⚠️ Avertissement</h3>
+          <p>Les schémas et valeurs présentés sont à titre indicatif. Les bornes, polarités et types de contact peuvent varier selon la révision du produit. <strong>Vérifiez toujours la plaque signalétique et le manuel constructeur avant toute intervention.</strong></p>
+        </div>
         <h2 class="section-title">Guide de branchement des DSC par constructeur</h2>
         
         <div class="warning-box">
@@ -262,31 +273,23 @@ UNELVENT VENTILAR
               <div class="wiring-diagram">
                 <h4>Schéma de branchement SEIFEL</h4>
                 <img src="images/dsc-seifel.png" alt="Schéma SEIFEL" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-SEIFEL VIGIDEP
-┌───────────────────────────┐
-│ ┌─────┐  ┌──┐    ┌──────┐ │
-│ │12/24│  │  │    │ RESET│ │
-│ │ V   │  │TS│    │      │ │
-│ └─────┘  └──┘    └──────┘ │
-│                           │
-│ L  N  1  2  3  4  5  6   │
-└─┬──┬──┬──┬──┬──┬──┬──────┘
-  │  │  │  │  │  │  │
-  │  │  │  │  │  │  └── Sortie 2 électrovannes
-  │  │  │  │  │  │
-  │  │  │  │  │  └── Sortie 1 électrovannes
-  │  │  │  │  │
-  │  │  │  │  └── Pressostat 2
-  │  │  │  │
-  │  │  │  └── Pressostat 1
-  │  │  │
-  │  │  └── Phase VMC (avec tore)
-  │  │
-  │  └── Neutre 230V
-  │
-  └── Phase 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre appareil SEIFEL VIGIDEP. Pour tout raccordement, se fier exclusivement :</p>
+                  <ul>
+                    <li>à la plaque signalétique du module (référence et version),</li>
+                    <li>au manuel constructeur et au schéma imprimé fourni avec l'appareil,</li>
+                    <li>à un professionnel qualifié (installateur/électricien) pour la mise en service.</li>
+                  </ul>
+                  <p>Checklist rapide pour vérification avant intervention (professionnels) :</p>
+                  <ul>
+                    <li>Vérifier la tension d'alimentation demandée (230V AC, présence/neutre/terre).</li>
+                    <li>Identifier si le module fournit la tension pour les électrovannes (12V/24V) ou si un transformateur externe est requis.</li>
+                    <li>Contrôler le type de contact du pressostat (NO/NF) et adapter le câblage en conséquence.</li>
+                    <li>Mesurer la continuité et l'isolement avec un multimètre avant connexion des électrovannes.</li>
+                    <li>Tester en conditions réelles et vérifier le fonctionnement de réarmement et des témoins lumineux.</li>
+                  </ul>
+                </div>
               
               <h4>Particularités câblage SEIFEL</h4>
               <ul>

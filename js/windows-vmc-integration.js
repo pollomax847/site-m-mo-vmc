@@ -4,8 +4,8 @@
  * et de comparer les débits d'air entre les fenêtres et les bouches VMC
  */
 
-// Configuration des types de logement et du nombre de fenêtres recommandé
-const HOUSING_TYPE_CONFIG = {
+// Configuration et constantes (sources: règles internes, à vérifier selon norme locale)
+const HOUSING_TYPE_CONFIG = (window.VMC_CONSTANTS && window.VMC_CONSTANTS.HOUSING_TYPE_CONFIG) || {
   'T1': { windowsMin: 1, windowsMax: 3, defaultWindows: 2 },
   'T2': { windowsMin: 2, windowsMax: 4, defaultWindows: 3 },
   'T3': { windowsMin: 3, windowsMax: 6, defaultWindows: 4 },
@@ -13,8 +13,8 @@ const HOUSING_TYPE_CONFIG = {
   'T5+': { windowsMin: 5, windowsMax: 10, defaultWindows: 8 }
 };
 
-// Débits standards par type de pièce (en m³/h)
-const STANDARD_FLOW_RATES = {
+const STANDARD_FLOW_RATES = (window.VMC_CONSTANTS && window.VMC_CONSTANTS.STANDARD_FLOW_RATES) || {
+  // valeurs indicatives (m³/h). Préférer mesures réelles.
   'cuisine': 45,
   'salleDeBain': 30,
   'wc': 15,
@@ -36,6 +36,8 @@ class WindowsVMCIntegration {
     this.totalWindowsFlowRate = 0;
     this.totalVMCFlowRate = 0;
     this.autoSync = true;
+    // Option: override detection with explicit housingType
+    this.explicitHousingType = null;
   }
 
   /**
@@ -44,14 +46,25 @@ class WindowsVMCIntegration {
    * @returns {String} Type de logement détecté (T1, T2, T3...)
    */
   detectHousingType(rooms) {
-    // Compter le nombre de chambres
+    // Permettre override explicite
+    if (this.explicitHousingType) return this.explicitHousingType;
+
+    // Tentative de détection plus réaliste: compter pièces principales (séjour + chambres)
     const bedroomCount = rooms.filter(room => room.type === 'chambre').length;
-    
-    // T1 = 0 chambre, T2 = 1 chambre, etc.
-    const type = bedroomCount === 0 ? 'T1' : `T${bedroomCount + 1}`;
-    
-    // Si plus de 5 chambres, on retourne T5+
-    return bedroomCount >= 4 ? 'T5+' : type;
+    const sejourCount = rooms.filter(room => room.type === 'sejour' || room.type === 'salon').length;
+    const mainRooms = bedroomCount + sejourCount;
+
+    // Si on a peu d'infos, retomber sur ancien comportement
+    if (typeof mainRooms !== 'number' || mainRooms === 0) {
+      return bedroomCount >= 4 ? 'T5+' : (bedroomCount === 0 ? 'T1' : `T${bedroomCount + 1}`);
+    }
+
+    // Mappe le nombre de pièces principales à un type T
+    if (mainRooms <= 1) return 'T1';
+    if (mainRooms === 2) return 'T2';
+    if (mainRooms === 3) return 'T3';
+    if (mainRooms === 4) return 'T4';
+    return 'T5+';
   }
 
   /**
@@ -66,14 +79,13 @@ class WindowsVMCIntegration {
     
     this.housingType = housingType;
     const config = HOUSING_TYPE_CONFIG[housingType];
-    
-    // Ajuster le nombre de fenêtres au nombre recommandé
+    // Ajuster le nombre de fenêtres au nombre recommandé (clamp entre min/max)
     if (this.windows.length < config.defaultWindows) {
-      // Ajouter des fenêtres si nécessaire
       const windowsToAdd = config.defaultWindows - this.windows.length;
-      for (let i = 0; i < windowsToAdd; i++) {
-        this.addDefaultWindow();
-      }
+      for (let i = 0; i < windowsToAdd; i++) this.addDefaultWindow();
+    } else if (this.windows.length > config.windowsMax) {
+      // Supprimer les fenêtres en trop (dernier entré supprimé)
+      this.windows.splice(config.windowsMax);
     }
   }
 
@@ -103,7 +115,14 @@ class WindowsVMCIntegration {
     
     windows.forEach(window => {
       if (!onlyOpen || window.isOpen) {
-        totalFlowRate += window.flowRate;
+        // Si un débit n'est pas fourni, estimer à partir de surface ouvrante (approx.)
+        let fr = parseFloat(window.flowRate);
+        if (isNaN(fr) || fr <= 0) {
+          // estimer: aire (m2) * coefficient (~25 m3/h par m2 d'ouverture en conditions calmes)
+          const areaM2 = ((window.width || 0) / 100) * ((window.height || 0) / 100);
+          fr = areaM2 > 0 ? areaM2 * 25 : 0;
+        }
+        totalFlowRate += fr;
       }
     });
     
@@ -120,8 +139,17 @@ class WindowsVMCIntegration {
     let totalFlowRate = 0;
     
     measurements.forEach(measurement => {
-      if (measurement.value && !isNaN(measurement.value)) {
-        totalFlowRate += parseFloat(measurement.value);
+      if (measurement && measurement.value !== undefined && measurement.value !== null) {
+        let v = parseFloat(measurement.value);
+        if (isNaN(v)) return;
+
+        // Normaliser unités si fournies (supporter l/s -> m3/h)
+        const unit = (measurement.unit || '').toLowerCase();
+        if (unit === 'l/s' || unit === 'ls') {
+          v = v * 3.6; // 1 l/s = 3.6 m3/h
+        }
+        // Supposer m3/h par défaut
+        totalFlowRate += v;
       }
     });
     
@@ -138,11 +166,14 @@ class WindowsVMCIntegration {
     const vmcFlow = this.calculateVMCFlowRate();
     
     const difference = windowsFlow - vmcFlow;
-    const percentDifference = (difference / vmcFlow) * 100;
+    const percentDifference = vmcFlow === 0 ? NaN : (difference / vmcFlow) * 100;
     
     let status, message, recommendation;
-    
-    if (Math.abs(percentDifference) <= 10) {
+    if (vmcFlow === 0) {
+      status = 'critical';
+      message = 'Aucune mesure VMC valide — contrôle urgent requis';
+      recommendation = 'Vérifier les mesures VMC, l’alimentation et la sonde. Intervenir en priorité.';
+    } else if (Math.abs(percentDifference) <= 10) {
       status = 'success';
       message = 'Équilibre correct entre les fenêtres et la VMC';
       recommendation = 'Aucune action nécessaire';
@@ -177,7 +208,7 @@ class WindowsVMCIntegration {
     this.vmcMeasurements = vmcMeasurements;
     
     // Détecter le type de logement à partir des pièces
-    const rooms = vmcMeasurements.map(m => ({
+    const rooms = (vmcMeasurements || []).map(m => ({
       type: m.roomType,
       name: m.roomName
     }));

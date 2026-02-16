@@ -8,11 +8,21 @@
     window.vmcContent = {};
   }
 
+  // Merge or create structured DSC model data used by UI (indicative only)
+  window.vmcDSCModels = Object.assign(window.vmcDSCModels || {}, {
+    ALDES: { contact: 'NF', power: '230V + transfo 24V', notes: 'Consulter manuel ALDES' },
+    ATLANTIC: { contact: 'NO', power: '230V', notes: 'Versions avec transformateur intégré ou externe' }
+  });
+
   // Ajouter une section sur le câblage des relais DSC
   window.vmcContent['relais-dsc'] = {
     title: 'Câblage des Relais DSC par Marque',
     content: `
       <div class="section-container">
+        <div class="warning-box">
+          <h3>⚠️ Avertissement</h3>
+          <p>Informations indicatives pour aide à la compréhension. Les branchements réels peuvent différer selon la version du produit. <strong>Consultez toujours la documentation constructeur et faites intervenir un professionnel pour le raccordement.</strong></p>
+        </div>
         <h2 class="section-title">Guide de câblage des Dispositifs de Sécurité Collective (DSC)</h2>
         
         <div class="warning-box">
