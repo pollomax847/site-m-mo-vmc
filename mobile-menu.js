@@ -148,6 +148,34 @@
     }
   };
 
+  /* Focus trap: empêche le tabbing hors du menu quand il est ouvert */
+  function trapFocus(container) {
+    if (!container) return;
+    const focusable = container.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    function handleTab(e) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    container._trapFocusHandler = handleTab;
+    document.addEventListener('keydown', handleTab);
+  }
+
+  function releaseFocus(container) {
+    if (container && container._trapFocusHandler) {
+      document.removeEventListener('keydown', container._trapFocusHandler);
+      delete container._trapFocusHandler;
+    }
+  }
+
   function openMenu() {
     const sideMenu = document.querySelector('.side-menu');
     const menuOverlay = document.querySelector('.menu-overlay');
@@ -159,7 +187,10 @@
       menuOverlay.style.display = 'block';
       if (menuButton) menuButton.setAttribute('aria-expanded', 'true');
       const firstLink = sideMenu.querySelector('a[data-section]');
-      if (firstLink) firstLink.focus();
+      if (firstLink) {
+        firstLink.focus();
+        trapFocus(sideMenu);
+      }
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', onMenuKeyDown);
     }
@@ -176,6 +207,7 @@
     const menuOverlay = document.querySelector('.menu-overlay');
     const menuButton = document.querySelector('.menu-button');
     if (sideMenu && menuOverlay) {
+      releaseFocus(sideMenu);
       sideMenu.style.transform = 'translateX(-100%)';
       sideMenu.classList.remove('open');
       sideMenu.setAttribute('aria-hidden', 'true');
