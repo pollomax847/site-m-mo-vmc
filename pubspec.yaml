@@ -1,0 +1,38 @@
+name: site_m_mo_vmc
+description: Mémo Technique VMC - Documentation technique pour les différents types d'installations VMC
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  pdf: ^3.10.7
+  printing: ^5.13.3
+  shared_preferences: ^2.2.3
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/icons/logo.png
+    - lib/assets/icons/logo_memo_vmc_square.png
+    - lib/assets/icons/logo_memo_vmc_round.png
+    - lib/assets/icons/logo_memo_vmc_transparent.png
+
+flutter_icons:
+  android: true
+  ios: false
+  web:
+    generate: true
+  image_path: "lib/assets/icons/logo.png"
+  adaptive_icon_background: "#ffffff"
