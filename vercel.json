@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "public": true,
+  "builds": [],
+  "routes": [
+    { "src": "/(.*)", "dest": "/web/$1" }
+  ],
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/web/index.html" }
+  ]
+}
