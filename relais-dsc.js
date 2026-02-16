@@ -9,8 +9,9 @@
   }
 
   // Merge or create structured DSC model data used by UI (indicative only)
+  // Note: some manufacturers (ex: ALDES) ne proposent pas de relais DSC dédiés —
+  // les entrées ici sont purement indicatives et peuvent être modifiées via l'éditeur interactif.
   window.vmcDSCModels = Object.assign(window.vmcDSCModels || {}, {
-    ALDES: { contact: 'NF', power: '230V + transfo 24V', notes: 'Consulter manuel ALDES' },
     ATLANTIC: { contact: 'NO', power: '230V', notes: 'Versions avec transformateur intégré ou externe' }
   });
 
@@ -349,5 +350,33 @@
       mobileMenuItem.innerHTML = '<a href="#" data-section="relais-dsc" style="display:block;padding:12px 15px;background-color:#f5f5f5;border-radius:8px;color:#333;text-decoration:none;font-weight:500;">Câblage DSC</a>';
       mobileMenu.appendChild(mobileMenuItem);
     }
+  });
+})();
+
+// Injecter le conteneur pour l'outil interactif et l'initialiser lorsque la section est chargée
+(function(){
+  function ensureAndRender(){
+    try{
+      var target = document.querySelector('#relais-dsc') || document.querySelector('.relais-dsc') || document.body;
+      if(!document.getElementById('relais-dsc-relay-helper')){
+        var container = document.createElement('div');
+        container.id = 'relais-dsc-relay-helper';
+        container.className = 'relais-dsc-relay-helper vmc-section';
+        var heading = document.createElement('h3');
+        heading.textContent = 'Aide branchement relais (outil interactif)';
+        container.appendChild(heading);
+        target.appendChild(container);
+      }
+      if(window.vmcDSCRelayHelper){
+        window.vmcDSCRelayHelper.render('#relais-dsc-relay-helper','default');
+      }
+    }catch(e){
+      console.warn('Erreur initialisation relay helper', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', ensureAndRender);
+  document.addEventListener('contentLoaded', function(e){
+    if(e && e.detail && e.detail.section === 'relais-dsc') ensureAndRender();
   });
 })();
