@@ -232,33 +232,10 @@
         
         <div class="diagram-section">
           <h4>Schéma de principe : Circuit d'air dans un logement</h4>
-          <pre class="ascii-art">
-        Pièces principales                    Pièces humides
-     (Entrée d'air frais)               (Extraction air vicié)
-             |                                   |
-             ▼                                   ▼
-      ┌──────────────┐                  ┌──────────────┐
-      │   Chambre    │                  │   Cuisine    │
-      │     ↓↓       │                  │     ↑↑       │
-      └──────────────┘                  └──────────────┘
-             │                                   │
-             │                                   │
-      ┌──────────────┐                  ┌──────────────┐
-      │   Séjour     │        →         │  Salle Bain  │
-      │     ↓↓       │                  │     ↑↑       │
-      └──────────────┘                  └──────────────┘
-             │                                   │
-             │                                   │
-      ┌──────────────┐                  ┌──────────────┐
-      │   Bureau     │                  │     WC       │
-      │     ↓↓       │                  │     ↑↑       │
-      └──────────────┘                  └──────────────┘
-                                                │
-                                         ┌──────────────┐
-                                         │  VMC         │
-                                         │    →→→→      │
-                                         └──────────────┘
-                                                │
+             <div class="warning-box">
+               <h4>⚠️ Schéma indicatif seulement</h4>
+               <p>Ce schéma simplifié illustre le principe général de circulation d'air. Il ne doit pas être utilisé pour des décisions techniques précises. Pour dimensionnement et câblage, référez-vous aux normes et aux documents techniques du projet.</p>
+             </div>
                                                 ▼
                                            Extérieur
           </pre>

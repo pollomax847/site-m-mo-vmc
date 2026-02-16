@@ -8,11 +8,21 @@
     window.vmcContent = {};
   }
 
+  // Merge or create structured DSC model data used by UI (indicative only)
+  window.vmcDSCModels = Object.assign(window.vmcDSCModels || {}, {
+    ALDES: { contact: 'NF', power: '230V + transfo 24V', notes: 'Consulter manuel ALDES' },
+    ATLANTIC: { contact: 'NO', power: '230V', notes: 'Versions avec transformateur intégré ou externe' }
+  });
+
   // Ajouter une section sur le câblage des relais DSC
   window.vmcContent['relais-dsc'] = {
     title: 'Câblage des Relais DSC par Marque',
     content: `
       <div class="section-container">
+        <div class="warning-box">
+          <h3>⚠️ Avertissement</h3>
+          <p>Informations indicatives pour aide à la compréhension. Les branchements réels peuvent différer selon la version du produit. <strong>Consultez toujours la documentation constructeur et faites intervenir un professionnel pour le raccordement.</strong></p>
+        </div>
         <h2 class="section-title">Guide de câblage des Dispositifs de Sécurité Collective (DSC)</h2>
         
         <div class="warning-box">
@@ -25,28 +35,10 @@
         
         <div class="diagram-section">
           <h4>Schéma de principe général</h4>
-          <pre class="ascii-art">
-      ┌──────────────┐                  ┌──────────────┐
-      │ Alimentation │                  │    VMC       │
-      │   230V~      │────────┬─────────│    Moteur    │
-      └──────────────┘        │         └──────────────┘
-               │              │                 │
-               │              │                 │
-      ┌────────▼──────┐      │          ┌──────▼──────┐
-      │Transformateur │      └──────────│  Pressostat  │
-      │  230V~ / 24V~ │                 │ Différentiel │
-      └────────┬──────┘                 └──────┬───────┘
-               │                               │
-      ┌────────▼───────────────────────────────▼──────┐
-      │                                               │
-      │                 Relais DSC                    │
-      │                                               │
-      └─────────────────────┬─────────────────────────┘
-                            │
-                    ┌───────▼───────┐
-                    │ Électrovannes │
-                    │     GAZ       │
-                    └───────────────┘</pre>
+          <div class="warning-box">
+            <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+            <p>Le schéma ci‑dessous est simplifié et ne doit pas être utilisé pour le câblage. Se référer exclusivement à la documentation constructeur et à la plaque signalétique. Un professionnel qualifié doit effectuer les raccordements.</p>
+          </div>
         </div>
 
         <h3>Raccordement par marque de fabricants</h3>
@@ -64,17 +56,10 @@
               
               <h4>Schéma de câblage ALDES DSC 2000</h4>
               <div class="wiring-diagram">
-                <pre class="ascii-art">
-  Bornier DSC ALDES                 Connexions
-  ┌──────────────────┐            
-  │ N       Ph       │  ← 230V~ Alimentation
-  ├──────────────────┤
-  │ 1        2       │  ← VMC (phase surveillée)
-  ├──────────────────┤
-  │ 3        4       │  ← Pressostat (contact NF)
-  ├──────────────────┤            
-  │ 5        6       │  ← 24V~ Électrovannes
-  └──────────────────┘</pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin est indicatif. Consultez le manuel constructeur et la plaque signalétique du modèle pour les bornes exactes et la polarité.</p>
+                </div>
               </div>
               
               <h4>Instructions de raccordement</h4>
@@ -107,17 +92,10 @@
               
               <h4>Schéma de câblage Atlantic SSG</h4>
               <div class="wiring-diagram">
-                <pre class="ascii-art">
-  Bornier SSG ATLANTIC            Connexions
-  ┌──────────────────┐            
-  │ N       Ph       │  ← 230V~ Alimentation
-  ├──────────────────┤
-  │ VMC1    VMC2     │  ← VMC (phase surveillée)
-  ├──────────────────┤
-  │ PS1     PS2      │  ← Pressostat (contact NO)
-  ├──────────────────┤            
-  │ EV1     EV2      │  ← 24V~ Électrovannes
-  └──────────────────┘</pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin est indicatif. Consultez le manuel constructeur et la plaque signalétique du modèle pour les bornes exactes et la polarité.</p>
+                </div>
               </div>
               
               <h4>Instructions de raccordement</h4>
@@ -150,17 +128,10 @@
               
               <h4>Schéma de câblage NATHER Vigitherm</h4>
               <div class="wiring-diagram">
-                <pre class="ascii-art">
-  Bornier NATHER                  Connexions
-  ┌──────────────────┐            
-  │ 1        2       │  ← 230V~ Alimentation (Ph/N)
-  ├──────────────────┤
-  │ 3        4       │  ← VMC (surveillance intensité)
-  ├──────────────────┤
-  │ 5        6       │  ← Pressostat (NF)
-  ├──────────────────┤            
-  │ 7        8       │  ← Sortie vers électrovannes
-  └──────────────────┘</pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin est indicatif. Consultez le manuel constructeur et la plaque signalétique du modèle pour les bornes exactes et la polarité.</p>
+                </div>
               </div>
               
               <h4>Instructions de raccordement</h4>
@@ -192,17 +163,10 @@
               
               <h4>Schéma de câblage SEBICO</h4>
               <div class="wiring-diagram">
-                <pre class="ascii-art">
-  Bornier SEBICO                  Connexions
-  ┌──────────────────┐            
-  │ A1       A2      │  ← 230V~ Alimentation
-  ├──────────────────┤
-  │ I1       I2      │  ← Entrée intensité VMC
-  ├──────────────────┤
-  │ P1       P2      │  ← Pressostat
-  ├──────────────────┤            
-  │ S+       S-      │  ← 24V~ Électrovannes
-  └──────────────────┘</pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin est indicatif. Consultez le manuel constructeur et la plaque signalétique du modèle pour les bornes exactes et la polarité.</p>
+                </div>
               </div>
               
               <h4>Instructions de raccordement</h4>
@@ -235,17 +199,10 @@
               
               <h4>Schéma de câblage SEIFEL Vigidep</h4>
               <div class="wiring-diagram">
-                <pre class="ascii-art">
-  Bornier SEIFEL                  Connexions
-  ┌──────────────────┐            
-  │ L        N       │  ← 230V~ Alimentation
-  ├──────────────────┤
-  │ 1        2       │  ← VMC (boucle de courant)
-  ├──────────────────┤
-  │ 3        4       │  ← Pressostat (NC)
-  ├──────────────────┤            
-  │ 5        6       │  ← 24V~ Électrovannes
-  └──────────────────┘</pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin est indicatif. Consultez le manuel constructeur et la plaque signalétique du modèle pour les bornes exactes et la polarité.</p>
+                </div>
               </div>
               
               <h4>Instructions de raccordement</h4>

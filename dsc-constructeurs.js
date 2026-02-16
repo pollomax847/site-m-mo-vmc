@@ -9,11 +9,22 @@
     window.vmcContent = {};
   }
 
+  // Structured model data (indicative). Toujours vérifier la plaque signalétique et le manuel constructeur.
+  window.vmcDSCModels = window.vmcDSCModels || {
+    LEGRAND: { contact: 'NO', power: '230V', notes: 'Format DIN rail, vérifier référence exacte' },
+    ALDES: { contact: 'NF', power: '230V + transfo 24V', notes: 'Temporisation fixe 15s sur certains modèles' },
+    ATLANTIC: { contact: 'NO', power: '230V + transfo', notes: 'Versions avec/sans transfo selon modèle' }
+  };
+
   // Ajouter une section sur les branchements DSC par constructeur
   window.vmcContent['dsc-constructeurs'] = {
     title: 'Branchements DSC par Constructeur',
     content: `
       <div class="section-container">
+        <div class="warning-box">
+          <h3>⚠️ Avertissement</h3>
+          <p>Les schémas et valeurs présentés sont à titre indicatif. Les bornes, polarités et types de contact peuvent varier selon la révision du produit. <strong>Vérifiez toujours la plaque signalétique et le manuel constructeur avant toute intervention.</strong></p>
+        </div>
         <h2 class="section-title">Guide de branchement des DSC par constructeur</h2>
         
         <div class="warning-box">
@@ -32,35 +43,11 @@
               <th>Bornier principal</th>
               <th>Type de pressostat</th>
               <th>Type d'alimentation</th>
-              <th>Spécificités</th>
-            </tr>
-            <tr>
-              <td>LEGRAND</td>
-              <td>BAES DSC VMC</td>
-              <td>Format DIN rail, numéroté</td>
-              <td>Contact NO (normalement ouvert)</td>
-              <td>230V direct</td>
-              <td>Intègre un bloc d'éclairage de sécurité</td>
-            </tr>
-            <tr>
-              <td>AGER</td>
-              <td>DSC21B, DMV85</td>
-              <td>Bornes à vis repérées par lettres</td>
-              <td>Contact NF (normalement fermé)</td>
-              <td>230V + transfo 12V interne</td>
-              <td>Bouton test intégré, LED multicolore</td>
-            </tr>
-            <tr>
-              <td>ALDES</td>
-              <td>DSC 1000, DSC 2000</td>
-              <td>Bornier numéroté 1 à 6</td>
-              <td>Contact NF</td>
-              <td>230V + transfo 24V</td>
-              <td>LED rouge/vert, temporisation fixe 15s</td>
-            </tr>
-            <tr>
-              <td>UNELVENT</td>
-              <td>VENTILAR</td>
+                        <div class="warning-box">
+                          <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                          <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                          <p>Consultez un professionnel pour l'installation et les tests.</p>
+                        </div>
               <td>Bornes à code couleur</td>
               <td>Contact NO</td>
               <td>230V + transfo externe</td>
@@ -71,32 +58,11 @@
               <td>SSG</td>
               <td>Bornier fonctionnel (VMC, PS, EV)</td>
               <td>Contact NO</td>
-              <td>230V + transfo intégré</td>
-              <td>Temporisation au démarrage (60s)</td>
-            </tr>
-            <tr>
-              <td>NATHER</td>
-              <td>Vigitherm</td>
-              <td>Bornier numéroté 1 à 8</td>
-              <td>Contact NF</td>
-              <td>230V + tore intensité</td>
-              <td>Double sécurité: intensité + pressostat</td>
-            </tr>
-            <tr>
-              <td>SEIFEL</td>
-              <td>Vigidep, Vigico</td>
-              <td>Bornier L,N + numéroté</td>
-              <td>Contact NF</td>
-              <td>230V multitension sortie (12V/24V)</td>
-              <td>Sélecteur tension électrovanne</td>
-            </tr>
-            <tr>
-              <td>ANJOS</td>
-              <td>Vigichauf</td>
-              <td>Bornier à détrompeur</td>
-              <td>Contact NO inversible</td>
-              <td>230V + transfo 24V</td>
-              <td>Buzzer intégré</td>
+                        <div class="warning-box">
+                          <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                          <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                          <p>Consultez un professionnel pour l'installation et les tests.</p>
+                        </div>
             </tr>
           </table>
         </div>
@@ -107,39 +73,11 @@
           <div class="accordion-item">
             <button class="accordion-header">LEGRAND (BAES DSC)</button>
             <div class="accordion-content">
-              <div class="wiring-diagram">
-                <h4>Schéma de branchement LEGRAND</h4>
-                <img src="images/dsc-legrand.png" alt="Schéma LEGRAND" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-LEGRAND BAES DSC
-┌──────────────────────────┐
-│                          │
-│    ┌───┐      ┌───┐      │
-│    │ON │      │   │      │
-│    │OFF│      │RST│      │
-│    └───┘      └───┘      │
-│                          │
-│  L   N   1    2    3     │
-└──┬───┬───┬────┬────┬─────┘
-   │   │   │    │    │
-   │   │   │    │    └── Sortie électrovannes (24V)
-   │   │   │    │
-   │   │   │    └── Entrée pressostat (contact NO)
-   │   │   │
-   │   │   └── Alimentation VMC (phase)
-   │   │
-   │   └── Alimentation 230V (neutre)
-   │
-   └── Alimentation 230V (phase)
-                </pre>
-              
-              <h4>Particularités de câblage Legrand</h4>
-              <ul>
-                <li><strong>Position interrupteur ON/OFF</strong> : Mettre sur ON pour fonctionnement normal</li>
-                <li><strong>Pressostat</strong> : Se connecte entre les bornes 2 et 3 (contact NO, se ferme quand la VMC fonctionne)</li>
-                <li><strong>Électrovannes</strong> : Directement alimentées par la borne 3, plus efficace en 24V</li>
-                <li><strong>Reset</strong> : Bouton de réarmement externe à connecter entre borne 1 et L</li>
-              </ul>
+                        <div class="warning-box">
+                          <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                          <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                          <p>Consultez un professionnel pour l'installation et les tests.</p>
+                        </div>
               
               <h4>Contrôle du bon fonctionnement</h4>
               <ol>
@@ -161,28 +99,11 @@ LEGRAND BAES DSC
               <div class="wiring-diagram">
                 <h4>Schéma de branchement AGER</h4>
                 <img src="images/dsc-ager.png" alt="Schéma AGER" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-AGER DSC21B
-┌─────────────────────────┐
-│       ┌─┐     ┌───┐    │
-│       │T│     │RST│    │
-│       └─┘     └───┘    │
-│                         │
-│ A  B  C  D   E   F     │
-└─┬──┬──┬──┬───┬───┬─────┘
-  │  │  │  │   │   │
-  │  │  │  │   │   └── Sortie électrovannes (12V)
-  │  │  │  │   │
-  │  │  │  │   └── Commun électrovannes
-  │  │  │  │
-  │  │  │  └── Pressostat (contact NF)
-  │  │  │
-  │  │  └── Commun pressostat
-  │  │
-  │  └── Neutre 230V
-  │
-  └── Phase 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                  <p>Consultez un professionnel pour l'installation et les tests.</p>
+                </div>
               
               <h4>Particularités de câblage AGER</h4>
               <ul>
@@ -212,27 +133,11 @@ AGER DSC21B
               <div class="wiring-diagram">
                 <h4>Schéma de branchement UNELVENT</h4>
                 <img src="images/dsc-unelvent.png" alt="Schéma UNELVENT" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-UNELVENT VENTILAR
-┌───────────────────────────┐
-│   ┌───┐                   │
-│   │AMP│    ┌───┐  ┌───┐  │
-│   │ADJ│    │TST│  │RST│  │
-│   └───┘    └───┘  └───┘  │
-│                           │
-│ BL  BR  N  RG  OR  JN    │
-└──┬───┬──┬───┬───┬────────┘
-   │   │  │   │   │
-   │   │  │   │   └── Sortie jaune (électrovanne)
-   │   │  │   │
-   │   │  │   └── Entrée rouge (pressostat)
-   │   │  │
-   │   │  └── Neutre pressostat
-   │   │
-   │   └── Phase VMC (à travers tore)
-   │
-   └── Neutre alimentation 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                  <p>Consultez un professionnel pour l'installation et les tests.</p>
+                </div>
               
               <h4>Particularités câblage UNELVENT</h4>
               <ul>
@@ -262,31 +167,23 @@ UNELVENT VENTILAR
               <div class="wiring-diagram">
                 <h4>Schéma de branchement SEIFEL</h4>
                 <img src="images/dsc-seifel.png" alt="Schéma SEIFEL" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-SEIFEL VIGIDEP
-┌───────────────────────────┐
-│ ┌─────┐  ┌──┐    ┌──────┐ │
-│ │12/24│  │  │    │ RESET│ │
-│ │ V   │  │TS│    │      │ │
-│ └─────┘  └──┘    └──────┘ │
-│                           │
-│ L  N  1  2  3  4  5  6   │
-└─┬──┬──┬──┬──┬──┬──┬──────┘
-  │  │  │  │  │  │  │
-  │  │  │  │  │  │  └── Sortie 2 électrovannes
-  │  │  │  │  │  │
-  │  │  │  │  │  └── Sortie 1 électrovannes
-  │  │  │  │  │
-  │  │  │  │  └── Pressostat 2
-  │  │  │  │
-  │  │  │  └── Pressostat 1
-  │  │  │
-  │  │  └── Phase VMC (avec tore)
-  │  │
-  │  └── Neutre 230V
-  │
-  └── Phase 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre appareil SEIFEL VIGIDEP. Pour tout raccordement, se fier exclusivement :</p>
+                  <ul>
+                    <li>à la plaque signalétique du module (référence et version),</li>
+                    <li>au manuel constructeur et au schéma imprimé fourni avec l'appareil,</li>
+                    <li>à un professionnel qualifié (installateur/électricien) pour la mise en service.</li>
+                  </ul>
+                  <p>Checklist rapide pour vérification avant intervention (professionnels) :</p>
+                  <ul>
+                    <li>Vérifier la tension d'alimentation demandée (230V AC, présence/neutre/terre).</li>
+                    <li>Identifier si le module fournit la tension pour les électrovannes (12V/24V) ou si un transformateur externe est requis.</li>
+                    <li>Contrôler le type de contact du pressostat (NO/NF) et adapter le câblage en conséquence.</li>
+                    <li>Mesurer la continuité et l'isolement avec un multimètre avant connexion des électrovannes.</li>
+                    <li>Tester en conditions réelles et vérifier le fonctionnement de réarmement et des témoins lumineux.</li>
+                  </ul>
+                </div>
               
               <h4>Particularités câblage SEIFEL</h4>
               <ul>
@@ -332,35 +229,11 @@ SEIFEL VIGIDEP
               <div class="wiring-diagram">
                 <h4>Schéma de branchement ANJOS</h4>
                 <img src="images/dsc-anjos.png" alt="Schéma ANJOS" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-ANJOS VIGICHAUF
-┌─────────────────────────────┐
-│                             │
-│   ┌───────┐   ┌────┐ ┌────┐ │
-│   │BUZZER │   │TEST│ │RST │ │
-│   └───────┘   └────┘ └────┘ │
-│                             │
-│ Ph N T  M1 M2  P1 P2  S+ S- │
-└──┬─┬─┬──┬─┬───┬─┬───┬──┬────┘
-   │ │ │  │ │   │ │   │  │
-   │ │ │  │ │   │ │   │  └── Sortie - électrovannes (24V)
-   │ │ │  │ │   │ │   │
-   │ │ │  │ │   │ │   └── Sortie + électrovannes
-   │ │ │  │ │   │ │
-   │ │ │  │ │   │ └── Pressostat 2
-   │ │ │  │ │   │
-   │ │ │  │ │   └── Pressostat 1
-   │ │ │  │ │
-   │ │ │  │ └── Phase VMC sortie
-   │ │ │  │
-   │ │ │  └── Phase VMC entrée
-   │ │ │
-   │ │ └── Terre
-   │ │
-   │ └── Neutre 230V
-   │
-   └── Phase 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                  <p>Consultez un professionnel pour l'installation et les tests.</p>
+                </div>
               
               <h4>Particularités câblage ANJOS</h4>
               <ul>
@@ -391,32 +264,11 @@ ANJOS VIGICHAUF
               <div class="wiring-diagram">
                 <h4>Schéma de branchement HAGER</h4>
                 <img src="images/dsc-hager.png" alt="Schéma HAGER" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-HAGER TB051
-┌────────────────────────────┐
-│                            │
-│  ┌───┐  ┌───┐  ┌───┐      │
-│  │AUTO│  │MODE│  │RST│     │
-│  │MANU│  │    │  │   │     │
-│  └───┘  └───┘  └───┘      │
-│                            │
-│  1  2  3  4  5  6  7  8   │
-└──┬──┬──┬──┬──┬──┬──┬──────┘
-   │  │  │  │  │  │  │
-   │  │  │  │  │  │  └── Sortie électrovannes 24V
-   │  │  │  │  │  │
-   │  │  │  │  │  └── Commun électrovannes
-   │  │  │  │  │
-   │  │  │  │  └── Pressostat (NO)
-   │  │  │  │
-   │  │  │  └── Commun pressostat
-   │  │  │
-   │  │  └── Phase sortie VMC
-   │  │
-   │  └── Phase entrée VMC
-   │
-   └── Phase alimentation 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                  <p>Consultez un professionnel pour l'installation et les tests.</p>
+                </div>
               
               <h4>Particularités câblage HAGER</h4>
               <ul>
@@ -455,34 +307,11 @@ HAGER TB051
               <div class="wiring-diagram">
                 <h4>Schéma de branchement Schneider</h4>
                 <img src="images/dsc-schneider.png" alt="Schéma Schneider" class="diagram-image" onerror="this.style.display='none'">
-                <pre class="ascii-art">
-SCHNEIDER DSC
-┌────────────────────────────────┐
-│                                │
-│  ┌───┐            ┌───┐ ┌───┐ │
-│  │POW│            │TST│ │RST│ │
-│  │   │            │   │ │   │ │
-│  └───┘            └───┘ └───┘ │
-│                                │
-│  A1 A2  1  2  3  4  11 12 14  │
-└──┬──┬───┬──┬──┬──┬──┬──┬──────┘
-   │  │   │  │  │  │  │  │
-   │  │   │  │  │  │  │  └── Contact NF (électrovannes)
-   │  │   │  │  │  │  │
-   │  │   │  │  │  │  └── Contact commun (électrovannes)
-   │  │   │  │  │  │
-   │  │   │  │  │  └── Contact NO (non utilisé)
-   │  │   │  │  │
-   │  │   │  │  └── Pressostat (NF)
-   │  │   │  │
-   │  │   │  └── Pressostat commun
-   │  │   │
-   │  │   └── Surveillance phase VMC
-   │  │
-   │  └── Neutre 230V
-   │
-   └── Phase 230V
-                </pre>
+                <div class="warning-box">
+                  <h4>⚠️ Schéma indicatif seulement — NE PAS UTILISER POUR LE CABLAGE</h4>
+                  <p>Ce dessin ASCII est simplifié et peut <strong>ne pas</strong> refléter la réalité des bornes ou de la polarité pour votre modèle. Pour tout raccordement, se fier exclusivement au manuel constructeur et à la plaque signalétique.</p>
+                  <p>Consultez un professionnel pour l'installation et les tests.</p>
+                </div>
               
               <h4>Particularités câblage Schneider</h4>
               <ul>

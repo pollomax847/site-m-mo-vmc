@@ -1,6 +1,6 @@
 // Service Worker pour l'application Mémo VMC
 
-const CACHE_NAME = 'memo-vmc-cache-v2'; // Incrémenter la version du cache
+const CACHE_NAME = 'memo-vmc-cache-v3'; // Incrémenter la version du cache
 const urlsToCache = [
   '/',
   '/index.html',

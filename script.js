@@ -13,12 +13,23 @@ document.addEventListener('DOMContentLoaded', function() {
     return element;
   };
 
-  // Surcharger getElementById pour éviter les erreurs null
-  const originalGetElementById = document.getElementById;
-  document.getElementById = function(id) {
-    const element = originalGetElementById.call(document, id);
-    return element || safeGetElementById(id);
-  };
+  // Optionnel: safe wrapper for getElementById to avoid runtime null errors
+  // Disabled by default to avoid creating hidden elements unexpectedly.
+  // To enable during debug: set `window.ENABLE_SAFE_GETELEMENT = true` before DOMContentLoaded.
+  (function() {
+    const enabled = !!window.ENABLE_SAFE_GETELEMENT;
+    if (!enabled) {
+      // keep original behavior
+      return;
+    }
+
+    const originalGetElementById = document.getElementById;
+    document.getElementById = function(id) {
+      const element = originalGetElementById.call(document, id);
+      return element || safeGetElementById(id);
+    };
+    console.info('DEBUG: safeGetElementById override enabled');
+  })();
 
   // Contenu des sections VMC
   const vmcContent = {
