@@ -120,28 +120,7 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
 </head>
 <body>
   <a class="skip-link" href="#content">Aller au contenu</a>
-  <!-- Menu mobile -->
-  <button class="menu-button" id="menuButton" aria-label="Menu principal" aria-expanded="false" aria-controls="sideMenu" type="button">≡</button>
-  
-  <div class="side-menu" id="sideMenu" aria-hidden="true" role="navigation" aria-label="Menu principal" tabindex="-1">
-    <div class="side-menu-header">
-      <h3>Menu VMC</h3>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#" data-section="accueil">Accueil</a></li>
-        <li><a href="#" data-section="verification-debit">Vérification des Débits</a></li>
-        <li><a href="#" data-section="faq">FAQ VMC</a></li>
-        <li><a href="#" data-section="methodologie">Méthodologie d'Installation</a></li>
-        <li><a href="#" data-section="depannage">Guide de Dépannage</a></li>
-        <li><a href="#" data-section="dsc-constructeurs">DSC par constructeur</a></li>
-        <li><a href="#" data-section="info">Informations Techniques</a></li>
-        <li><a href="#" data-section="cgu">Conditions d'utilisation</a></li>
-      </ul>
-    </nav>
-  </div>
-  
-  <div class="menu-overlay" id="menuOverlay"></div>
+
   
   <header role="banner">
     <div class="logo-container">
@@ -199,9 +178,33 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
         menuButton.focus();
         document.removeEventListener('keydown', onKeyDown);
       }
+      function getFocusableElements(root) {
+        return Array.from(root.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+          .filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
+      }
+
       function onKeyDown(e) {
         if (e.key === 'Escape' || e.key === 'Esc') {
           closeMenu();
+          return;
+        }
+
+        // Trap focus inside the side menu when open
+        if (e.key === 'Tab' && sideMenu.classList.contains('open')) {
+          const focusable = getFocusableElements(sideMenu);
+          if (focusable.length === 0) {
+            e.preventDefault();
+            return;
+          }
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       }
 
@@ -228,7 +231,7 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
             if (typeof loadContent === 'function') {
               loadContent(section);
             } else {
-              console.log('Chargement de section:', section);
+              if (window.DEBUG) console.debug('Chargement de section:', section);
               const event = new CustomEvent('sectionRequest', { 
                 detail: { section: section } 
               });

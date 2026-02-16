@@ -2,7 +2,9 @@
  * Module pour la gestion du menu mobile
  */
 (function() {
-  console.log('Initialisation du menu mobile');
+  const DEBUG = !!window.DEBUG;
+  const dlog = (...args) => { if (DEBUG) console.debug(...args); };
+  dlog('Initialisation du menu mobile');
 
   // Fonction pour s'assurer que le document est prêt
   function whenReady(callback) {
@@ -20,11 +22,8 @@
   });
 
   function initMobileMenu() {
-    // Vérifier si le menu existe déjà
-    if (document.querySelector('.menu-button')) {
-      attachMenuEvents();
-      return;
-    }
+    // Supprimer tout menu mobile existant pour éviter les doublons
+    document.querySelectorAll('.menu-button, .side-menu, .menu-overlay').forEach(el => el.remove());
 
     // Créer les éléments du menu
     const menuButton = document.createElement('button');
@@ -33,7 +32,7 @@
     menuButton.setAttribute('aria-label', 'Menu principal');
     menuButton.setAttribute('aria-expanded', 'false');
     menuButton.setAttribute('aria-controls', 'sideMenu');
-    menuButton.innerHTML = '<span class="menu-icon">≡</span>'; 
+    menuButton.innerHTML = '<span class="menu-icon">≡</span>';
 
     const sideMenu = document.createElement('div');
     sideMenu.className = 'side-menu';
@@ -52,8 +51,14 @@
       </div>
       <nav>
         <ul>
-          <li><a href="#" data-section="accueil">Accueil</a></li>
-          <li><a href="#" data-section="verification-debit">Vérification des Débits</a></li>
+          <li><a href="web/index.html">Accueil</a></li>
+          <li><a href="web/simple-flux.html">VMC Simple Flux</a></li>
+          <li><a href="web/double-flux.html">VMC Double Flux</a></li>
+          <li><a href="web/calculateur.html">Calculateur de débits</a></li>
+        </ul>
+        <hr style="margin:16px 0;opacity:0.2;">
+        <ul>
+          <li><a href="#" data-section="verification-debit">Vérification des Débits (app)</a></li>
           <li><a href="#" data-section="faq">FAQ VMC</a></li>
           <li><a href="#" data-section="methodologie">Méthodologie d'Installation</a></li>
           <li><a href="#" data-section="depannage">Guide de Dépannage</a></li>
@@ -64,21 +69,96 @@
       </nav>
     `;
 
-    // Ajouter des styles inline importants pour garantir la visibilité
-    menuButton.style.cssText = 'position:fixed;top:15px;left:15px;width:50px;height:50px;background:#2196F3;color:white;border-radius:50%;border:none;box-shadow:0 2px 5px rgba(0,0,0,0.3);z-index:9999;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;';
-    sideMenu.style.cssText = 'position:fixed;top:0;left:0;width:85%;max-width:300px;height:100%;background:white;z-index:998;transform:translateX(-100%);transition:transform 0.3s ease;box-shadow:2px 0 10px rgba(0,0,0,0.3);overflow-y:auto;padding:60px 0 20px;';
-    menuOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:997;display:none;';
+    // Styles inline essentiels
+    menuButton.style.cssText = 'position:fixed;top:18px;left:18px;width:54px;height:54px;background:linear-gradient(135deg,#2563eb,#0ea5e9);color:white;border-radius:50%;border:none;box-shadow:0 4px 16px rgba(37,99,235,0.10);z-index:9999;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;transition:background 0.18s,box-shadow 0.18s,transform 0.18s;outline:none;';
+    sideMenu.style.cssText = 'position:fixed;top:0;left:0;width:85%;max-width:320px;height:100%;background:#fff;z-index:998;transform:translateX(-100%);transition:transform 0.22s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 24px rgba(37,99,235,0.10);overflow-y:auto;padding:60px 0 20px;border-top-right-radius:18px;border-bottom-right-radius:18px;';
+    menuOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(37,99,235,0.10);z-index:997;display:none;backdrop-filter:blur(1.5px);';
+
+    // Focus visible style
+    menuButton.addEventListener('focus', function(){menuButton.style.boxShadow='0 0 0 4px rgba(245,158,66,0.18)';});
+    menuButton.addEventListener('blur', function(){menuButton.style.boxShadow='0 4px 16px rgba(37,99,235,0.10)';});
+    menuButton.addEventListener('mousedown', function(){menuButton.style.transform='scale(0.97)';});
+    menuButton.addEventListener('mouseup', function(){menuButton.style.transform='scale(1)';});
+    menuButton.addEventListener('mouseleave', function(){menuButton.style.transform='scale(1)';});
 
     // Ajouter au DOM
     document.body.appendChild(menuButton);
     document.body.appendChild(sideMenu);
     document.body.appendChild(menuOverlay);
 
-    console.log('Éléments du menu ajoutés au DOM');
-    
-    // Attacher les événements
-    attachMenuEvents();
-    
+    dlog('Éléments du menu ajoutés au DOM');
+
+    // Attacher les événements (fusionné ici)
+    menuButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (menuButton.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+    menuOverlay.addEventListener('click', function() { closeMenu(); });
+    // Liens internes (SPA/app)
+    const menuLinks = sideMenu.querySelectorAll('a[data-section]');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const section = this.getAttribute('data-section');
+        if (window.loadContent) window.loadContent(section);
+        else document.dispatchEvent(new CustomEvent('sectionRequest', { detail: { section } }));
+        closeMenu();
+      });
+    });
+    // Liens vers pages web (navigation réelle)
+    const pageLinks = sideMenu.querySelectorAll('a[href^="web/"]');
+    pageLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // navigation réelle, pas d'e.preventDefault
+        closeMenu();
+      });
+    });
+    // Focus trap
+    function getFocusable(root) {
+      return Array.from(root.querySelectorAll('a, button, input, select, textarea, [tabindex]:not([tabindex="-1"])')).filter(el => !el.disabled && el.getAttribute('aria-hidden') !== 'true');
+    }
+    function onKeyDown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') { closeMenu(); return; }
+      if (e.key === 'Tab' && sideMenu.classList.contains('open')) {
+        const focusable = getFocusable(sideMenu);
+        if (!focusable.length) { e.preventDefault(); return; }
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    function openMenu() {
+      sideMenu.style.transform = 'translateX(0)';
+      sideMenu.classList.add('open');
+      sideMenu.setAttribute('aria-hidden', 'false');
+      menuOverlay.style.display = 'block';
+      menuButton.setAttribute('aria-expanded', 'true');
+      setTimeout(()=>{sideMenu.style.boxShadow='8px 0 32px rgba(37,99,235,0.13)';},120);
+      const firstLink = sideMenu.querySelector('a[data-section]');
+      if (firstLink) firstLink.focus();
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeyDown);
+    }
+    function closeMenu() {
+      sideMenu.style.transform = 'translateX(-100%)';
+      sideMenu.classList.remove('open');
+      sideMenu.setAttribute('aria-hidden', 'true');
+      menuOverlay.style.display = 'none';
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.focus();
+      setTimeout(()=>{sideMenu.style.boxShadow='4px 0 24px rgba(37,99,235,0.10)';},120);
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKeyDown);
+    }
+    // Exposer pour tests si besoin
+    menuButton.openMenu = openMenu;
+    menuButton.closeMenu = closeMenu;
     // Signaler que le menu mobile est créé
     document.dispatchEvent(new CustomEvent('mobileMenuCreated'));
   }
@@ -115,7 +195,7 @@
         e.stopPropagation();
         
         const section = this.getAttribute('data-section');
-        console.log('Menu mobile: clic sur section:', section);
+        if (window.DEBUG) console.debug('Menu mobile: clic sur section:', section);
         
         if (typeof window.loadContent === 'function') {
           window.loadContent(section);
@@ -133,7 +213,7 @@
     menuButton.openMenu = openMenu;
     menuButton.closeMenu = closeMenu;
 
-    console.log('Événements du menu attachés');
+    dlog('Événements du menu attachés');
   }
 
   // Exposer la fonction toggleMenu globalement

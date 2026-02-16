@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Simple debug flag (définir window.DEBUG = true pour activer)
+  const DEBUG = !!window.DEBUG;
+  const dlog = (...args) => { if (DEBUG) console.debug(...args); };
+
   // Créer une fonction sécurisée pour getElementById
   const safeGetElementById = (id) => {
     const element = document.getElementById(id);
@@ -28,11 +32,61 @@ document.addEventListener('DOMContentLoaded', function() {
       const element = originalGetElementById.call(document, id);
       return element || safeGetElementById(id);
     };
-    console.info('DEBUG: safeGetElementById override enabled');
+    dlog('DEBUG: safeGetElementById override enabled');
   })();
 
   // Contenu des sections VMC
   const vmcContent = {
+    // Page d'accueil simple
+    'accueil': {
+      title: 'Accueil',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Bienvenue</h2>
+          <p>Bienvenue sur le mémo technique VMC. Utilisez le menu pour naviguer entre les sections.</p>
+        </div>
+      `
+    },
+    // FAQ placeholder
+    'faq': {
+      title: 'FAQ',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">FAQ</h2>
+          <p>Questions fréquentes et réponses utiles seront affichées ici.</p>
+        </div>
+      `
+    },
+    // Méthodologie placeholder
+    'methodologie': {
+      title: 'Méthodologie',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Méthodologie</h2>
+          <p>Informations sur la méthodologie d'installation et de vérification.</p>
+        </div>
+      `
+    },
+    // Dépannage placeholder
+    'depannage': {
+      title: 'Dépannage',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Dépannage</h2>
+          <p>Guide de dépannage succinct pour les problèmes courants.</p>
+        </div>
+      `
+    },
+    // Informations techniques placeholder
+    'info': {
+      title: 'Informations',
+      content: `
+        <div class="section-container">
+          <h2 class="section-title">Informations techniques</h2>
+          <p>Informations techniques supplémentaires seront ajoutées bientôt.</p>
+        </div>
+      `
+    },
     'vmc-simple': {
       title: 'VMC Simple Flux',
       content: `
@@ -901,19 +955,24 @@ document.addEventListener('DOMContentLoaded', function() {
   window.vmcContent = vmcContent;
 
   // Fonction pour charger le contenu - S'assurer qu'elle est globale
+  // Utiliser une garde pour éviter de recharger la même section plusieurs fois
+  let _lastLoadedSection = null;
   function loadContent(section = 'verification-debit') {
     // Vérifier si la section existe avant de l'afficher
     if (!vmcContent[section]) {
       console.error(`Section "${section}" non trouvée dans le contenu disponible`);
       section = 'verification-debit';  // Section par défaut
     }
-    
+
+    // Si la même section est déjà affichée, ne rien faire
+    if (_lastLoadedSection === section) return;
+
     // Nettoyer le contenu précédent
     const contentDiv = document.getElementById('content');
     if (contentDiv) {
       contentDiv.innerHTML = vmcContent[section].content;
     }
-    
+
     // Mettre à jour le lien actif dans le menu
     document.querySelectorAll('#mainMenu a').forEach(menuLink => {
       menuLink.classList.remove('active');
@@ -924,6 +983,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Déclencher un événement pour indiquer que le contenu a été chargé
     document.dispatchEvent(new CustomEvent('contentLoaded', { detail: { section } }));
+    _lastLoadedSection = section;
   }
 
   // S'assurer que loadContent est accessible globalement
