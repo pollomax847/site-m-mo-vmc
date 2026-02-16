@@ -29,12 +29,18 @@
     // Créer les éléments du menu
     const menuButton = document.createElement('button');
     menuButton.className = 'menu-button';
+    menuButton.setAttribute('type', 'button');
     menuButton.setAttribute('aria-label', 'Menu principal');
-    menuButton.innerHTML = '<span class="menu-icon">≡</span>';
+    menuButton.setAttribute('aria-expanded', 'false');
+    menuButton.setAttribute('aria-controls', 'sideMenu');
+    menuButton.innerHTML = '<span class="menu-icon">≡</span>'; 
 
     const sideMenu = document.createElement('div');
     sideMenu.className = 'side-menu';
     sideMenu.setAttribute('aria-hidden', 'true');
+    sideMenu.setAttribute('role', 'navigation');
+    sideMenu.setAttribute('aria-label', 'Menu principal');
+    sideMenu.setAttribute('tabindex', '-1');
 
     const menuOverlay = document.createElement('div');
     menuOverlay.className = 'menu-overlay';
@@ -87,15 +93,19 @@
       return;
     }
 
-    // Toggle menu au clic sur le bouton
+    // Toggle menu au clic sur le bouton (gestion ARIA + focus)
     menuButton.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      toggleMenu();
+      if (menuButton.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
     // Fermer le menu au clic sur l'overlay
-    menuOverlay.addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', function() { closeMenu(); });
 
     // Attacher des événements aux liens du menu
     const menuLinks = sideMenu.querySelectorAll('a[data-section]');
@@ -107,14 +117,10 @@
         const section = this.getAttribute('data-section');
         console.log('Menu mobile: clic sur section:', section);
         
-        // Utiliser loadContent si disponible
         if (typeof window.loadContent === 'function') {
           window.loadContent(section);
         } else {
-          // Fallback: créer un événement pour demander le chargement
-          const event = new CustomEvent('sectionRequest', { 
-            detail: { section: section } 
-          });
+          const event = new CustomEvent('sectionRequest', { detail: { section: section } });
           document.dispatchEvent(event);
         }
         
@@ -123,31 +129,63 @@
       });
     });
 
+    // Exposer pour tests si besoin
+    menuButton.openMenu = openMenu;
+    menuButton.closeMenu = closeMenu;
+
     console.log('Événements du menu attachés');
   }
 
   // Exposer la fonction toggleMenu globalement
   window.toggleMenu = function() {
     const sideMenu = document.querySelector('.side-menu');
-    const menuOverlay = document.querySelector('.menu-overlay');
-    
-    if (sideMenu.style.transform === 'translateX(0px)') {
+    if (!sideMenu) return;
+    const isOpen = sideMenu.classList.contains('open') || sideMenu.style.transform === 'translateX(0px)';
+    if (isOpen) {
       closeMenu();
     } else {
-      sideMenu.style.transform = 'translateX(0)';
-      menuOverlay.style.display = 'block';
-      document.body.style.overflow = 'hidden';
+      openMenu();
     }
   };
+
+  function openMenu() {
+    const sideMenu = document.querySelector('.side-menu');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    const menuButton = document.querySelector('.menu-button');
+    if (sideMenu && menuOverlay) {
+      sideMenu.style.transform = 'translateX(0)';
+      sideMenu.classList.add('open');
+      sideMenu.setAttribute('aria-hidden', 'false');
+      menuOverlay.style.display = 'block';
+      if (menuButton) menuButton.setAttribute('aria-expanded', 'true');
+      const firstLink = sideMenu.querySelector('a[data-section]');
+      if (firstLink) firstLink.focus();
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onMenuKeyDown);
+    }
+  }
+
+  function onMenuKeyDown(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      closeMenu();
+    }
+  }
 
   function closeMenu() {
     const sideMenu = document.querySelector('.side-menu');
     const menuOverlay = document.querySelector('.menu-overlay');
-    
+    const menuButton = document.querySelector('.menu-button');
     if (sideMenu && menuOverlay) {
       sideMenu.style.transform = 'translateX(-100%)';
+      sideMenu.classList.remove('open');
+      sideMenu.setAttribute('aria-hidden', 'true');
       menuOverlay.style.display = 'none';
+      if (menuButton) {
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.focus();
+      }
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', onMenuKeyDown);
     }
   }
 

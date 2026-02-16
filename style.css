@@ -1,11 +1,52 @@
 :root {
   --primary-color: #1a73e8;
   --secondary-color: #4285f4;
-  --dark-color: #333;
+  --dark-color: #222;
   --light-color: #f8f9fa;
   --accent-color: #ff5722;
-  --text-color: #333;
-  --font-main: 'Roboto', Arial, sans-serif;
+  --text-color: #222;
+  --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --focus-ring: 3px solid var(--accent-color);
+}
+
+/* Accessibilité : lien "skip" et focus visible */
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  left: 10px;
+  top: 10px;
+  width: auto;
+  height: auto;
+  padding: 8px 12px;
+  background: var(--primary-color);
+  color: #fff;
+  z-index: 10000;
+  border-radius: 4px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Focus-visible global pour les utilisateurs au clavier */
+:focus-visible, button:focus-visible, a:focus-visible, input:focus-visible, .menu-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(255,87,34,0.08);
+}
+
+/* Respecter la préférence "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Correction pour l'affichage sur smartphone */

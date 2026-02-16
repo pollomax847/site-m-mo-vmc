@@ -96,10 +96,11 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#content">Aller au contenu</a>
   <!-- Menu mobile -->
-  <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
+  <button class="menu-button" id="menuButton" aria-label="Menu principal" aria-expanded="false" aria-controls="sideMenu" type="button">≡</button>
   
-  <div class="side-menu" id="sideMenu" aria-hidden="true">
+  <div class="side-menu" id="sideMenu" aria-hidden="true" role="navigation" aria-label="Menu principal" tabindex="-1">
     <div class="side-menu-header">
       <h3>Menu VMC</h3>
     </div>
@@ -119,18 +120,18 @@
   
   <div class="menu-overlay" id="menuOverlay"></div>
   
-  <header>
+  <header role="banner">
     <div class="logo-container">
       <img src="logo.png" alt="Mémo VMC Logo" id="logo">
     </div>
     <h1>Mémo Technique - VMC par type d'installation</h1>
     <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Rechercher...">
-      <button id="searchButton">Rechercher</button>
+      <input type="text" id="searchInput" placeholder="Rechercher..." aria-label="Rechercher le site">
+      <button id="searchButton" type="button" aria-label="Lancer la recherche">Rechercher</button>
     </div>
   </header>
   
-  <div id="content">
+  <div id="content" role="main">
     <div class="section-container">
       <h2 class="section-title">Chargement...</h2>
       <p>Veuillez patienter pendant le chargement du contenu.</p>
@@ -146,21 +147,49 @@
     // Garantir l'existence de l'espace de noms VMC
     window.vmcContent = window.vmcContent || {};
     
-    // Initialisation du menu mobile
+    // Initialisation du menu mobile (accessibilité améliorée)
     document.addEventListener('DOMContentLoaded', function() {
       const menuButton = document.getElementById('menuButton');
       const sideMenu = document.getElementById('sideMenu');
       const menuOverlay = document.getElementById('menuOverlay');
       
+      function openMenu() {
+        sideMenu.classList.add('open');
+        sideMenu.setAttribute('aria-hidden', 'false');
+        menuButton.setAttribute('aria-expanded', 'true');
+        menuOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        // focus sur le premier lien pour les utilisateurs clavier
+        const firstLink = sideMenu.querySelector('a[data-section]');
+        if (firstLink) firstLink.focus();
+        document.addEventListener('keydown', onKeyDown);
+      }
+      function closeMenu() {
+        sideMenu.classList.remove('open');
+        sideMenu.setAttribute('aria-hidden', 'true');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+        menuButton.focus();
+        document.removeEventListener('keydown', onKeyDown);
+      }
+      function onKeyDown(e) {
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          closeMenu();
+        }
+      }
+
       if (menuButton && sideMenu && menuOverlay) {
         menuButton.addEventListener('click', function() {
-          sideMenu.classList.toggle('open');
-          menuOverlay.style.display = sideMenu.classList.contains('open') ? 'block' : 'none';
+          if (sideMenu.classList.contains('open')) {
+            closeMenu();
+          } else {
+            openMenu();
+          }
         });
         
         menuOverlay.addEventListener('click', function() {
-          sideMenu.classList.remove('open');
-          menuOverlay.style.display = 'none';
+          closeMenu();
         });
         
         // Configurer les liens du menu
@@ -180,9 +209,8 @@
               document.dispatchEvent(event);
             }
             
-            // Fermer le menu
-            sideMenu.classList.remove('open');
-            menuOverlay.style.display = 'none';
+            // Fermer le menu (gestion centralisée)
+            closeMenu();
           });
         });
       }
