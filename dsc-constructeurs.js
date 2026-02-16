@@ -112,13 +112,13 @@
                 <img src="images/dsc-legrand.png" alt="Schéma LEGRAND" class="diagram-image" onerror="this.style.display='none'">
                 <pre class="ascii-art">
 LEGRAND BAES DSC
-┌───────────────────────────┐
-│                           │
+┌──────────────────────────┐
+│                          │
 │    ┌───┐      ┌───┐      │
 │    │ON │      │   │      │
 │    │OFF│      │RST│      │
 │    └───┘      └───┘      │
-│                           │
+│                          │
 │  L   N   1    2    3     │
 └──┬───┬───┬────┬────┬─────┘
    │   │   │    │    │
