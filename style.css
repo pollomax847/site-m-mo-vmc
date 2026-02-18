@@ -67,8 +67,6 @@
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
-  -webkit-font-smoothing: antialiased;
-  font-smoothing: grayscale;
   -webkit-overflow-scrolling: touch;
   backface-visibility: hidden;
 }
@@ -85,7 +83,6 @@ html, body {
 }
 
 html {
-  text-size-adjust: 100%;
 }
 
 body {
@@ -100,12 +97,8 @@ body {
   display: flex;
   flex-direction: column;
   transform-style: preserve-3d;
-  text-size-adjust: 100%;
-  font-smoothing: auto;
   text-rendering: optimizeLegibility;
   letter-spacing: 0.01em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .scroll-container {
@@ -562,8 +555,6 @@ header h1 {
   }
 
   body {
-    text-size-adjust: none;
-    -webkit-text-size-adjust: none;
   }
 }
 
@@ -1155,7 +1146,6 @@ body > *:last-child:not(.section-container):not(#content):not(.calculator-contai
 /* Fix pour iPhone Safari */
 @media screen and (max-width: 480px) and (-webkit-min-device-pixel-ratio: 2) {
   body {
-    text-size-adjust: 100%;
   }
   
   /* Fix pour l'écran vide sur Safari mobile */
@@ -1266,7 +1256,6 @@ body::after {
 
 @media (max-width: 767px) {
   .responsive-element {
-    text-size-adjust: 100%;
   }
 }
 
