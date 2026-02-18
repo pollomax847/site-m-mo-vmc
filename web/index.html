@@ -7,20 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <meta name="google-adsense-account" content="ca-pub-6664265722735791">
+  <!-- Configurez votre slot AdSense ici (laisser vide pour désactiver) -->
+  <meta name="google-ads-slot" content="">
 </head>
 <body>
   <header>
     <h1>Mémo Technique VMC</h1>
   </header>
-  <!-- Conteneur d'annonces (top) -->
-  <div class="ad-container top-ad" id="top-ad" aria-hidden="true">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-6664265722735791"
-         data-ad-slot="votre-ad-slot-id"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-  </div>
+  <!-- Conteneur d'annonces (top). Le slot est injecté dynamiquement si configuré. -->
+  <div class="ad-container top-ad" id="top-ad" aria-hidden="true"></div>
   <nav>
     <a href="index.html" class="active">Accueil</a>
     <a href="calculateur.html">Calculateur</a>
@@ -43,15 +38,8 @@
       <p>Découvrez la VMC double flux, son fonctionnement, ses bénéfices et conseils pratiques.</p>
       <a href="double-flux.html" class="btn-main">Voir la documentation</a>
     </div>
-    <!-- Conteneur d'annonces (bottom) -->
-    <div class="ad-container bottom-ad" id="bottom-ad" aria-hidden="true">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-6664265722735791"
-           data-ad-slot="votre-ad-slot-id"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-    </div>
+    <!-- Conteneur d'annonces (bottom). Le slot est injecté dynamiquement si configuré. -->
+    <div class="ad-container bottom-ad" id="bottom-ad" aria-hidden="true"></div>
   </main>
   <footer>
     <p>&copy; 2026 Mémo Technique VMC</p>
@@ -59,14 +47,48 @@
   <!-- Script AdSense (chargé uniquement en production) -->
   <script>
     (function(){
+      // Lire la configuration du slot depuis la meta
+      function getMeta(name){
+        var m = document.querySelector('meta[name="'+name+'"]');
+        return m ? m.content.trim() : '';
+      }
+
+      var adSlot = getMeta('google-ads-slot');
+      var adClient = getMeta('google-adsense-account') || 'ca-pub-6664265722735791';
+
+      // Ne pas charger les annonces en développement ou si aucun slot configuré
       window.addEventListener('load', function(){
-        if (window.location.hostname.includes('localhost') || window.location.hostname.includes('192.168.')) return;
+        if (!adSlot) {
+          console.info('AdSense slot not configured — ads disabled');
+          return;
+        }
+        if (window.location.hostname.includes('localhost') || window.location.hostname.match(/^192\.168\./)) {
+          console.info('Localhost detected — ads disabled');
+          return;
+        }
+
+        // Charger le script AdSense
         var s = document.createElement('script');
         s.async = true;
-        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791';
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(adClient);
         s.crossOrigin = 'anonymous';
         s.onload = function(){
-          try{ (adsbygoogle = window.adsbygoogle || []).push({}); }catch(e){console.error(e)}
+          // Créer et initialiser les annonces dans les conteneurs présents
+          ['top-ad','bottom-ad'].forEach(function(id){
+            var container = document.getElementById(id);
+            if (!container) return;
+            // injecter l'ins uniquement si le container est vide
+            if (container.querySelector('.adsbygoogle')) return;
+            var ins = document.createElement('ins');
+            ins.className = 'adsbygoogle';
+            ins.style.display = 'block';
+            ins.setAttribute('data-ad-client', adClient);
+            ins.setAttribute('data-ad-slot', adSlot);
+            ins.setAttribute('data-ad-format', 'auto');
+            ins.setAttribute('data-full-width-responsive', 'true');
+            container.appendChild(ins);
+            try{ (adsbygoogle = window.adsbygoogle || []).push({}); } catch(e) { console.error('Ad init error', e); }
+          });
         };
         document.head.appendChild(s);
       });
