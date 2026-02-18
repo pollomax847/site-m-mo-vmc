@@ -136,11 +136,9 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
     </div>
   </header>
   
-  <div id="content" role="main">
-    <div class="section-container">
-      <h2 class="section-title">Chargement...</h2>
-      <p>Veuillez patienter pendant le chargement du contenu.</p>
-    </div>
+  <!-- Scripts DOM critiques placés en fin de body pour éviter les erreurs de body absent -->
+  <script src="dom-fix-patch.js" defer></script>
+  <script src="dom-fix.js" defer></script>
   </div>
   
   <div id="offline-status" class="hidden">
@@ -165,7 +163,7 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
         menuOverlay.style.display = 'block';
         document.body.style.overflow = 'hidden';
         // focus sur le premier lien pour les utilisateurs clavier
-        const firstLink = sideMenu.querySelector('a[data-section]');
+  <link rel="stylesheet" href="styles/mobile-fixes.min.css">
         if (firstLink) firstLink.focus();
         document.addEventListener('keydown', onKeyDown);
       }
