@@ -4,10 +4,10 @@
     {
       "src": "build.sh",
       "use": "@vercel/static-build"
-    {
-      "outputDirectory": "build/web"
     }
+  ],
+  "routes": [
     { "src": "/(.*)", "dest": "/index.html" }
   ],
-  "outputDirectory": "web"
+  "outputDirectory": "build/web"
 }
