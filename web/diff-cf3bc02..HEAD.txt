@@ -1,0 +1,397 @@
+diff --git a/web/calculateur.html b/web/calculateur.html
+new file mode 100644
+index 0000000..df33080
+--- /dev/null
++++ b/web/calculateur.html
+@@ -0,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur de débits - Mémo Technique VMC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&d
+isplay=swap" rel="stylesheet">                                                  +  <link rel="stylesheet" href="style.css">
+  <style>
+    .result-box { background: #f8f9fa; border-radius: 8px; padding: 1rem; margi
+n-top: 1rem; }                                                                  +    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .form-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 220px;
+      margin-bottom: 0.5rem;
+    }
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .form-control {
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.7rem;
+      border: 1px solid #e5e7eb;
+      font-size: 1.05rem;
+      background: #fff;
+      margin-bottom: 0.2rem;
+    }
+    @media (max-width: 700px) {
+      .form-section {
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .form-group {
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Calculateur de débits réglementaires</h1>
+  </header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="calculateur.html" class="active">Calculateur</a>
+    <a href="simple-flux.html">Simple Flux</a>
+    <a href="double-flux.html">Double Flux</a>
+  </nav>
+  <main>
+    <div class="card" style="max-width:700px;width:100%;margin:2rem auto;">
+      <form id="calcForm">
+      <div class="form-section">
+        <div class="form-group">
+          <label for="vmcType" class="form-label">Type de VMC</label>
+          <select class="form-control" id="vmcType" required>
+            <option value="">Choisir...</option>
+            <option value="simple-flux">Simple Flux</option>
+            <option value="hygro-a">Hygro A</option>
+            <option value="hygro-b">Hygro B</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="housingType" class="form-label">Type de logement</label>
+          <select class="form-control" id="housingType" required>
+            <option value="">Choisir...</option>
+            <option value="T1">T1</option>
+            <option value="T2">T2</option>
+            <option value="T3">T3</option>
+            <option value="T4">T4</option>
+            <option value="T5+">T5+</option>
+          </select>
+          <div id="modulesResult" class="result-box d-none"></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-group">
+          <label for="cuisine" class="form-label">Nombre de cuisines</label>
+          <input type="number" class="form-control" id="cuisine" min="0" value=
+"0">                                                                            +        </div>
+        <div class="form-group">
+          <label for="sdb" class="form-label">Nombre de salles de bain</label>
+          <input type="number" class="form-control" id="sdb" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label for="wc" class="form-label">Nombre de WC</label>
+          <input type="number" class="form-control" id="wc" min="0" value="0">
+        </div>
+        <div class="form-group">
+          <label for="autreSdb" class="form-label">Autres salles d'eau</label>
+          <input type="number" class="form-control" id="autreSdb" min="0" value
+="0">                                                                           +        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-group">
+          <label for="mesureCuisine" class="form-label">Débit mesuré cuisine (m
+³/h)</label>                                                                    +          <input type="number" class="form-control" id="mesureCuisine" min="0" 
+placeholder="Mesure cuisine">                                                   +        </div>
+        <div class="form-group">
+          <label for="mesureSdb" class="form-label">Débit mesuré salle de bain 
+(m³/h)</label>                                                                  +          <input type="number" class="form-control" id="mesureSdb" min="0" plac
+eholder="Mesure salle de bain">                                                 +        </div>
+        <div class="form-group">
+          <label for="mesureWc" class="form-label">Débit mesuré WC (m³/h)</labe
+l>                                                                              +          <input type="number" class="form-control" id="mesureWc" min="0" place
+holder="Mesure WC">                                                             +        </div>
+        <div class="form-group">
+          <label for="mesureAutre" class="form-label">Débit mesuré autre salle 
+d'eau (m³/h)</label>                                                            +          <input type="number" class="form-control" id="mesureAutre" min="0" pl
+aceholder="Mesure autre salle d'eau">                                           +        </div>
+      </div>
+      <button type="submit" class="btn-main">Calculer</button>
+    </form>
+    <div id="results" class="result-box d-none"></div>
+    <a href="index.html" class="btn-main mt-4">Retour à l'accueil</a>
+  </main>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
+  <script>
+    const debitsReglementaires = {
+      'simple-flux': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb
+': 50 },                                                                        +      'hygro-a': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 5
+0 },                                                                            +      'hygro-b': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 5
+0 }                                                                             +    };
+    const minimumDebitsParLogement = { 'T1': 100, 'T2': 150, 'T3': 200, 'T4': 2
+50, 'T5+': 300 };                                                               +    // Remplissage automatique pour chaque type de logement
+    const logementPresets = {
+      'T1': { cuisine: 1, sdb: 1, wc: 0, autreSdb: 0, modules: ['1 cuisine', '1
+ salle de bain'] },                                                             +      'T2': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 0, modules: ['1 cuisine', '1
+ salle de bain', '1 WC'] },                                                     +      'T3': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 1, modules: ['1 cuisine', '1
+ salle de bain', '1 WC', '1 autre salle d\'eau'] },                             +      'T4': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 1, modules: ['1 cuisine', '1
+ salle de bain', '1 WC', '1 autre salle d\'eau'] },                             +      'T5+': { cuisine: 1, sdb: 2, wc: 2, autreSdb: 1, modules: ['1 cuisine', '
+2 salles de bain', '2 WC', '1 autre salle d\'eau'] }                            +    };
+    document.getElementById('housingType').addEventListener('change', function(
+) {                                                                             +      const val = this.value;
+      if (logementPresets[val]) {
+        document.getElementById('cuisine').value = logementPresets[val].cuisine
+;                                                                               +        document.getElementById('sdb').value = logementPresets[val].sdb;
+        document.getElementById('wc').value = logementPresets[val].wc;
+        document.getElementById('autreSdb').value = logementPresets[val].autreS
+db;                                                                             +        // Affichage modules fenêtres
+        const modulesDiv = document.getElementById('modulesResult');
+        modulesDiv.innerHTML = `<h4>Modules fenêtres à prévoir</h4><ul>` + loge
+mentPresets[val].modules.map(m => `<li>${m}</li>`).join('') + `</ul>`;          +        modulesDiv.classList.remove('d-none');
+      } else {
+        document.getElementById('modulesResult').classList.add('d-none');
+      }
+    });
+
+    document.getElementById('calcForm').addEventListener('submit', function(e) 
+{                                                                               +      e.preventDefault();
+      const vmcType = document.getElementById('vmcType').value;
+      const housingType = document.getElementById('housingType').value;
+      const cuisine = parseInt(document.getElementById('cuisine').value) || 0;
+      const sdb = parseInt(document.getElementById('sdb').value) || 0;
+      const wc = parseInt(document.getElementById('wc').value) || 0;
+      const autreSdb = parseInt(document.getElementById('autreSdb').value) || 0
+;                                                                               +      if (!vmcType || !housingType) return;
+      const flows = debitsReglementaires[vmcType];
+      const results = {
+        'Cuisine': cuisine * flows['cuisine'],
+        'Salle de bain': sdb * flows['salle-de-bain'],
+        'WC': wc * flows['wc'],
+        'Autre salle d\'eau': autreSdb * flows['autre-sdb']
+      };
+      const total = Object.values(results).reduce((a, b) => a + b, 0);
+      const minFlow = minimumDebitsParLogement[housingType];
+      let html = `<h3>Résultats</h3><ul class='mb-3'>`;
+      for (const [piece, val] of Object.entries(results)) {
+        html += `<li><strong>${piece}</strong> : ${val} m³/h</li>`;
+      }
+      html += `</ul><p><strong>Débit total théorique</strong> : ${total} m³/h</
+p>`;                                                                            +      html += `<p><strong>Débit minimal réglementaire</strong> : ${minFlow} m³/
+h</p>`;                                                                         +      // Vérification des débits mesurés par bouche
+      const mesureCuisine = parseInt(document.getElementById('mesureCuisine').v
+alue);                                                                          +      const mesureSdb = parseInt(document.getElementById('mesureSdb').value);
+      const mesureWc = parseInt(document.getElementById('mesureWc').value);
+      const mesureAutre = parseInt(document.getElementById('mesureAutre').value
+);                                                                              +      let mesures = [];
+      if (!isNaN(mesureCuisine)) mesures.push({piece:'Cuisine', val:mesureCuisi
+ne, ref:flows['cuisine']});                                                     +      if (!isNaN(mesureSdb)) mesures.push({piece:'Salle de bain', val:mesureSdb
+, ref:flows['salle-de-bain']});                                                 +      if (!isNaN(mesureWc)) mesures.push({piece:'WC', val:mesureWc, ref:flows['
+wc']});                                                                         +      if (!isNaN(mesureAutre)) mesures.push({piece:"Autre salle d'eau", val:mes
+ureAutre, ref:flows['autre-sdb']});                                             +      if (mesures.length > 0) {
+        html += `<h4>Vérification des mesures réelles</h4><ul>`;
+        let totalMesure = 0;
+        let conforme = true;
+        for (const m of mesures) {
+          totalMesure += m.val;
+          const ok = m.val >= m.ref;
+          if (!ok) conforme = false;
+          html += `<li>${m.piece} : ${m.val} m³/h (attendu ≥ ${m.ref}) <span st
+yle='color:${ok?'#16a34a':'#dc2626'}'>${ok?'✔️':'❌'}</span></li>`;              +        }
+        html += `</ul><p><strong>Total mesuré</strong> : ${totalMesure} m³/h</p
+>`;                                                                             +        html += `<p><strong>Débit minimal réglementaire</strong> : ${minFlow} m
+³/h</p>`;                                                                       +        html += `<p class='${(totalMesure >= minFlow && conforme) ? 'text-succe
+ss' : 'text-danger'}'><strong>${(totalMesure >= minFlow && conforme) ? 'Conforme' : 'Non conforme'}</strong> (mesures réelles)</p>`;                            +      } else {
+        html += `<p class='${total >= minFlow ? 'text-success' : 'text-danger'}
+'><strong>${total >= minFlow ? 'Conforme' : 'Non conforme'}</strong> (calcul théorique)</p>`;                                                                   +      }
+      const resDiv = document.getElementById('results');
+      resDiv.innerHTML = html;
+      resDiv.classList.remove('d-none');
+    });
+  </script>
+</body>
+</html>
+diff --git a/web/double-flux.html b/web/double-flux.html
+new file mode 100644
+index 0000000..7585fcd
+--- /dev/null
++++ b/web/double-flux.html
+@@ -0,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMC Double Flux - Mémo Technique VMC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&d
+isplay=swap" rel="stylesheet">                                                  +  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>VMC Double Flux</h1>
+  </header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="calculateur.html">Calculateur</a>
+    <a href="simple-flux.html">Simple Flux</a>
+    <a href="double-flux.html" class="active">Double Flux</a>
+  </nav>
+  <main>
+    <div class="card">
+      <h2>Types de VMC Double Flux</h2>
+      <ul>
+        <li><strong>Hygro-réglable A</strong> : Régulation basée sur l'humidité
+ relative, débit variable, économie d'énergie</li>                              +        <li><strong>Hygro-réglable B</strong> : Régulation plus précise, adapta
+tion aux conditions intérieures, performance énergétique optimale</li>          +      </ul>
+      <h2>Principe de fonctionnement</h2>
+      <ul>
+        <li>Extraction de l'air vicié des pièces humides</li>
+        <li>Insufflation d'air frais filtré dans les pièces de vie</li>
+        <li>Échangeur thermique pour récupérer la chaleur</li>
+        <li>Filtration de l'air entrant</li>
+      </ul>
+      <h2>Avantages</h2>
+      <ul>
+        <li>Qualité d'air intérieur améliorée</li>
+        <li>Récupération de chaleur (jusqu'à 90%)</li>
+        <li>Filtration des polluants extérieurs</li>
+        <li>Confort acoustique</li>
+      </ul>
+      <h2>Inconvénients</h2>
+      <ul>
+        <li>Coût d'installation plus élevé</li>
+        <li>Maintenance plus complexe</li>
+        <li>Encombrement plus important</li>
+      </ul>
+      <h2>Débits réglementaires</h2>
+      <p>Les débits sont similaires à la VMC simple flux pour l'extraction, mai
+s le système assure également l'insufflation.</p>                               +      <a href="index.html" class="btn-main">Retour à l'accueil</a>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
+</body>
+</html>
+diff --git a/web/index.html b/web/index.html
+new file mode 100644
+index 0000000..79b93e8
+--- /dev/null
++++ b/web/index.html
+@@ -0,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mémo Technique VMC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&d
+isplay=swap" rel="stylesheet">                                                  +  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Mémo Technique VMC</h1>
+  </header>
+  <nav>
+    <a href="index.html" class="active">Accueil</a>
+    <a href="calculateur.html">Calculateur</a>
+    <a href="simple-flux.html">Simple Flux</a>
+    <a href="double-flux.html">Double Flux</a>
+  </nav>
+  <main>
+    <div class="card">
+      <h2>Calculateur de débits</h2>
+      <p>Calculez rapidement les débits réglementaires selon votre logement et 
+le type de VMC.</p>                                                             +      <a href="calculateur.html" class="btn-main">Accéder au calculateur</a>
+    </div>
+    <div class="card">
+      <h2>VMC Simple Flux</h2>
+      <p>Tout savoir sur la VMC simple flux, ses avantages, son installation et
+ sa maintenance.</p>                                                            +      <a href="simple-flux.html" class="btn-main">Voir la documentation</a>
+    </div>
+    <div class="card">
+      <h2>VMC Double Flux</h2>
+      <p>Découvrez la VMC double flux, son fonctionnement, ses bénéfices et con
+seils pratiques.</p>                                                            +      <a href="double-flux.html" class="btn-main">Voir la documentation</a>
+    </div>
+    <!-- Conteneur d'annonces (bottom). Le slot est injecté dynamiquement si co
+nfiguré. -->                                                                    +      <!-- bottom ad removed -->
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
+  <!-- Script AdSense (chargé uniquement en production) -->
+  </body>
+  </html>
+diff --git a/web/simple-flux.html b/web/simple-flux.html
+new file mode 100644
+index 0000000..71d0621
+--- /dev/null
++++ b/web/simple-flux.html
+@@ -0,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMC Simple Flux - Mémo Technique VMC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&d
+isplay=swap" rel="stylesheet">                                                  +  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>VMC Simple Flux</h1>
+  </header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="calculateur.html">Calculateur</a>
+    <a href="simple-flux.html" class="active">Simple Flux</a>
+    <a href="double-flux.html">Double Flux</a>
+  </nav>
+  <main>
+    <div class="card">
+      <h2>Principe de fonctionnement</h2>
+      <ul>
+        <li>Extraction mécanique de l'air dans les pièces de service (cuisine, 
+salle de bain, WC)</li>                                                         +        <li>Entrée d'air naturel par des grilles d'aération dans les pièces de 
+vie</li>                                                                        +        <li>Débit d'extraction constant ou variable selon les besoins</li>
+      </ul>
+      <h2>Avantages</h2>
+      <ul>
+        <li>Simple à installer</li>
+        <li>Coût modéré</li>
+        <li>Efficace pour l'extraction des polluants</li>
+      </ul>
+      <h2>Inconvénients</h2>
+      <ul>
+        <li>Pas de filtration de l'air entrant</li>
+        <li>Dépendance aux conditions extérieures</li>
+        <li>Risque de surpression en cas de vent fort</li>
+      </ul>
+      <h2>Débits réglementaires (NF DTU 68.3)</h2>
+      <ul>
+        <li>Cuisine : 75 m³/h</li>
+        <li>Salle de bain : 50 m³/h</li>
+        <li>WC : 30 m³/h</li>
+        <li>Autre salle d'eau : 50 m³/h</li>
+      </ul>
+      <a href="index.html" class="btn-main">Retour à l'accueil</a>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
+</body>
+</html>
