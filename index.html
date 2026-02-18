@@ -6,11 +6,6 @@
   <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
   <meta name="theme-color" content="#3498db">
   
-  <!-- Correctifs DOM critiques - doivent être chargés en tout premier -->
-  <script src="dom-fix-patch.js"></script>
-  
-  <!-- Scripts DOM critiques (dom-fix.js reste chargé tôt). Les autres (error-handler/dev-utils/cleanup) sont différés en fin de body pour améliorer le rendu initial -->
-  <script src="dom-fix.js"></script>
   
   <title>Mémo Technique VMC</title>
   
@@ -273,4 +268,7 @@ header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
     }, 3000);
   </script>
 </body>
+  <!-- Scripts DOM critiques placés en fin de body pour garantir que le body existe -->
+  <script src="dom-fix-patch.js" defer></script>
+  <script src="dom-fix.js" defer></script>
 </html>
