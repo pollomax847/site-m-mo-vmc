@@ -1,0 +1,16 @@
+{
+  "name": "memo-vmc",
+  "version": "1.0.0",
+  "description": "Mémo technique VMC - Documentation technique pour les différents types d'installations VMC",
+  "scripts": {
+    "build": "echo 'Build completed'",
+    "minify": "npx terser script.js -c -m -o script.min.js && npx terser verification-debit.js -c -m -o verification-debit.min.js",
+    "start": "serve -s ."
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

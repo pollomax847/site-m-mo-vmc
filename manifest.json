@@ -1,0 +1,21 @@
+{
+  "name": "Mémo Technique VMC",
+  "short_name": "Mémo VMC",
+  "description": "Mémo technique VMC - Documentation technique pour les différents types d'installations VMC",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "image2vectorsvg.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
