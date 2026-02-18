@@ -1,0 +1,36 @@
+/**
+ * Correctifs spécifiques pour Firefox
+ * Ces styles ne seront appliqués que sur Firefox
+ */
+
+@-moz-document url-prefix() {
+  /* Évite le problème avec -moz-osx-font-smoothing */
+  body, 
+  .text-smooth, 
+  .ventilation-indicator {
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Pour éviter l'erreur -webkit-text-size-adjust */
+  html {
+  }
+  
+  /* Pour éviter les erreurs de préfixes sur les transforms */
+  .transform-fix,
+  .window-item,
+  .ventilation-module,
+  .airflow-animation {
+    transform: translateZ(0);
+  }
+  
+  /* Pour éviter les erreurs sur les animations */
+  @keyframes firefox-airflow {
+    0% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.4; transform: scale(0.8); }
+  }
+  
+  .airflow-animation {
+    animation: firefox-airflow 2s infinite ease-in-out;
+  }
+}
