@@ -14,21 +14,21 @@
   <link rel="stylesheet" href="style.min.css">
   <link rel="preload" as="image" href="logo-192.webp">
   <!-- Critical CSS inlined to improve LCP (header / hero / search - above the fold) -->
-  <style id="critical-css">:root{--primary-color:#1a73e8;--text-color:#222;--light-color:#f8f9fa;--font-main:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--focus-ring:3px solid #ff5722}:root{color-scheme:light}
-body{font-family:var(--font-main);color:var(--text-color);background:var(--light-color);margin:0;padding:10px;line-height:1.4}
-header{background:#f0f8ff;padding:18px 12px;text-align:center;box-shadow:0 2px 5px rgba(0,0,0,.08);position:relative}
-.logo-container{display:flex;justify-content:center;align-items:center;margin-bottom:8px}
-.logo-container img{width:150px;height:150px;max-width:100%;display:block}
-header h1{font-size:24px;color:var(--primary-color);margin:6px 0}
-.search-container{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:6px}
-#searchInput{padding:10px 12px;font-size:16px;width:360px;max-width:60vw;border-radius:6px;border:1px solid #e6e6e6;background:#fff}
-#searchButton{padding:10px 14px;font-size:16px;border-radius:6px;background:var(--primary-color);color:#fff;border:none;cursor:pointer}
-.menu-button{position:fixed;top:15px;left:15px;width:50px;height:50px;background:#2196F3;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:none}
+  <style id="critical-css">:root{--primary-color:#a3bffa;--secondary-color:#fbc2eb;--dark-color:#44476a;--light-color:#f8fafc;--accent-color:#ffe5b4;--text-color:#44476a;--font-main:'Quicksand','Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--focus-ring:3px solid #fbc2eb}:root{color-scheme:light}
+body{font-family:var(--font-main);color:var(--text-color);background:var(--light-color);margin:0;padding:18px;line-height:1.6}
+header{background:linear-gradient(90deg,var(--primary-color) 0%,var(--secondary-color) 100%);padding:28px 16px;text-align:center;box-shadow:0 4px 24px rgba(163,191,250,0.10);position:relative;border-radius:16px;margin-bottom:32px}
+.logo-container{display:flex;justify-content:center;align-items:center;margin-bottom:10px}
+.logo-container img{width:120px;height:120px;max-width:100%;display:block;filter:drop-shadow(0 2px 8px rgba(163,191,250,0.10))}
+header h1{font-size:2.2rem;color:var(--dark-color);margin:10px 0 0 0;font-weight:800;letter-spacing:0.01em;text-shadow:0 2px 12px rgba(163,191,250,0.10)}
+.search-container{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:10px}
+#searchInput{padding:12px 14px;font-size:17px;width:340px;max-width:60vw;border-radius:10px;border:1.5px solid var(--primary-color);background:#fff;transition:border-color 0.2s}
+#searchButton{padding:12px 16px;font-size:17px;border-radius:10px;background:linear-gradient(90deg,var(--secondary-color) 0%,var(--accent-color) 100%);color:var(--dark-color);border:1.5px solid var(--primary-color);cursor:pointer;transition:background 0.2s}
+.menu-button{position:fixed;top:15px;left:15px;width:50px;height:50px;background:var(--primary-color);color:var(--dark-color);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;border:none}
 .side-menu{transform:translateX(-100%)}
 .skip-link{position:absolute;left:-999px}
-.skip-link:focus{left:10px;top:10px;padding:8px 12px;background:var(--primary-color);color:#fff;border-radius:4px}
-.section-container{padding:12px 10px;margin:10px 0}
-@media(max-width:480px){header{padding:12px 8px}header h1{font-size:18px}#searchInput{width:100%;font-size:15px}#searchButton{width:100%}.search-container{flex-direction:column;gap:6px}}</style>
+.skip-link:focus{left:10px;top:10px;padding:10px 18px;background:var(--primary-color);color:#fff;border-radius:16px}
+.section-container{padding:18px 12px;margin:14px 0;background:var(--light-color);border-radius:16px;box-shadow:0 4px 24px rgba(163,191,250,0.10);border:1.5px solid var(--primary-color)}
+@media(max-width:480px){header{padding:12px 8px}header h1{font-size:1.2rem}#searchInput{width:100%;font-size:15px}#searchButton{width:100%}.search-container{flex-direction:column;gap:6px}}</style>
   <link rel="preload" href="script.min.js" as="script">
   <link rel="stylesheet" href="styles/mobile-fixes.min.css">
   <link rel="stylesheet" href="css/unified-styles.min.css">
