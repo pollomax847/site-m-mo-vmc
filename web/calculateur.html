@@ -4,40 +4,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculateur de débits - Mémo Technique VMC</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
     .result-box { background: #f8f9fa; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .form-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      min-width: 220px;
+      margin-bottom: 0.5rem;
+    }
+    .form-label {
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .form-control {
+      padding: 0.5rem 0.7rem;
+      border-radius: 0.7rem;
+      border: 1px solid #e5e7eb;
+      font-size: 1.05rem;
+      background: #fff;
+      margin-bottom: 0.2rem;
+    }
+    @media (max-width: 700px) {
+      .form-section {
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .form-group {
+        min-width: 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">Mémo Technique VMC</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="simple-flux.html">VMC Simple Flux</a></li>
-          <li class="nav-item"><a class="nav-link" href="double-flux.html">VMC Double Flux</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Calculateur de débits</a></li>
-        </ul>
-      </div>
-    </div>
+  <header>
+    <h1>Calculateur de débits réglementaires</h1>
+  </header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="calculateur.html" class="active">Calculateur</a>
+    <a href="simple-flux.html">Simple Flux</a>
+    <a href="double-flux.html">Double Flux</a>
   </nav>
-  <div class="container">
-    <h1 class="mb-4">Calculateur de débits réglementaires</h1>
-    <form id="calcForm">
-      <div class="row mb-3">
-        <div class="col-md-6">
+  <main>
+    <div class="card" style="max-width:700px;width:100%;margin:2rem auto;">
+      <form id="calcForm">
+      <div class="form-section">
+        <div class="form-group">
           <label for="vmcType" class="form-label">Type de VMC</label>
-          <select class="form-select" id="vmcType" required>
+          <select class="form-control" id="vmcType" required>
             <option value="">Choisir...</option>
             <option value="simple-flux">Simple Flux</option>
             <option value="hygro-a">Hygro A</option>
             <option value="hygro-b">Hygro B</option>
           </select>
         </div>
-        <div class="col-md-6">
+        <div class="form-group">
           <label for="housingType" class="form-label">Type de logement</label>
-          <select class="form-select" id="housingType" required>
+          <select class="form-control" id="housingType" required>
             <option value="">Choisir...</option>
             <option value="T1">T1</option>
             <option value="T2">T2</option>
@@ -45,31 +83,53 @@
             <option value="T4">T4</option>
             <option value="T5+">T5+</option>
           </select>
+          <div id="modulesResult" class="result-box d-none"></div>
         </div>
       </div>
-      <div class="row mb-3">
-        <div class="col-md-3">
+      <div class="form-section">
+        <div class="form-group">
           <label for="cuisine" class="form-label">Nombre de cuisines</label>
           <input type="number" class="form-control" id="cuisine" min="0" value="0">
         </div>
-        <div class="col-md-3">
+        <div class="form-group">
           <label for="sdb" class="form-label">Nombre de salles de bain</label>
           <input type="number" class="form-control" id="sdb" min="0" value="0">
         </div>
-        <div class="col-md-3">
+        <div class="form-group">
           <label for="wc" class="form-label">Nombre de WC</label>
           <input type="number" class="form-control" id="wc" min="0" value="0">
         </div>
-        <div class="col-md-3">
+        <div class="form-group">
           <label for="autreSdb" class="form-label">Autres salles d'eau</label>
           <input type="number" class="form-control" id="autreSdb" min="0" value="0">
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Calculer</button>
+      <div class="form-section">
+        <div class="form-group">
+          <label for="mesureCuisine" class="form-label">Débit mesuré cuisine (m³/h)</label>
+          <input type="number" class="form-control" id="mesureCuisine" min="0" placeholder="Mesure cuisine">
+        </div>
+        <div class="form-group">
+          <label for="mesureSdb" class="form-label">Débit mesuré salle de bain (m³/h)</label>
+          <input type="number" class="form-control" id="mesureSdb" min="0" placeholder="Mesure salle de bain">
+        </div>
+        <div class="form-group">
+          <label for="mesureWc" class="form-label">Débit mesuré WC (m³/h)</label>
+          <input type="number" class="form-control" id="mesureWc" min="0" placeholder="Mesure WC">
+        </div>
+        <div class="form-group">
+          <label for="mesureAutre" class="form-label">Débit mesuré autre salle d'eau (m³/h)</label>
+          <input type="number" class="form-control" id="mesureAutre" min="0" placeholder="Mesure autre salle d'eau">
+        </div>
+      </div>
+      <button type="submit" class="btn-main">Calculer</button>
     </form>
     <div id="results" class="result-box d-none"></div>
-    <a href="index.html" class="btn btn-secondary mt-4">Retour à l'accueil</a>
-  </div>
+    <a href="index.html" class="btn-main mt-4">Retour à l'accueil</a>
+  </main>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
   <script>
     const debitsReglementaires = {
       'simple-flux': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 50 },
@@ -77,6 +137,30 @@
       'hygro-b': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 50 }
     };
     const minimumDebitsParLogement = { 'T1': 100, 'T2': 150, 'T3': 200, 'T4': 250, 'T5+': 300 };
+    // Remplissage automatique pour chaque type de logement
+    const logementPresets = {
+      'T1': { cuisine: 1, sdb: 1, wc: 0, autreSdb: 0, modules: ['1 cuisine', '1 salle de bain'] },
+      'T2': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 0, modules: ['1 cuisine', '1 salle de bain', '1 WC'] },
+      'T3': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 1, modules: ['1 cuisine', '1 salle de bain', '1 WC', '1 autre salle d\'eau'] },
+      'T4': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 1, modules: ['1 cuisine', '1 salle de bain', '1 WC', '1 autre salle d\'eau'] },
+      'T5+': { cuisine: 1, sdb: 2, wc: 2, autreSdb: 1, modules: ['1 cuisine', '2 salles de bain', '2 WC', '1 autre salle d\'eau'] }
+    };
+    document.getElementById('housingType').addEventListener('change', function() {
+      const val = this.value;
+      if (logementPresets[val]) {
+        document.getElementById('cuisine').value = logementPresets[val].cuisine;
+        document.getElementById('sdb').value = logementPresets[val].sdb;
+        document.getElementById('wc').value = logementPresets[val].wc;
+        document.getElementById('autreSdb').value = logementPresets[val].autreSdb;
+        // Affichage modules fenêtres
+        const modulesDiv = document.getElementById('modulesResult');
+        modulesDiv.innerHTML = `<h4>Modules fenêtres à prévoir</h4><ul>` + logementPresets[val].modules.map(m => `<li>${m}</li>`).join('') + `</ul>`;
+        modulesDiv.classList.remove('d-none');
+      } else {
+        document.getElementById('modulesResult').classList.add('d-none');
+      }
+    });
+
     document.getElementById('calcForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const vmcType = document.getElementById('vmcType').value;
@@ -99,14 +183,38 @@
       for (const [piece, val] of Object.entries(results)) {
         html += `<li><strong>${piece}</strong> : ${val} m³/h</li>`;
       }
-      html += `</ul><p><strong>Débit total</strong> : ${total} m³/h</p>`;
+      html += `</ul><p><strong>Débit total théorique</strong> : ${total} m³/h</p>`;
       html += `<p><strong>Débit minimal réglementaire</strong> : ${minFlow} m³/h</p>`;
-      html += `<p class='${total >= minFlow ? 'text-success' : 'text-danger'}'><strong>${total >= minFlow ? 'Conforme' : 'Non conforme'}</strong></p>`;
+      // Vérification des débits mesurés par bouche
+      const mesureCuisine = parseInt(document.getElementById('mesureCuisine').value);
+      const mesureSdb = parseInt(document.getElementById('mesureSdb').value);
+      const mesureWc = parseInt(document.getElementById('mesureWc').value);
+      const mesureAutre = parseInt(document.getElementById('mesureAutre').value);
+      let mesures = [];
+      if (!isNaN(mesureCuisine)) mesures.push({piece:'Cuisine', val:mesureCuisine, ref:flows['cuisine']});
+      if (!isNaN(mesureSdb)) mesures.push({piece:'Salle de bain', val:mesureSdb, ref:flows['salle-de-bain']});
+      if (!isNaN(mesureWc)) mesures.push({piece:'WC', val:mesureWc, ref:flows['wc']});
+      if (!isNaN(mesureAutre)) mesures.push({piece:"Autre salle d'eau", val:mesureAutre, ref:flows['autre-sdb']});
+      if (mesures.length > 0) {
+        html += `<h4>Vérification des mesures réelles</h4><ul>`;
+        let totalMesure = 0;
+        let conforme = true;
+        for (const m of mesures) {
+          totalMesure += m.val;
+          const ok = m.val >= m.ref;
+          if (!ok) conforme = false;
+          html += `<li>${m.piece} : ${m.val} m³/h (attendu ≥ ${m.ref}) <span style='color:${ok?'#16a34a':'#dc2626'}'>${ok?'✔️':'❌'}</span></li>`;
+        }
+        html += `</ul><p><strong>Total mesuré</strong> : ${totalMesure} m³/h</p>`;
+        html += `<p><strong>Débit minimal réglementaire</strong> : ${minFlow} m³/h</p>`;
+        html += `<p class='${(totalMesure >= minFlow && conforme) ? 'text-success' : 'text-danger'}'><strong>${(totalMesure >= minFlow && conforme) ? 'Conforme' : 'Non conforme'}</strong> (mesures réelles)</p>`;
+      } else {
+        html += `<p class='${total >= minFlow ? 'text-success' : 'text-danger'}'><strong>${total >= minFlow ? 'Conforme' : 'Non conforme'}</strong> (calcul théorique)</p>`;
+      }
       const resDiv = document.getElementById('results');
       resDiv.innerHTML = html;
       resDiv.classList.remove('d-none');
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

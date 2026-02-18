@@ -4,24 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VMC Simple Flux - Mémo Technique VMC</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">Mémo Technique VMC</a>
-      <div class="collapse navbar-collapse">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link active" href="#">VMC Simple Flux</a></li>
-          <li class="nav-item"><a class="nav-link" href="double-flux.html">VMC Double Flux</a></li>
-          <li class="nav-item"><a class="nav-link" href="calculateur.html">Calculateur de débits</a></li>
-        </ul>
-      </div>
-    </div>
+  <header>
+    <h1>VMC Simple Flux</h1>
+  </header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="calculateur.html">Calculateur</a>
+    <a href="simple-flux.html" class="active">Simple Flux</a>
+    <a href="double-flux.html">Double Flux</a>
   </nav>
-  <div class="container">
-    <h1 class="mb-4">VMC Simple Flux</h1>
-    <div class="mb-4">
+  <main>
+    <div class="card">
       <h2>Principe de fonctionnement</h2>
       <ul>
         <li>Extraction mécanique de l'air dans les pièces de service (cuisine, salle de bain, WC)</li>
@@ -47,9 +44,11 @@
         <li>WC : 30 m³/h</li>
         <li>Autre salle d'eau : 50 m³/h</li>
       </ul>
+      <a href="index.html" class="btn-main">Retour à l'accueil</a>
     </div>
-    <a href="index.html" class="btn btn-secondary">Retour à l'accueil</a>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </main>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
 </body>
 </html>
