@@ -131,11 +131,32 @@
     <p>&copy; 2026 Mémo Technique VMC</p>
   </footer>
   <script>
+    // --- LOGIQUE AMÉLIORÉE ET COMMENTÉE ---
+    // Débits réglementaires par type de VMC et logement (valeurs réalistes)
     const debitsReglementaires = {
-      'simple-flux': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 50 },
-      'hygro-a': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 50 },
-      'hygro-b': { 'cuisine': 75, 'salle-de-bain': 50, 'wc': 30, 'autre-sdb': 50 }
+      'simple-flux': {
+        'T1': { 'cuisine': 20, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T2': { 'cuisine': 30, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T3': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 15, 'autre-sdb': 15 },
+        'T4': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 },
+        'T5+': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 }
+      },
+      'hygro-a': {
+        'T1': { 'cuisine': 20, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T2': { 'cuisine': 30, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T3': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 15, 'autre-sdb': 15 },
+        'T4': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 },
+        'T5+': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 }
+      },
+      'hygro-b': {
+        'T1': { 'cuisine': 20, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T2': { 'cuisine': 30, 'salle-de-bain': 15, 'wc': 15, 'autre-sdb': 0 },
+        'T3': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 15, 'autre-sdb': 15 },
+        'T4': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 },
+        'T5+': { 'cuisine': 45, 'salle-de-bain': 30, 'wc': 30, 'autre-sdb': 15 }
+      }
     };
+    // Débits minimaux réglementaires globaux
     const minimumDebitsParLogement = { 'T1': 100, 'T2': 150, 'T3': 200, 'T4': 250, 'T5+': 300 };
     // Remplissage automatique pour chaque type de logement
     const logementPresets = {
@@ -145,6 +166,8 @@
       'T4': { cuisine: 1, sdb: 1, wc: 1, autreSdb: 1, modules: ['1 cuisine', '1 salle de bain', '1 WC', '1 autre salle d\'eau'] },
       'T5+': { cuisine: 1, sdb: 2, wc: 2, autreSdb: 1, modules: ['1 cuisine', '2 salles de bain', '2 WC', '1 autre salle d\'eau'] }
     };
+
+    // Remplissage automatique des pièces selon le logement
     document.getElementById('housingType').addEventListener('change', function() {
       const val = this.value;
       if (logementPresets[val]) {
@@ -161,16 +184,19 @@
       }
     });
 
+    // Calcul principal
     document.getElementById('calcForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const vmcType = document.getElementById('vmcType').value;
       const housingType = document.getElementById('housingType').value;
+      if (!vmcType || !housingType) return;
+      const flows = debitsReglementaires[vmcType][housingType];
+      // Récupère le nombre de pièces
       const cuisine = parseInt(document.getElementById('cuisine').value) || 0;
       const sdb = parseInt(document.getElementById('sdb').value) || 0;
       const wc = parseInt(document.getElementById('wc').value) || 0;
       const autreSdb = parseInt(document.getElementById('autreSdb').value) || 0;
-      if (!vmcType || !housingType) return;
-      const flows = debitsReglementaires[vmcType];
+      // Calcul théorique par pièce
       const results = {
         'Cuisine': cuisine * flows['cuisine'],
         'Salle de bain': sdb * flows['salle-de-bain'],

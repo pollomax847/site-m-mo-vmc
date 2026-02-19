@@ -3,41 +3,108 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mémo Technique VMC</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+  <title>VMC Memo - Nouvelle Génération</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <div id="progress-bar"></div>
   <header>
-    <h1>Mémo Technique VMC</h1>
+    <nav class="navbar">
+      <div class="logo" style="display:flex;align-items:center;gap:0.7rem;">
+        <img src="icons/Icon-192.png" alt="Logo VMC Memo" style="height:38px;width:38px;vertical-align:middle;"> VMC Memo
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="calculateur.html">Vérification des débits</a></li>
+        <li><a href="guide.html">Guide entretien</a></li>
+        <li><a href="fiche-installation.html">Fiche installation</a></li>
+        <li><a href="methodologie.html">Méthodologie</a></li>
+        <li><a href="info.html">Infos techniques</a></li>
+        <li><a href="dsc-constructeurs.html">DSC</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+      <button class="burger" aria-label="Menu">☰</button>
+      <button id="theme-toggle" aria-label="Changer le thème">🌙</button>
+    </nav>
   </header>
-  <nav>
-    <a href="index.html" class="active">Accueil</a>
-    <a href="calculateur.html">Calculateur</a>
-    <a href="simple-flux.html">Simple Flux</a>
-    <a href="double-flux.html">Double Flux</a>
-  </nav>
   <main>
-    <div class="card">
-      <h2>Calculateur de débits</h2>
-      <p>Calculez rapidement les débits réglementaires selon votre logement et le type de VMC.</p>
-      <a href="calculateur.html" class="btn-main">Accéder au calculateur</a>
-    </div>
-    <div class="card">
-      <h2>VMC Simple Flux</h2>
-      <p>Tout savoir sur la VMC simple flux, ses avantages, son installation et sa maintenance.</p>
-      <a href="simple-flux.html" class="btn-main">Voir la documentation</a>
-    </div>
-    <div class="card">
-      <h2>VMC Double Flux</h2>
-      <p>Découvrez la VMC double flux, son fonctionnement, ses bénéfices et conseils pratiques.</p>
-      <a href="double-flux.html" class="btn-main">Voir la documentation</a>
-    </div>
-    <!-- Conteneur d'annonces (bottom). Le slot est injecté dynamiquement si configuré. -->
-      <!-- bottom ad removed -->
+    <section id="accueil" class="hero">
+      <h1>Bienvenue sur le nouveau Mémo Technique VMC</h1>
+      <p>Un site moderne, rapide et mobile-first pour tous vos besoins techniques VMC.</p>
+      <a href="#outils" class="cta">Découvrir les outils</a>
+    </section>
+    <section id="astuce" class="tip">
+      <h2>Astuce du mois</h2>
+      <div class="tip-content" id="astuce-content">Pour une VMC efficace, nettoyez les bouches d’extraction tous les 6 mois !</div>
+    </section>
+    <script>
+      // Astuces à faire défiler
+      const astuces = [
+        "Pour une VMC efficace, nettoyez les bouches d’extraction tous les 6 mois !",
+        "Vérifiez régulièrement que les entrées d’air ne sont pas obstruées.",
+        "Un moteur de VMC bruyant peut indiquer un besoin de maintenance.",
+        "Pensez à dépoussiérer les filtres si votre VMC en possède.",
+        "Faites contrôler votre installation par un professionnel tous les 2 à 3 ans.",
+        "En hiver, évitez de boucher les entrées d’air pour limiter la condensation."
+      ];
+      let astuceIndex = 0;
+      function defileAstuces() {
+        const el = document.getElementById('astuce-content');
+        if (!el) return;
+        astuceIndex = (astuceIndex + 1) % astuces.length;
+        el.style.opacity = 0;
+        setTimeout(() => {
+          el.textContent = astuces[astuceIndex];
+          el.style.opacity = 1;
+        }, 350);
+      }
+      setInterval(defileAstuces, 5000);
+    </script>
+    <section id="outils" class="features">
+      <h2>Outil de vérification des débits VMC</h2>
+      <div class="card" style="max-width:700px;width:100%;margin:2rem auto;">
+        <h3 style="margin-bottom:1rem;">Calculateur réglementaire VMC</h3>
+        <p>Vérifiez la conformité de votre installation selon le type de logement, de VMC et vos mesures réelles.</p>
+        <a href="calculateur.html" class="btn-main">Accéder au calculateur</a>
+      </div>
+      <section id="downloads" class="downloads">
+        <h2>Guides interactifs</h2>
+        <ul>
+          <li><a href="guide.html" class="btn-main">Guide d’entretien VMC </a></li>
+          <li><a href="fiche-installation.html" class="btn-main">Fiche pratique installation </a></li>
+          <li><a href="methodologie.html" class="btn-main">Méthodologie d’installation</a></li>
+          <li><a href="info.html" class="btn-main">Informations techniques</a></li>
+          <li><a href="dsc-constructeurs.html" class="btn-main">Branchement DSC (constructeurs)</a></li>
+        </ul>
+      </section>
+    </section>
+    <section id="faq" class="faq">
+      <h2>Questions fréquentes</h2>
+      <input type="search" id="faq-search" placeholder="Rechercher dans la FAQ..." aria-label="Recherche FAQ">
+      <div class="faq-list">
+        <details>
+          <summary>Qu'est-ce qu'une VMC ?</summary>
+          <p>La VMC (Ventilation Mécanique Contrôlée) assure le renouvellement de l'air dans un logement.</p>
+        </details>
+        <details>
+          <summary>Comment entretenir ma VMC ?</summary>
+          <p>Nettoyez régulièrement les bouches et vérifiez le bon fonctionnement du moteur.</p>
+        </details>
+        <details>
+          <summary>Quels sont les signes d’une VMC défectueuse ?</summary>
+          <p>Bruit anormal, condensation persistante, ou mauvaises odeurs sont des signes à surveiller.</p>
+        </details>
+      </div>
+    </section>
+  </main>
   <footer>
-    <p>&copy; 2026 Mémo Technique VMC</p>
+    <p>&copy; 2026 Mémo Technique VMC. Créé par pollomax et IA via VSCode. Tous droits réservés.</p>
   </footer>
-  <!-- Script AdSense (chargé uniquement en production) -->
-  </body>
-  </html>
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+</body>
+</html>

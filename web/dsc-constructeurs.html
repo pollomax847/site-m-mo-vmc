@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Branchement DSC par constructeur</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="dsc-constructeurs.js"></script>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">VMC Memo</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="calculateur.html">Vérification des débits</a></li>
+        <li><a href="guide.html">Guide</a></li>
+        <li><a href="fiche-installation.html">Fiche installation</a></li>
+        <li><a href="methodologie.html">Méthodologie</a></li>
+        <li><a href="info.html">Infos techniques</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container">
+    <section class="card" style="max-width:700px;margin:2rem auto;">
+      <h1 id="page-title">Branchement DSC par constructeur</h1>
+      <div id="dsc-content"></div>
+      <a href="index.html" class="btn-main" style="margin-top:2rem;">Retour à l’accueil</a>
+    </section>
+  </main>
+  <script>
+    function renderDSCContent() {
+      if(window.vmcContent && window.vmcContent['dsc-constructeurs']) {
+        document.getElementById('dsc-content').innerHTML = window.vmcContent['dsc-constructeurs'].content;
+      } else {
+        setTimeout(renderDSCContent, 50);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', renderDSCContent);
+  </script>
+</body>
+</html>

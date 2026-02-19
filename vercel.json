@@ -7,6 +7,7 @@
     }
   ],
   "routes": [
+    { "src": "/service-worker.js", "dest": "/web/service-worker.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
   "outputDirectory": "dist"
