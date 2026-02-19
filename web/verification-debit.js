@@ -1,3 +1,5 @@
+import { m3hToMs, msToM3h, paToMmce, mmceToPa } from './lib/conversions.js';
+
 // Outil de vérification des débits VMC
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Chargement du module de vérification des débits...');
@@ -186,28 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
     
-    // Facteurs de conversion entre unités
-    const conversions = {
-      'm3h_to_ms': function(debit, diametre) {
-        // Convertit m³/h en m/s (vitesse) en fonction du diamètre en mm
-        const section = Math.PI * Math.pow((diametre / 1000) / 2, 2); // section en m²
-        return debit / 3600 / section;
-      },
-      'ms_to_m3h': function(vitesse, diametre) {
-        // Convertit m/s en m³/h en fonction du diamètre en mm
-        const section = Math.PI * Math.pow((diametre / 1000) / 2, 2); // section en m²
-        return vitesse * section * 3600;
-      },
-      'pa_to_mmce': function(pa) {
-        // Convertit les Pascals en mm de colonne d'eau
-        return pa / 9.81;
-      },
-      'mmce_to_pa': function(mmce) {
-        // Convertit les mm de colonne d'eau en Pascals
-        return mmce * 9.81;
-      }
-    };
-    
+    // conversions moved to reusable module (imported at top)
+
     // Définir le contenu pour la section verification-debit
     window.vmcContent['verification-debit'] = {
       title: 'Vérification des Débits VMC',
@@ -355,6 +337,10 @@ document.addEventListener('DOMContentLoaded', function() {
       const referenceTableContainer = document.getElementById('reference-table-container');
       const diametreContainer = document.getElementById('diametre-container');
 
+      // Accessibility: announce result updates
+      if (resultats) resultats.setAttribute('aria-live', 'polite');
+      if (mesuresContainer) mesuresContainer.setAttribute('role', 'list');
+
       // Si les éléments ne sont pas encore chargés, on quitte la fonction
       if (!typeLogement || !typeVMC || !mesuresContainer || !resultats) {
         console.error("Les éléments du DOM ne sont pas encore disponibles");
@@ -371,6 +357,16 @@ document.addEventListener('DOMContentLoaded', function() {
       const btnConvert = document.getElementById('btnConvert');
       const conversionResult = document.getElementById('conversionResult');
       const diametreConversionContainer = document.getElementById('diametre-conversion-container');
+
+      // Accessibility: set ARIA attributes for conversion controls
+      if (valueToConvert) valueToConvert.setAttribute('aria-label', 'Valeur à convertir');
+      if (fromUnit) fromUnit.setAttribute('aria-label', 'Unité source');
+      if (toUnit) toUnit.setAttribute('aria-label', 'Unité cible');
+      if (diametreConversion) diametreConversion.setAttribute('aria-label', 'Diamètre pour conversion');
+      if (conversionResult) conversionResult.setAttribute('aria-live', 'polite');
+
+      // Compteur pour générer des IDs uniques pour les champs de mesure
+      let mesureCounter = 0;
 
       // Initialiser l'affichage
       updateReferenceTable();
@@ -415,6 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (btnAjouterPiece) {
+        // S'assurer que le bouton n'envoie pas de formulaire lorsqu'il est cliqué
+        btnAjouterPiece.type = 'button';
         btnAjouterPiece.addEventListener('click', () => {
           ajouterChampsMesure();
           // Lancer une vérification après ajout d'une pièce
@@ -423,6 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (btnConvert) {
+        btnConvert.type = 'button';
         btnConvert.addEventListener('click', () => {
           if (!valueToConvert || !fromUnit || !toUnit || !conversionResult) {
             return;
@@ -446,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
               conversionResult.innerHTML = '<span class="error">Diamètre invalide</span>';
               return;
             }
-            resultat = conversions.m3h_to_ms(valeur, diam);
+            resultat = m3hToMs(valeur, diam);
           }
           else if (from === 'ms' && to === 'm3h') {
             const diam = parseFloat(diametreConversion.value);
@@ -454,14 +453,14 @@ document.addEventListener('DOMContentLoaded', function() {
               conversionResult.innerHTML = '<span class="error">Diamètre invalide</span>';
               return;
             }
-            resultat = conversions.ms_to_m3h(valeur, diam);
+            resultat = msToM3h(valeur, diam);
           }
           // Conversion entre Pa et mmCE
           else if (from === 'pa' && to === 'mmce') {
-            resultat = conversions.pa_to_mmce(valeur);
+            resultat = paToMmce(valeur);
           }
           else if (from === 'mmce' && to === 'pa') {
-            resultat = conversions.mmce_to_pa(valeur);
+            resultat = mmceToPa(valeur);
           }
           // Même unité
           else if (from === to) {
@@ -623,6 +622,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const row = document.createElement('div');
         row.className = 'mesure-row';
 
+        // Générer un suffixe d'ID unique
+        const idSuffix = ++mesureCounter;
+
         // Sélection du type de pièce
         const pieceGroup = document.createElement('div');
         pieceGroup.className = 'form-group';
@@ -630,6 +632,9 @@ document.addEventListener('DOMContentLoaded', function() {
         pieceLabel.textContent = 'Type de pièce:';
         const pieceSelect = document.createElement('select');
         pieceSelect.className = 'form-control piece-type auto-update';
+        pieceSelect.id = `piece-type-${idSuffix}`;
+        pieceLabel.htmlFor = pieceSelect.id;
+        pieceSelect.setAttribute('aria-label', 'Type de pièce');
 
         // Options types de pièces
         const options = [
@@ -660,15 +665,21 @@ document.addEventListener('DOMContentLoaded', function() {
         debitInput.className = 'form-control debit-mesure';
         debitInput.min = '0';
         debitInput.step = 'any';
+        debitInput.id = `debit-${idSuffix}`;
+        debitLabel.htmlFor = debitInput.id;
+        debitInput.setAttribute('aria-label', `Débit mesuré pour ${getNomPiece(pieceType)}`);
+        debitInput.setAttribute('inputmode', 'decimal');
         debitGroup.appendChild(debitLabel);
         debitGroup.appendChild(debitInput);
 
         // Bouton de suppression
         const btnRemove = document.createElement('button');
         btnRemove.className = 'btn-remove';
+        btnRemove.type = 'button';
         btnRemove.innerHTML = '&times;';
         btnRemove.style.minHeight = '44px'; // Taille minimale recommandée pour les éléments tactiles
         btnRemove.style.minWidth = '44px';
+        btnRemove.setAttribute('aria-label', `Supprimer la pièce ${getNomPiece(pieceType)}`);
         btnRemove.addEventListener('click', function() {
           mesuresContainer.removeChild(item);
           verifierConformite();
@@ -677,6 +688,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Status de la mesure (sera rempli par la vérification)
         const statusDiv = document.createElement('div');
         statusDiv.className = 'mesure-status';
+        statusDiv.id = `status-${idSuffix}`;
+        statusDiv.setAttribute('aria-live', 'polite');
 
         row.appendChild(pieceGroup);
         row.appendChild(debitGroup);
@@ -711,14 +724,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Conversion si nécessaire
         if (uniteSelectionnee === 'ms') {
           // Conversion m/s à m³/h
-          debitMesure = conversions.ms_to_m3h(debitMesure, diametreVal);
+          debitMesure = msToM3h(debitMesure, diametreVal);
         } else if (uniteSelectionnee === 'pa') {
           // Une conversion de Pa à m³/h nécessiterait une courbe caractéristique
           // Pour simplifier, on utilise une approximation
           debitMesure = Math.sqrt(debitMesure) * 10;
         } else if (uniteSelectionnee === 'mmce') {
           // Conversion mmCE à Pa puis à m³/h (approximation)
-          const pa = conversions.mmce_to_pa(debitMesure);
+          const pa = mmceToPa(debitMesure);
           debitMesure = Math.sqrt(pa) * 10;
         }
 
@@ -1108,6 +1121,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Ajouter une nouvelle fenêtre avec entrée d'air
       function addWindowWithAirInlet() {
+          // Expose globally for error-handler.js compatibility
+          window.initWindowsModule = initWindowsModule;
+          window.addWindowWithAirInlet = addWindowWithAirInlet;
         const windowItem = document.createElement('div');
         windowItem.className = 'window-item';
         
@@ -1166,6 +1182,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const airInletTypeSelect = windowItem.querySelector('.air-inlet-type');
         const airInletModuleSelect = windowItem.querySelector('.air-inlet-module');
         const stateSelect = windowItem.querySelector('.window-state');
+        // Accessibility: set aria-labels and button type
+        roomTypeSelect.setAttribute('aria-label', 'Type de pièce (fenêtre)');
+        airInletTypeSelect.setAttribute('aria-label', 'Type d\'entrée d\'air');
+        airInletModuleSelect.setAttribute('aria-label', 'Module entrée d\'air');
+        stateSelect.setAttribute('aria-label', 'État de la fenêtre');
         
         roomTypeSelect.addEventListener('change', function() {
           updateAirInletOptions(windowItem);
@@ -1186,10 +1207,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Bouton de suppression
-        windowItem.querySelector('.window-remove').addEventListener('click', () => {
-          windowsContainer.removeChild(windowItem);
-          updateTotalAirFlow();
-        });
+        const windowRemoveBtn = windowItem.querySelector('.window-remove');
+        if (windowRemoveBtn) {
+          windowRemoveBtn.type = 'button';
+          windowRemoveBtn.setAttribute('aria-label', 'Supprimer cette entrée d\'air');
+          windowRemoveBtn.addEventListener('click', () => {
+            windowsContainer.removeChild(windowItem);
+            updateTotalAirFlow();
+          });
+        }
+        
         
         // Ajouter au conteneur et mettre à jour les calculs
         windowsContainer.appendChild(windowItem);
@@ -1312,7 +1339,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const airInletTypeSelect = windowItem.querySelector('.air-inlet-type');
         const airInletModuleSelect = windowItem.querySelector('.air-inlet-module');
         const stateSelect = windowItem.querySelector('.window-state');
-        
+
+        // Accessibility: aria labels and remove button type
+        if (roomTypeSelect) roomTypeSelect.setAttribute('aria-label', 'Type de pièce (fenêtre)');
+        if (airInletTypeSelect) airInletTypeSelect.setAttribute('aria-label', 'Type d\'entrée d\'air');
+        if (airInletModuleSelect) airInletModuleSelect.setAttribute('aria-label', 'Module entrée d\'air');
+        if (stateSelect) stateSelect.setAttribute('aria-label', 'État de la fenêtre');
+        const windowRemoveBtn = windowItem.querySelector('.window-remove');
+        if (windowRemoveBtn) {
+          windowRemoveBtn.type = 'button';
+          windowRemoveBtn.setAttribute('aria-label', 'Supprimer cette entrée d\'air');
+        }
+
         roomTypeSelect.addEventListener('change', function() {
           updateAirInletOptions(windowItem);
           updateWindowAirQuality(windowItem);
@@ -1370,6 +1408,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // Initialiser le bouton d'ajout et le guide d'utilisation
       const btnAjouterFenetre = document.getElementById('btnAjouterFenetre');
       if (btnAjouterFenetre) {
+        btnAjouterFenetre.type = 'button';
+        btnAjouterFenetre.setAttribute('aria-label', 'Ajouter une entrée d\'air');
         btnAjouterFenetre.addEventListener('click', addWindowWithAirInlet);
         
         // Ajouter une entrée d'air par défaut au chargement
@@ -1453,3 +1493,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 1000);
   }
 });
+
+// Export getter (progressive migration)
+export function getVerificationSection() { return window.vmcContent && window.vmcContent['verification-debit']; }
+

@@ -79,7 +79,7 @@
   
   // Mettre en place une surveillance DOM pour résoudre les problèmes futurs
   if ('MutationObserver' in window) {
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver((_mutations) => {
       // Re-vérifier les éléments critiques périodiquement
       setTimeout(createRequiredElements, 200);
     });

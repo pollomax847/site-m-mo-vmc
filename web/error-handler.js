@@ -31,12 +31,12 @@
     debugPanel.className = 'dev-debug-panel' + (options.showDebugPanel ? '' : ' hidden');
     debugPanel.innerHTML = `
       <h3>Débogage</h3>
-      <div>JS Errors: <span class="error-count">0</span></div>
-      <div>DOM Errors: <span class="error-count">0</span></div>
-      <div>CSS Errors: <span class="error-count">0</span></div>
-      <div>Fixed: <span class="placeholder-count">0</span></div>
-      <div>Placeholders: <span class="placeholder-count">0</span></div>
-      <button id="toggle-debug">Toggle Panel</button>
+      <div>Erreurs JS : <span class="error-count">0</span></div>
+      <div>Erreurs DOM : <span class="error-count">0</span></div>
+      <div>Erreurs CSS : <span class="error-count">0</span></div>
+      <div>Correctifs : <span class="placeholder-count">0</span></div>
+      <div>Placeholders : <span class="placeholder-count">0</span></div>
+      <button id="toggle-debug">Afficher/masquer le panneau</button>
     `;
     document.body.appendChild(debugPanel);
     
@@ -79,10 +79,10 @@
             // Reconstruire les éléments de fenêtre si possible
             setTimeout(function() {
               try {
-                if (typeof initWindowsModule === 'function') {
+                if (typeof window.initWindowsModule === 'function') {
                   const existingItems = document.querySelectorAll('.window-item');
                   if (existingItems.length === 0) {
-                    initWindowsModule();
+                    window.initWindowsModule();
                     stats.fixedErrors++;
                     updateDebugPanel();
                   }
@@ -98,7 +98,7 @@
       }
       
       if (options.logErrors) {
-        console.warn('[Error Handler] Intercepted error:', event.message);
+        console.warn("[Gestionnaire d'erreurs] Erreur interceptée :", event.message);
       }
       
       updateDebugPanel();
@@ -138,8 +138,8 @@
                     updateDebugPanel();
                     
                     setTimeout(() => {
-                      if (typeof addWindowWithAirInlet === 'function') {
-                        addWindowWithAirInlet();
+                      if (typeof window.addWindowWithAirInlet === 'function') {
+                        window.addWindowWithAirInlet();
                         stats.fixedErrors++;
                         updateDebugPanel();
                       }
@@ -176,7 +176,8 @@
       
       updateDebugPanel();
       if (options.logErrors) {
-        console.warn(`[Error Handler] Reported ${type} error:`, message);
+        const typeLabel = type === 'js' ? 'JS' : (type === 'dom' ? 'DOM' : (type === 'css' ? 'CSS' : type));
+        console.warn(`[Gestionnaire d'erreurs] Erreur signalée (${typeLabel}) :`, message);
       }
     },
     

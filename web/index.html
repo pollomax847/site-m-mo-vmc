@@ -2,172 +2,109 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
-  <meta name="theme-color" content="#3498db">
-  <!-- Correctifs DOM critiques - doivent être chargés en tout premier -->
-  <script src="dom-fix-patch.js"></script>
-  <!-- Reste des scripts de correction -->
-  <script src="error-handler.js"></script>
-  <script src="dom-fix.js"></script>
-  <script src="dev-utils.js"></script>
-  <script src="cleanup.js"></script>
-
-  <title>Mémo Technique VMC</title>
-
-  <!-- Styles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VMC Memo - Nouvelle Génération</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="auto-update.css">
-  <link rel="stylesheet" href="styles/mobile-fixes.css">
-  <link rel="stylesheet" href="css/unified-styles.css">
-  <link rel="stylesheet" href="css/firefox-fixes.css">
-  <link rel="stylesheet" href="css/windows-module.css">
-  <link rel="stylesheet" href="css/error-handling.css">
-
-  <!-- Icônes -->
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo-192.png">
   <link rel="manifest" href="manifest.json">
-
-  <!-- Style critique pour menu mobile -->
-  <style>
-    .menu-button {
-      position: fixed !important;
-      top: 15px !important;
-      left: 15px !important;
-      width: 50px !important;
-      height: 50px !important;
-      background-color: #2196F3 !important;
-      color: white !important;
-      border-radius: 50% !important;
-      z-index: 9999 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 30px !important;
-      cursor: pointer !important;
-      border: none !important;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
-    }
-    .side-menu {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 85% !important;
-      max-width: 300px !important;
-      height: 100% !important;
-      background-color: white !important;
-      z-index: 998 !important;
-      transform: translateX(-100%) !important;
-      transition: transform 0.3s ease !important;
-      overflow-y: auto !important;
-      padding-top: 60px !important;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
-    }
-    .side-menu.open { transform: translateX(0) !important; }
-    .menu-overlay {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      background-color: rgba(0,0,0,0.5) !important;
-      z-index: 997 !important;
-      display: none !important;
-    }
-  </style>
-
 </head>
 <body>
-  <!-- Menu mobile -->
-  <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
-  <div class="side-menu" id="sideMenu" aria-hidden="true">
-    <div class="side-menu-header">
-      <h3>Menu VMC</h3>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#" data-section="accueil">Accueil</a></li>
-        <li><a href="#" data-section="verification-debit">Vérification des Débits</a></li>
-        <li><a href="#" data-section="faq">FAQ VMC</a></li>
-        <li><a href="#" data-section="methodologie">Méthodologie d'Installation</a></li>
-        <li><a href="#" data-section="depannage">Guide de Dépannage</a></li>
-        <li><a href="#" data-section="dsc-constructeurs">DSC par constructeur</a></li>
-        <li><a href="#" data-section="info">Informations Techniques</a></li>
-        <li><a href="#" data-section="cgu">Conditions d'utilisation</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="menu-overlay" id="menuOverlay"></div>
-
+  <div id="progress-bar"></div>
   <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Mémo VMC Logo" id="logo">
-    </div>
-    <h1>Mémo Technique - VMC par type d'installation</h1>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Rechercher...">
-      <button id="searchButton">Rechercher</button>
-    </div>
+    <nav class="navbar">
+      <div class="logo" style="display:flex;align-items:center;gap:0.7rem;">
+        <img src="icons/Icon-192.png" alt="Logo VMC Memo" style="height:38px;width:38px;vertical-align:middle;"> VMC Memo
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="calculateur.html">Vérification des débits</a></li>
+        <li><a href="guide.html">Guide entretien</a></li>
+        <li><a href="fiche-installation.html">Fiche installation</a></li>
+        <li><a href="methodologie.html">Méthodologie</a></li>
+        <li><a href="info.html">Infos techniques</a></li>
+        <li><a href="dsc-constructeurs.html">DSC</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+      <button class="burger" aria-label="Menu">☰</button>
+      <button id="theme-toggle" aria-label="Changer le thème">🌙</button>
+    </nav>
   </header>
-
-  <div id="content">
-    <div class="section-container">
-      <h2 class="section-title">Chargement...</h2>
-      <p>Veuillez patienter pendant le chargement du contenu.</p>
-    </div>
-  </div>
-
-  <div id="offline-status" class="hidden">Mode hors ligne activé</div>
-
-  <!-- Script initial pour le menu et namespace -->
-  <script>
-    window.vmcContent = window.vmcContent || {};
-    document.addEventListener('DOMContentLoaded', function() {
-      const menuButton = document.getElementById('menuButton');
-      const sideMenu = document.getElementById('sideMenu');
-      const menuOverlay = document.getElementById('menuOverlay');
-      if (menuButton && sideMenu && menuOverlay) {
-        menuButton.addEventListener('click', function() {
-          sideMenu.classList.toggle('open');
-          menuOverlay.style.display = sideMenu.classList.contains('open') ? 'block' : 'none';
-        });
-        menuOverlay.addEventListener('click', function() {
-          sideMenu.classList.remove('open');
-          menuOverlay.style.display = 'none';
-        });
-        const menuLinks = sideMenu.querySelectorAll('nav a');
-        menuLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const section = this.getAttribute('data-section');
-            if (typeof loadContent === 'function') {
-              loadContent(section);
-            } else {
-              console.log('Chargement de section:', section);
-              const event = new CustomEvent('sectionRequest', { detail: { section: section } });
-              document.dispatchEvent(event);
-            }
-            sideMenu.classList.remove('open');
-            menuOverlay.style.display = 'none';
-          });
-        });
+  <main>
+    <section id="accueil" class="hero">
+      <h1>Bienvenue sur le nouveau Mémo Technique VMC</h1>
+      <p>Un site moderne, rapide et mobile-first pour tous vos besoins techniques VMC.</p>
+      <a href="#outils" class="cta">Découvrir les outils</a>
+    </section>
+    <section id="astuce" class="tip">
+      <h2>Astuce du mois</h2>
+      <div class="tip-content" id="astuce-content">Pour une VMC efficace, nettoyez les bouches d’extraction tous les 6 mois !</div>
+    </section>
+    <script>
+      // Astuces à faire défiler
+      const astuces = [
+        "Pour une VMC efficace, nettoyez les bouches d’extraction tous les 6 mois !",
+        "Vérifiez régulièrement que les entrées d’air ne sont pas obstruées.",
+        "Un moteur de VMC bruyant peut indiquer un besoin de maintenance.",
+        "Pensez à dépoussiérer les filtres si votre VMC en possède.",
+        "Faites contrôler votre installation par un professionnel tous les 2 à 3 ans.",
+        "En hiver, évitez de boucher les entrées d’air pour limiter la condensation."
+      ];
+      let astuceIndex = 0;
+      function defileAstuces() {
+        const el = document.getElementById('astuce-content');
+        if (!el) return;
+        astuceIndex = (astuceIndex + 1) % astuces.length;
+        el.style.opacity = 0;
+        setTimeout(() => {
+          el.textContent = astuces[astuceIndex];
+          el.style.opacity = 1;
+        }, 350);
       }
-    });
-  </script>
-
-  <!-- Scripts principaux -->
-  <script src="script.js"></script>
-  <script src="verification-debit.js"></script>
-  <script src="cgu-module.js"></script>
-  <script src="aerations-help.js"></script>
-  <script src="dsc-constructeurs.js"></script>
-  <script src="fix-mobile-display.js"></script>
-  <script src="sw-register.js"></script>
-
+      setInterval(defileAstuces, 5000);
+    </script>
+    <section id="outils" class="features">
+      <h2>Outil de vérification des débits VMC</h2>
+      <div class="card" style="max-width:700px;width:100%;margin:2rem auto;">
+        <h3 style="margin-bottom:1rem;">Calculateur réglementaire VMC</h3>
+        <p>Vérifiez la conformité de votre installation selon le type de logement, de VMC et vos mesures réelles.</p>
+        <a href="calculateur.html" class="btn-main">Accéder au calculateur</a>
+      </div>
+      <section id="downloads" class="downloads">
+        <h2>Guides interactifs</h2>
+        <ul>
+          <li><a href="guide.html" class="btn-main">Guide d’entretien VMC </a></li>
+          <li><a href="fiche-installation.html" class="btn-main">Fiche pratique installation </a></li>
+          <li><a href="methodologie.html" class="btn-main">Méthodologie d’installation</a></li>
+          <li><a href="info.html" class="btn-main">Informations techniques</a></li>
+          <li><a href="dsc-constructeurs.html" class="btn-main">Branchement DSC (constructeurs)</a></li>
+        </ul>
+      </section>
+    </section>
+    <section id="faq" class="faq">
+      <h2>Questions fréquentes</h2>
+      <input type="search" id="faq-search" placeholder="Rechercher dans la FAQ..." aria-label="Recherche FAQ">
+      <div class="faq-list">
+        <details>
+          <summary>Qu'est-ce qu'une VMC ?</summary>
+          <p>La VMC (Ventilation Mécanique Contrôlée) assure le renouvellement de l'air dans un logement.</p>
+        </details>
+        <details>
+          <summary>Comment entretenir ma VMC ?</summary>
+          <p>Nettoyez régulièrement les bouches et vérifiez le bon fonctionnement du moteur.</p>
+        </details>
+        <details>
+          <summary>Quels sont les signes d’une VMC défectueuse ?</summary>
+          <p>Bruit anormal, condensation persistante, ou mauvaises odeurs sont des signes à surveiller.</p>
+        </details>
+      </div>
+    </section>
+  </main>
   <footer>
-    <p>&copy; 2026 Mémo Technique VMC</p>
+    <p>&copy; 2026 Mémo Technique VMC. Créé par pollomax et IA via VSCode. Tous droits réservés.</p>
   </footer>
+  <script src="app.js"></script>
+</body>
+</html>
+
 
 </body>
 </html>

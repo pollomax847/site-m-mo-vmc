@@ -20,6 +20,46 @@ document.addEventListener('DOMContentLoaded', function() {
     return element || safeGetElementById(id);
   };
 
+
+
+  // Theme toggle: persist theme in localStorage and expose a header button
+  function manageThemeToggle() {
+    try {
+      const stored = localStorage.getItem('site-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = stored || (prefersDark ? 'dark' : 'light');
+      // Apply theme to root
+      document.documentElement.setAttribute('data-theme', initial === 'light' ? 'light' : '');
+    
+      function createToggle() {
+        const header = document.querySelector('header');
+        if (!header) return;
+        // Avoid creating duplicate toggle
+        if (document.getElementById('theme-toggle')) return;
+        const btn = document.createElement('button');
+        btn.id = 'theme-toggle';
+        btn.type = 'button';
+        btn.className = 'btn';
+        btn.setAttribute('aria-label', 'Basculer thème');
+        btn.textContent = (initial === 'dark') ? '☀️' : '🌙';
+        btn.addEventListener('click', function() {
+          const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+          if (current === 'light') document.documentElement.setAttribute('data-theme', 'light');
+          else document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('site-theme', current);
+          btn.textContent = (current === 'dark') ? '☀️' : '🌙';
+        });
+        header.appendChild(btn);
+      }
+    
+      // Create toggle after load so header exists
+      window.addEventListener('load', createToggle);
+    } catch (err) {
+      console.warn('Erreur gestion thème:', err);
+    }
+  }
+  manageThemeToggle();
+
   // Contenu des sections VMC
   const vmcContent = {
     'vmc-simple': {
@@ -939,7 +979,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Toggle menu mobile
+  // Basculer le menu mobile
   document.getElementById('menuToggle').addEventListener('click', function() {
     document.getElementById('mainMenu').classList.toggle('active');
   });

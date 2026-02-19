@@ -1,0 +1,17 @@
+{
+  "name": "site-m-mo-vmc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write \"**/*.{js,css,html,json}\"",
+    "test": "jest --runInBand"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^29.0.0",
+    "prettier": "^2.0.0"
+  }
+}

@@ -2,7 +2,7 @@
  * Utilitaires pour le développement local
  */
 (function() {
-  const DEBUG_LEVEL = 0; // 0=errors only, 1=warnings, 2=info, 3=debug
+  const DEBUG_LEVEL = 0; // 0=erreurs seulement, 1=avertissements, 2=info, 3=debug
   
   // Détecter le mode développement (localhost)
   const isDev = window.location.hostname === 'localhost' || 

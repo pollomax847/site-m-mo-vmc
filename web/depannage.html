@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dépannage — Mémo VMC</title>
+  <meta name="description" content="Méthodologie de dépannage VMC - procédures et vérifications">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button class="menu-button" id="menuButton" aria-label="Menu">☰</button>
+  <div class="side-menu" id="sideMenu" aria-hidden="true">
+    <div class="side-menu-header"><h3>Menu VMC</h3></div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="calculateur.html">Vérification des débits</a></li>
+        <li><a href="guide.html">Guide entretien</a></li>
+        <li><a href="fiche-installation.html">Fiche installation</a></li>
+        <li><a href="methodologie.html">Méthodologie</a></li>
+        <li><a href="info.html">Infos techniques</a></li>
+        <li><a href="dsc-constructeurs.html">DSC</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="depannage.html">Dépannage</a></li>
+        <li><a href="cgu.html">CGU</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <header class="site-header">
+    <div class="wrap container">
+      <a class="logo-link" href="index.html"><img id="logo" src="icons/Icon-192.png" alt="logo"></a>
+      <div>
+        <div class="site-title">Mémo Technique — VMC</div>
+        <div class="site-subtitle">Dépannage</div>
+      </div>
+      <div class="header-actions">
+        <div class="search-container">
+          <input id="searchInput" type="search" placeholder="Rechercher...">
+          <button id="searchButton">🔎</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="section-container">
+    <section>
+      <h2>Organigramme de diagnostic</h2>
+      <p>Organigramme de dépannage VMC — commencer par les vérifications électriques, puis les éléments aérauliques, mécaniques et thermiques.</p>
+    </section>
+
+    <section>
+      <h2>Vérifications électriques</h2>
+      <ul>
+        <li>Présence d'alimentation électrique (disjoncteur)</li>
+        <li>Interrupteur (si présent) en position marche</li>
+        <li>Connexions électriques au niveau du groupe moteur</li>
+        <li>Condensateur de démarrage du moteur</li>
+      </ul>
+      <h3>Solutions</h3>
+      <ul>
+        <li>Réarmer le disjoncteur ou remplacer le fusible</li>
+        <li>Vérifier la tension d'alimentation (230V)</li>
+        <li>Contrôler et refaire les connexions électriques défectueuses</li>
+        <li>Remplacer le condensateur si défectueux</li>
+        <li>En dernier recours, remplacer le moteur</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Vérifications aérauliques et mécaniques</h2>
+      <ul>
+        <li>État des bouches d'extraction (encrassement)</li>
+        <li>État des entrées d'air (obstruction)</li>
+        <li>État des filtres (VMC double flux)</li>
+        <li>Étanchéité des conduits (fuites)</li>
+        <li>Vitesse du moteur (petite/grande vitesse)</li>
+      </ul>
+      <h3>Solutions</h3>
+      <ul>
+        <li>Nettoyer les bouches d'extraction</li>
+        <li>Nettoyer ou dégager les entrées d'air</li>
+        <li>Remplacer les filtres encrassés</li>
+        <li>Vérifier et étanchéifier les conduits</li>
+        <li>Vérifier la courroie de transmission (si présente)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Outils de mesure recommandés</h2>
+      <ul>
+        <li>Anémomètre pour mesurer le débit réel (m³/h)</li>
+        <li>Manomètre pour mesurer la pression dans les conduits</li>
+        <li>Multimètre, déprimomètre, détecteur de CO</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Types de bruits et causes possibles</h2>
+      <table>
+        <thead>
+          <tr><th>Type de bruit</th><th>Cause possible</th><th>Solution</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sifflement</td><td>Fuite d'air, dimensionnement inadéquat</td><td>Vérifier étanchéité, ajuster débit</td></tr>
+          <tr><td>Vibration</td><td>Fixation insuffisante, transmission de vibrations</td><td>Installer silent-blocs, renforcer fixations</td></tr>
+          <tr><td>Claquement</td><td>Volet anti-retour défectueux</td><td>Remplacer le clapet</td></tr>
+          <tr><td>Roulement</td><td>Roulements moteur usés</td><td>Remplacer les roulements ou le moteur</td></tr>
+        </tbody>
+      </table>
+      <h3>Solutions acoustiques</h3>
+      <ul>
+        <li>Installer des pièges à sons sur les conduits principaux</li>
+        <li>Utiliser des conduits acoustiques isolés</li>
+        <li>Placer le caisson VMC sur supports anti-vibratiles</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Échange thermique et condensation</h2>
+      <p>Problèmes courants et solutions :</p>
+      <ul>
+        <li>Encrassement de l'échangeur — nettoyer selon la procédure fabricant</li>
+        <li>Bypass ouvert en permanence — vérifier fonctionnement (été/hiver)</li>
+        <li>Déséquilibre des débits soufflage/extraction — régler l'équilibre (±5%)</li>
+        <li>Condensation excessive — vérifier évacuation des condensats, isolation des conduits, humidistat</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Vérifications spécifiques et tests</h2>
+      <ul>
+        <li>État des capteurs d'humidité</li>
+        <li>Mouvements des volets d'ouverture</li>
+        <li>Configuration correcte des bouches (correspondance pièce)</li>
+      </ul>
+      <h3>Test des bouches hygroréglables</h3>
+      <ol>
+        <li>Bouche démontée : exposer à vapeur d'eau chaude et observer l'ouverture progressive</li>
+        <li>Vérifier l'absence de poussière sur le capteur à languette</li>
+        <li>Contrôler la mobilité du volet d'ouverture</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Circuit frigorifique et eau chaude</h2>
+      <p>Ces éléments nécessitent souvent l'intervention d'un professionnel :</p>
+      <ul>
+        <li>Vérifier les codes erreurs sur le régulateur électronique</li>
+        <li>Contrôler les sondes de température (eau et air)</li>
+        <li>Nettoyer l'évaporateur si encrassé</li>
+        <li>Faire intervenir un frigoriste pour la partie circuit fermé</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Diagnostic du Dispositif de Sécurité Collective (DSC)</h2>
+      <ul>
+        <li>Vérification de l'alimentation 230V du DSC</li>
+        <li>Contrôle du transformateur 230V/24V</li>
+        <li>État du relais de commande et du pressostat différentiel</li>
+        <li>État des électrovannes de coupure gaz</li>
+      </ul>
+      <h3>Test de la chaîne de sécurité</h3>
+      <ul>
+        <li>Contrôler la tension au secondaire du transformateur (24V ±10%)</li>
+        <li>Vérifier la continuité du circuit de commande en position normale</li>
+        <li>Tester le déclenchement du DSC par simulation d'arrêt VMC</li>
+        <li>Vérifier le réarmement manuel après déclenchement</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Mesures et valeurs de référence</h2>
+      <table>
+        <thead>
+          <tr><th>Élément</th><th>Valeur normale</th><th>Action si défaut</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Alimentation primaire transformateur</td><td>230V ±10%</td><td>Vérifier disjoncteur et câblage</td></tr>
+          <tr><td>Sortie secondaire transformateur</td><td>24V ±10%</td><td>Remplacer le transformateur</td></tr>
+          <tr><td>Résistance bobine relais DSC</td><td>80–200 Ω</td><td>Remplacer le relais</td></tr>
+          <tr><td>Dépression au pressostat</td><td>Minimum 20 Pa</td><td>Vérifier prises de pression et tubes</td></tr>
+          <tr><td>Temps de déclenchement DSC</td><td>≤ 15 secondes</td><td>Remplacer le dispositif</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Procédure de réarmement après déclenchement</h2>
+      <ol>
+        <li>S'assurer que la VMC est bien en fonctionnement</li>
+        <li>Attendre au moins 30 secondes après rétablissement VMC</li>
+        <li>Appuyer sur le bouton de réarmement du DSC</li>
+        <li>Vérifier la réouverture des électrovannes gaz</li>
+        <li>Rallumer les appareils à gaz si nécessaire</li>
+      </ol>
+      <p><strong>Important :</strong> Le remplacement de tout composant du système de sécurité doit être effectué par un professionnel qualifié. Le DSC est un élément de sécurité critique dont dépend la vie des occupants.</p>
+    </section>
+
+    <section>
+      <h2>Outils de test spécifiques</h2>
+      <ul>
+        <li>Déprimomètre : mesure précise des dépressions (0–100 Pa)</li>
+        <li>Anémomètre à hélice ou fil chaud : mesure des débits aux bouches</li>
+        <li>Multimètre avec fonction test de condensateur</li>
+        <li>Détecteur de CO</li>
+        <li>Contrôleur de DSC : simulation de panne de ventilation</li>
+      </ul>
+    </section>
+
+    <p><a href="index.html">Retour à l'accueil</a></p>
+  </main>
+
+  <script type="module" src="app.js"></script>
+  <script src="script.js"></script>
+  <footer>
+    <p>&copy; 2026 Mémo Technique VMC</p>
+  </footer>
+
+</body>
+</html>

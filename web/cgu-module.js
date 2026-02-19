@@ -64,3 +64,6 @@
     }
   }, true);
 })();
+
+// Export (progressive migration vers modules)
+export const cgu = window.vmcContent && window.vmcContent.cgu ? window.vmcContent.cgu : null;

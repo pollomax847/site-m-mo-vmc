@@ -38,8 +38,8 @@
         console.log("Initialisation du menu mobile...");
         
         // Si le fichier mobile-menu.js est déjà chargé
-        if (typeof initMobileMenu === 'function') {
-          initMobileMenu();
+        if (typeof window.initMobileMenu === 'function') {
+          window.initMobileMenu();
         }
       }
     }

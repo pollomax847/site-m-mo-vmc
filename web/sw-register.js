@@ -40,14 +40,32 @@
   // Enregistrer le service worker une fois la page chargée
   window.addEventListener('load', function() {
     // Attendre un peu avant d'enregistrer le service worker
-    setTimeout(function() {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(function(registration) {
-          console.log('Service Worker enregistré avec succès:', registration.scope);
-        })
-        .catch(function(error) {
-          console.log('Échec de l\'enregistrement du Service Worker:', error);
-        });
+    setTimeout(async function() {
+      try {
+        // Vérifier si le script du service worker existe et a le bon type MIME
+        const resp = await fetch('/service-worker.js', { method: 'GET', cache: 'no-store' });
+        if (!resp.ok) {
+          console.warn('Service Worker non trouvé (status:', resp.status + '). Enregistrement annulé.');
+          return;
+        }
+
+        const contentType = resp.headers.get('content-type') || '';
+        if (!/javascript|application\/js|text\/javascript/.test(contentType)) {
+          console.warn('Type MIME du Service Worker incorrect:', contentType, '- enregistrement annulé.');
+          return;
+        }
+
+        // Tout est correct : enregistrer le service worker
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker enregistré avec succès:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Échec de l\'enregistrement du Service Worker:', error);
+          });
+      } catch (err) {
+        console.warn('Erreur lors de la vérification du Service Worker :', err);
+      }
     }, 1000);
   });
 })();
