@@ -23,166 +23,206 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Configuration des débits réglementaires par type de logement et type de VMC
+    // Sources : Arrêté du 24 mars 1982 modifié, NF DTU 68.3
+    // min = débit minimal réglementaire (arrêté 1982)
+    // max = débit maximal admissible par bouche (grand débit inclus pour simple flux)
     const debitsReglementaires = {
       'simple-flux': {
         'T1': {
-          'cuisine': { min: 20, max: 75 },
-          'salle-de-bain': { min: 15, max: 15 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 0, max: 15 }
+          'cuisine':      { min: 20, max: 90 },
+          'salle-de-bain':{ min: 15, max: 30 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min:  0, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T2': {
-          'cuisine': { min: 30, max: 90 },
-          'salle-de-bain': { min: 15, max: 15 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 0, max: 15 }
+          'cuisine':      { min: 30, max: 90 },
+          'salle-de-bain':{ min: 15, max: 30 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min:  0, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T3': {
-          'cuisine': { min: 45, max: 105 },
-          'salle-de-bain': { min: 30, max: 30 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T4': {
-          'cuisine': { min: 45, max: 120 },
-          'salle-de-bain': { min: 30, max: 30 },
-          'wc': { min: 30, max: 30 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 30, max: 45 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T5+': {
-          'cuisine': { min: 45, max: 135 },
-          'salle-de-bain': { min: 30, max: 30 },
-          'wc': { min: 30, max: 30 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 30, max: 45 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         }
       },
       'hygro-a': {
         'T1': {
-          'cuisine': { min: 10, max: 50 },
-          'salle-de-bain': { min: 10, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 0, max: 40 }
+          'cuisine':      { min: 10, max: 50 },
+          'salle-de-bain':{ min: 10, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  0, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T2': {
-          'cuisine': { min: 10, max: 50 },
-          'salle-de-bain': { min: 10, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 0, max: 40 }
+          'cuisine':      { min: 10, max: 50 },
+          'salle-de-bain':{ min: 10, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  0, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T3': {
-          'cuisine': { min: 15, max: 50 },
-          'salle-de-bain': { min: 10, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 10, max: 40 }
+          'cuisine':      { min: 15, max: 50 },
+          'salle-de-bain':{ min: 10, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min: 10, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T4': {
-          'cuisine': { min: 20, max: 55 },
-          'salle-de-bain': { min: 15, max: 45 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 15, max: 45 }
+          'cuisine':      { min: 20, max: 55 },
+          'salle-de-bain':{ min: 15, max: 45 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min: 15, max: 45 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T5+': {
-          'cuisine': { min: 25, max: 60 },
-          'salle-de-bain': { min: 15, max: 45 },
-          'wc': { min: 10, max: 30 },
-          'autre-sdb': { min: 15, max: 45 }
+          'cuisine':      { min: 25, max: 60 },
+          'salle-de-bain':{ min: 15, max: 45 },
+          'wc':           { min: 10, max: 30 },
+          'autre-sdb':    { min: 15, max: 45 },
+          'buanderie':    { min: 15, max: 35 }
         }
       },
       'hygro-b': {
         'T1': {
-          'cuisine': { min: 10, max: 50 },
-          'salle-de-bain': { min: 5, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 0, max: 40 }
+          'cuisine':      { min: 10, max: 50 },
+          'salle-de-bain':{ min:  5, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  0, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T2': {
-          'cuisine': { min: 10, max: 50 },
-          'salle-de-bain': { min: 5, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 0, max: 40 }
+          'cuisine':      { min: 10, max: 50 },
+          'salle-de-bain':{ min:  5, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  0, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T3': {
-          'cuisine': { min: 10, max: 45 },
-          'salle-de-bain': { min: 5, max: 35 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 5, max: 35 }
+          'cuisine':      { min: 10, max: 45 },
+          'salle-de-bain':{ min:  5, max: 35 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  5, max: 35 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T4': {
-          'cuisine': { min: 15, max: 45 },
-          'salle-de-bain': { min: 5, max: 35 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 5, max: 35 }
+          'cuisine':      { min: 15, max: 45 },
+          'salle-de-bain':{ min:  5, max: 35 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min:  5, max: 35 },
+          'buanderie':    { min: 10, max: 30 }
         },
         'T5+': {
-          'cuisine': { min: 15, max: 50 },
-          'salle-de-bain': { min: 10, max: 40 },
-          'wc': { min: 5, max: 30 },
-          'autre-sdb': { min: 10, max: 40 }
+          'cuisine':      { min: 15, max: 50 },
+          'salle-de-bain':{ min: 10, max: 40 },
+          'wc':           { min:  5, max: 30 },
+          'autre-sdb':    { min: 10, max: 40 },
+          'buanderie':    { min: 10, max: 30 }
         }
       },
       'double-flux': {
+        // Extraction — débits minimaux identiques à l'arrêté 1982 (côté extraction)
         'T1': {
-          'cuisine': { min: 45, max: 120 },
-          'salle-de-bain': { min: 15, max: 30 },
-          'wc': { min: 15, max: 30 },
-          'autre-sdb': { min: 0, max: 30 }
+          'cuisine':      { min: 20, max: 90 },
+          'salle-de-bain':{ min: 15, max: 30 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min:  0, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T2': {
-          'cuisine': { min: 45, max: 120 },
-          'salle-de-bain': { min: 15, max: 30 },
-          'wc': { min: 15, max: 30 },
-          'autre-sdb': { min: 0, max: 30 }
+          'cuisine':      { min: 30, max: 90 },
+          'salle-de-bain':{ min: 15, max: 30 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min:  0, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T3': {
-          'cuisine': { min: 45, max: 135 },
-          'salle-de-bain': { min: 15, max: 30 },
-          'wc': { min: 15, max: 30 },
-          'autre-sdb': { min: 15, max: 30 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T4': {
-          'cuisine': { min: 45, max: 135 },
-          'salle-de-bain': { min: 30, max: 30 },
-          'wc': { min: 15, max: 30 },
-          'autre-sdb': { min: 15, max: 30 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T5+': {
-          'cuisine': { min: 45, max: 135 },
-          'salle-de-bain': { min: 30, max: 30 },
-          'wc': { min: 15, max: 30 },
-          'autre-sdb': { min: 15, max: 30 }
+          'cuisine':      { min: 45, max: 90 },
+          'salle-de-bain':{ min: 30, max: 45 },
+          'wc':           { min: 15, max: 30 },
+          'autre-sdb':    { min: 15, max: 30 },
+          'buanderie':    { min: 15, max: 30 }
         }
       },
       'vmc-gaz': {
         'T1': {
-          'cuisine': { min: 45, max: 75, 'grand-debit': 90 },
-          'salle-de-bain': { min: 15, max: 15, 'grand-debit': 15 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 0, max: 15 }
+          'cuisine':      { min: 45, max: 75, 'grand-debit': 90 },
+          'salle-de-bain':{ min: 15, max: 15, 'grand-debit': 15 },
+          'wc':           { min: 15, max: 15 },
+          'autre-sdb':    { min:  0, max: 15 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T2': {
-          'cuisine': { min: 45, max: 90, 'grand-debit': 105 },
-          'salle-de-bain': { min: 15, max: 15, 'grand-debit': 30 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 0, max: 15 }
+          'cuisine':      { min: 45, max: 90, 'grand-debit': 105 },
+          'salle-de-bain':{ min: 15, max: 15, 'grand-debit': 30 },
+          'wc':           { min: 15, max: 15 },
+          'autre-sdb':    { min:  0, max: 15 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T3': {
-          'cuisine': { min: 45, max: 105, 'grand-debit': 120 },
-          'salle-de-bain': { min: 15, max: 30, 'grand-debit': 45 },
-          'wc': { min: 15, max: 15 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 105, 'grand-debit': 120 },
+          'salle-de-bain':{ min: 15, max: 30, 'grand-debit': 45 },
+          'wc':           { min: 15, max: 15 },
+          'autre-sdb':    { min: 15, max: 15 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T4': {
-          'cuisine': { min: 45, max: 120, 'grand-debit': 135 },
-          'salle-de-bain': { min: 15, max: 30, 'grand-debit': 45 },
-          'wc': { min: 30, max: 30 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 120, 'grand-debit': 135 },
+          'salle-de-bain':{ min: 15, max: 30, 'grand-debit': 45 },
+          'wc':           { min: 30, max: 30 },
+          'autre-sdb':    { min: 15, max: 15 },
+          'buanderie':    { min: 15, max: 30 }
         },
         'T5+': {
-          'cuisine': { min: 45, max: 135, 'grand-debit': 135 },
-          'salle-de-bain': { min: 15, max: 30, 'grand-debit': 45 },
-          'wc': { min: 30, max: 30 },
-          'autre-sdb': { min: 15, max: 15 }
+          'cuisine':      { min: 45, max: 135, 'grand-debit': 135 },
+          'salle-de-bain':{ min: 15, max: 30, 'grand-debit': 45 },
+          'wc':           { min: 30, max: 30 },
+          'autre-sdb':    { min: 15, max: 15 },
+          'buanderie':    { min: 15, max: 30 }
         }
+      }
+    };
+
+    // Débits de soufflage pour VMC Double Flux (NF DTU 68.3 P1-1-2)
+    const debitsReglementairesSoufflage = {
+      'double-flux': {
+        'T1':  { 'sejour': { min: 30, max: 60 } },
+        'T2':  { 'sejour': { min: 30, max: 60 }, 'chambre':  { min: 15, max: 30 } },
+        'T3':  { 'sejour': { min: 30, max: 60 }, 'chambre':  { min: 15, max: 30 }, 'chambre2': { min: 15, max: 30 } },
+        'T4':  { 'sejour': { min: 30, max: 60 }, 'chambre':  { min: 15, max: 30 }, 'chambre2': { min: 15, max: 30 }, 'chambre3': { min: 15, max: 30 } },
+        'T5+': { 'sejour': { min: 30, max: 60 }, 'chambre':  { min: 15, max: 30 }, 'chambre2': { min: 15, max: 30 }, 'chambre3': { min: 15, max: 30 }, 'chambre4': { min: 15, max: 30 } }
       }
     };
     
@@ -247,6 +287,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label><input type="radio" name="unite" value="pa" class="auto-update"> Pa</label>
                 <label><input type="radio" name="unite" value="mmce" class="auto-update"> mm CE</label>
               </div>
+              <div id="pa-warning" class="warning-box" style="display:none; margin-top:8px;">
+                <strong>⚠ Attention :</strong> Les unités Pa et mm CE ne peuvent pas être converties en débit (m³/h) sans la courbe caractéristique du réseau (NF EN 14134). La vérification de conformité est désactivée pour ces unités — utilisez m³/h ou m/s.
+              </div>
             </div>
             
             <div id="diametre-container" class="form-group hidden">
@@ -263,7 +306,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             <div id="resultats" class="results-container"></div>
           </div>
-          
+
+          <!-- Section soufflage — visible uniquement en double flux (NF DTU 68.3 P1-1-2) -->
+          <div id="soufflage-section" class="section-container" style="display:none;">
+            <h3>Débits de Soufflage — VMC Double Flux</h3>
+            <p>NF DTU 68.3 P1-1-2 : les débits d'insufflation dans les pièces principales doivent être équilibrés avec les débits d'extraction (écart ≤ 10 %).</p>
+            <div id="soufflage-container"></div>
+            <button id="btnAjouterSoufflage" class="btn btn-secondary">+ Ajouter une bouche de soufflage</button>
+            <div id="resultats-soufflage" class="results-container"></div>
+          </div>
+
           <div class="reference-table">
             <h3>Tableau de référence des débits réglementaires</h3>
             <div id="reference-table-container">
@@ -485,14 +537,15 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
               diametreContainer.classList.add('hidden');
             }
-            // Pour une meilleure expérience mobile, faire défiler jusqu'au tableau
-            // après changement d'unité pour voir les résultats actualisés
+            // Afficher/masquer l'avertissement Pa/mmCE
+            const paWarning = document.getElementById('pa-warning');
+            if (paWarning) {
+              paWarning.style.display = (this.value === 'pa' || this.value === 'mmce') ? '' : 'none';
+            }
             if (window.innerWidth <= 768) {
               setTimeout(() => {
                 const tableRef = document.getElementById('reference-table-container');
-                if (tableRef) {
-                  tableRef.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (tableRef) tableRef.scrollIntoView({ behavior: 'smooth' });
               }, 300);
             }
           });
@@ -633,10 +686,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Options types de pièces
         const options = [
-          { value: 'cuisine', text: 'Cuisine' },
-          { value: 'salle-de-bain', text: 'Salle de bain principale' },
-          { value: 'wc', text: 'WC' },
-          { value: 'autre-sdb', text: 'Autre salle d\'eau' }
+          { value: 'cuisine',      text: 'Cuisine' },
+          { value: 'salle-de-bain',text: 'Salle de bain principale' },
+          { value: 'wc',           text: 'WC' },
+          { value: 'autre-sdb',    text: 'Autre salle d\'eau' },
+          { value: 'buanderie',    text: 'Buanderie' }
         ];
 
         options.forEach(opt => {
@@ -710,16 +764,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Conversion si nécessaire
         if (uniteSelectionnee === 'ms') {
-          // Conversion m/s à m³/h
           debitMesure = conversions.ms_to_m3h(debitMesure, diametreVal);
-        } else if (uniteSelectionnee === 'pa') {
-          // Une conversion de Pa à m³/h nécessiterait une courbe caractéristique
-          // Pour simplifier, on utilise une approximation
-          debitMesure = Math.sqrt(debitMesure) * 10;
-        } else if (uniteSelectionnee === 'mmce') {
-          // Conversion mmCE à Pa puis à m³/h (approximation)
-          const pa = conversions.mmce_to_pa(debitMesure);
-          debitMesure = Math.sqrt(pa) * 10;
+        } else if (uniteSelectionnee === 'pa' || uniteSelectionnee === 'mmce') {
+          // Pa/mmCE → m³/h requiert la courbe caractéristique du réseau (NF EN 14134)
+          // La conversion est impossible sans données constructeur
+          const statusDiv = item.querySelector('.mesure-status');
+          if (statusDiv) {
+            statusDiv.innerHTML = '<span class="warning">⚠ Vérification impossible en Pa/mm CE — utilisez m³/h ou m/s (NF EN 14134)</span>';
+          }
+          return;
         }
 
         // Référence pour cette pièce
@@ -811,10 +864,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getNomPiece(piece) {
       switch(piece) {
-        case 'cuisine': return 'Cuisine';
+        case 'cuisine':       return 'Cuisine';
         case 'salle-de-bain': return 'Salle de bain principale';
-        case 'wc': return 'WC';
-        case 'autre-sdb': return 'Autre salle d\'eau';
+        case 'wc':            return 'WC';
+        case 'autre-sdb':     return 'Autre salle d\'eau';
+        case 'buanderie':     return 'Buanderie';
         default: return piece;
       }
     }
@@ -850,6 +904,144 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     console.log("Interface de vérification des débits initialisée avec succès");
+
+    /* Module Soufflage - VMC Double Flux (NF DTU 68.3 P1-1-2) */
+    function initSoufflageModule() {
+      const soufflageSection    = document.getElementById('soufflage-section');
+      const soufflageContainer  = document.getElementById('soufflage-container');
+      const btnAjouterSoufflage = document.getElementById('btnAjouterSoufflage');
+      const typeVMCEl           = document.getElementById('typeVMC');
+      const typeLogementEl      = document.getElementById('typeLogement');
+
+      if (!soufflageSection || !soufflageContainer || !typeVMCEl) return;
+
+      function nomPieceSoufflage(piece) {
+        const noms = { sejour:'Séjour / Salon', chambre:'Chambre 1', chambre2:'Chambre 2', chambre3:'Chambre 3', chambre4:'Chambre 4' };
+        return noms[piece] || piece;
+      }
+
+      function verifierSoufflage() {
+        const resultats     = document.getElementById('resultats-soufflage');
+        if (!resultats) return;
+        const typeLogement  = typeLogementEl?.value || 'T3';
+        const refDebits     = debitsReglementairesSoufflage['double-flux'][typeLogement];
+        const items         = soufflageContainer.querySelectorAll('.mesure-item');
+        const mesures       = [];
+
+        items.forEach(item => {
+          const typePiece  = item.querySelector('.piece-type-soufflage')?.value;
+          const debitInput = item.querySelector('.debit-soufflage');
+          const val        = parseFloat(debitInput?.value) || 0;
+          const ref        = refDebits?.[typePiece];
+          if (!ref) return;
+
+          const etat = (val > 0 && val >= ref.min && val <= ref.max) ? 'success' : (val > 0 ? 'error' : '');
+          mesures.push({ type: typePiece, valeur: val, min: ref.min, max: ref.max, etat });
+
+          const statusDiv = item.querySelector('.mesure-status');
+          if (statusDiv) {
+            if (!val) { statusDiv.innerHTML = ''; return; }
+            const msg = etat === 'success' ? 'CONFORME' : (val < ref.min ? 'DÉBIT INSUFFISANT' : 'DÉBIT TROP ÉLEVÉ');
+            statusDiv.innerHTML = `<span class="${etat}">${msg}</span>`;
+          }
+        });
+
+        const avec_valeur = mesures.filter(m => m.valeur > 0);
+        if (!avec_valeur.length) { resultats.innerHTML = ''; return; }
+
+        const conformes = avec_valeur.filter(m => m.etat === 'success').length;
+        const pct       = Math.round((conformes / avec_valeur.length) * 100);
+        const cls       = pct === 100 ? 'success' : (pct >= 70 ? 'warning' : 'error');
+
+        let html = `<table class="results-table"><tr><th>Pièce</th><th>Mesuré (m³/h)</th><th>Min</th><th>Max</th><th>État</th></tr>`;
+        avec_valeur.forEach(m => {
+          const msg = m.etat === 'success' ? 'CONFORME' : (m.valeur < m.min ? 'DÉBIT INSUFFISANT' : 'DÉBIT TROP ÉLEVÉ');
+          html += `<tr class="${m.etat}"><td>${nomPieceSoufflage(m.type)}</td><td>${m.valeur.toFixed(1)}</td><td>${m.min}</td><td>${m.max}</td><td>${msg}</td></tr>`;
+        });
+        html += `</table><div class="results-summary ${cls}"><h3>Soufflage — Conformité : ${pct}%</h3></div>`;
+        resultats.innerHTML = html;
+      }
+
+      function ajouterBoucheSoufflage(typePiece) {
+        const item = document.createElement('div');
+        item.className = 'mesure-item';
+        const row = document.createElement('div');
+        row.className = 'mesure-row';
+
+        const pieceGroup = document.createElement('div');
+        pieceGroup.className = 'form-group';
+        const pieceLabel = document.createElement('label');
+        pieceLabel.textContent = 'Type de pièce :';
+        const pieceSelect = document.createElement('select');
+        pieceSelect.className = 'form-control piece-type-soufflage';
+        [
+          { value:'sejour',   text:'Séjour / Salon' },
+          { value:'chambre',  text:'Chambre 1' },
+          { value:'chambre2', text:'Chambre 2' },
+          { value:'chambre3', text:'Chambre 3' },
+          { value:'chambre4', text:'Chambre 4' }
+        ].forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt.value; o.textContent = opt.text;
+          if (typePiece === opt.value) o.selected = true;
+          pieceSelect.appendChild(o);
+        });
+        pieceGroup.appendChild(pieceLabel);
+        pieceGroup.appendChild(pieceSelect);
+
+        const debitGroup = document.createElement('div');
+        debitGroup.className = 'form-group';
+        const debitLabel = document.createElement('label');
+        debitLabel.textContent = 'Débit mesuré (m³/h) :';
+        const debitInput = document.createElement('input');
+        debitInput.type = 'number'; debitInput.className = 'form-control debit-soufflage';
+        debitInput.min = '0'; debitInput.step = 'any';
+        debitGroup.appendChild(debitLabel);
+        debitGroup.appendChild(debitInput);
+
+        const btnRemove = document.createElement('button');
+        btnRemove.className = 'btn-remove'; btnRemove.innerHTML = '&times;';
+        btnRemove.style.minHeight = '44px'; btnRemove.style.minWidth = '44px';
+        btnRemove.addEventListener('click', () => { soufflageContainer.removeChild(item); verifierSoufflage(); });
+
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'mesure-status';
+
+        pieceSelect.addEventListener('change', verifierSoufflage);
+        debitInput.addEventListener('input', verifierSoufflage);
+
+        row.appendChild(pieceGroup); row.appendChild(debitGroup); row.appendChild(btnRemove);
+        item.appendChild(row); item.appendChild(statusDiv);
+        soufflageContainer.appendChild(item);
+      }
+
+      function chargerBouchesSoufflage() {
+        const typeLogement = typeLogementEl?.value || 'T3';
+        const debits = debitsReglementairesSoufflage['double-flux'][typeLogement];
+        if (!debits) return;
+        soufflageContainer.innerHTML = '';
+        Object.keys(debits).forEach(piece => ajouterBoucheSoufflage(piece));
+        verifierSoufflage();
+      }
+
+      function toggleSoufflageSection() {
+        if (typeVMCEl.value === 'double-flux') {
+          soufflageSection.style.display = '';
+          chargerBouchesSoufflage();
+        } else {
+          soufflageSection.style.display = 'none';
+        }
+      }
+
+      if (btnAjouterSoufflage) {
+        btnAjouterSoufflage.addEventListener('click', () => { ajouterBoucheSoufflage('sejour'); setTimeout(verifierSoufflage, 50); });
+      }
+      if (typeLogementEl) {
+        typeLogementEl.addEventListener('change', () => { if (typeVMCEl.value === 'double-flux') chargerBouchesSoufflage(); });
+      }
+      typeVMCEl.addEventListener('change', toggleSoufflageSection);
+      toggleSoufflageSection();
+    }
 
     /* Module Fenêtres - Intégration avec les entrées d'air pour VMC */
     function initWindowsModule() {
@@ -1439,16 +1631,18 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
           initWindowsModule();
           createEntriesAirGuide();
+          initSoufflageModule();
         }, 500);
       }
     });
-    
+
     // Vérifier périodiquement si le contenu est déjà chargé
     const windowsModuleCheck = setInterval(() => {
       if (document.querySelector('.windows-container')) {
         clearInterval(windowsModuleCheck);
         initWindowsModule();
         createEntriesAirGuide();
+        initSoufflageModule();
       }
     }, 1000);
   }
