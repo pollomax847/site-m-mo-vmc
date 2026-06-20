@@ -911,6 +911,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
+    // Remonter en haut de page à chaque changement de section
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Déclencher un événement pour indiquer que le contenu a été chargé
     document.dispatchEvent(new CustomEvent('contentLoaded', { detail: { section } }));
   }
@@ -925,23 +928,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 200);
   });
 
-  // Navigation
+  // Navigation desktop
   document.querySelectorAll('#mainMenu a').forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
       const section = this.getAttribute('href').substring(1);
       loadContent(section);
-      
-      // Si on est en mode mobile, fermer le menu après la sélection
-      if (window.innerWidth <= 768) {
-        document.getElementById('mainMenu').classList.remove('active');
-      }
     });
-  });
-
-  // Toggle menu mobile
-  document.getElementById('menuToggle').addEventListener('click', function() {
-    document.getElementById('mainMenu').classList.toggle('active');
   });
 
   // Gestion de l'état en ligne/hors ligne

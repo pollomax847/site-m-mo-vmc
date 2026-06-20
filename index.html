@@ -1,24 +1,13 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Mémo technique VMC - Documentation technique pour les différents types d'installations VMC">
-  <meta name="theme-color" content="#3498db">
+  <meta name="theme-color" content="#1a73e8">
   <meta name="google-adsense-account" content="ca-pub-6664265722735791">
-  
-  <!-- Correctifs DOM critiques - doivent être chargés en tout premier -->
-  <script src="dom-fix-patch.js"></script>
-  
-  <!-- Reste des scripts de correction -->
-  <script src="error-handler.js"></script>
-  <script src="dom-fix.js"></script>
-  <script src="dev-utils.js"></script>
-  <script src="cleanup.js"></script>
-  
   <title>Mémo Technique VMC</title>
-  
-  <!-- Styles -->
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="auto-update.css">
   <link rel="stylesheet" href="styles/mobile-fixes.css">
@@ -26,191 +15,150 @@
   <link rel="stylesheet" href="css/firefox-fixes.css">
   <link rel="stylesheet" href="css/windows-module.css">
   <link rel="stylesheet" href="css/error-handling.css">
-  
-  <!-- Icônes -->
+
   <link rel="icon" href="logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo-192.png">
+  <link rel="apple-touch-icon" href="logo.png">
   <link rel="manifest" href="manifest.json">
-  
-  <!-- Style critique pour menu mobile -->
-  <style>
-    .menu-button {
-      position: fixed !important;
-      top: 15px !important;
-      left: 15px !important;
-      width: 50px !important;
-      height: 50px !important;
-      background-color: #2196F3 !important;
-      color: white !important;
-      border-radius: 50% !important;
-      z-index: 9999 !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 30px !important;
-      cursor: pointer !important;
-      border: none !important;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
-    }
-    
-    .side-menu {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 85% !important;
-      max-width: 300px !important;
-      height: 100% !important;
-      background-color: white !important;
-      z-index: 998 !important;
-      transform: translateX(-100%) !important;
-      transition: transform 0.3s ease !important;
-      overflow-y: auto !important;
-      padding-top: 60px !important;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.3) !important;
-    }
-    
-    .side-menu.open {
-      transform: translateX(0) !important;
-    }
-    
-    .menu-overlay {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      background-color: rgba(0,0,0,0.5) !important;
-      z-index: 997 !important;
-      display: none !important;
-    }
-  </style>
-  
-  <!-- Fix pour CSS problématiques -->
-  <style>
-    /* Correctifs pour les propriétés CSS problématiques */
-    * {
-      -webkit-font-smoothing: auto !important; 
-      -moz-osx-font-smoothing: auto !important;
-      -webkit-text-size-adjust: none !important;
-      text-size-adjust: none !important;
-    }
-  </style>
+
+  <script src="dom-fix-patch.js"></script>
+  <script src="error-handler.js"></script>
+  <script src="dom-fix.js"></script>
+  <script src="dev-utils.js"></script>
+  <script src="cleanup.js"></script>
 </head>
 <body>
-  <!-- Menu mobile -->
-  <button class="menu-button" id="menuButton" aria-label="Menu principal">≡</button>
-  
-  <div class="side-menu" id="sideMenu" aria-hidden="true">
+
+  <!-- En-tête -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <img src="logo.png" alt="Logo Mémo VMC" class="header-logo">
+        <span class="header-title">Mémo Technique VMC</span>
+      </div>
+      <div class="header-actions">
+        <div class="search-wrapper">
+          <input type="text" id="searchInput" placeholder="Rechercher…" aria-label="Rechercher">
+          <button id="searchButton" aria-label="Lancer la recherche">🔍</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Basculer le thème" title="Mode sombre / clair">🌙</button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation desktop -->
+  <nav id="mainMenu" aria-label="Navigation principale">
+    <ul>
+      <li><a href="#verification-debit">Vérif. Débits</a></li>
+      <li><a href="#faq">FAQ VMC</a></li>
+      <li><a href="#depannage">Dépannage</a></li>
+      <li><a href="#dsc-constructeurs">DSC Constructeurs</a></li>
+      <li><a href="#reglementation">Réglementation</a></li>
+      <li><a href="#entretien">Entretien</a></li>
+      <li><a href="#cgu">CGU</a></li>
+    </ul>
+  </nav>
+
+  <!-- Menu mobile (panneau latéral) -->
+  <div class="side-menu" id="sideMenu" aria-hidden="true" role="dialog" aria-label="Menu principal">
     <div class="side-menu-header">
-      <h3>Menu VMC</h3>
+      <span>Menu VMC</span>
+      <button class="side-menu-close" id="sideMenuClose" aria-label="Fermer le menu">✕</button>
     </div>
     <nav>
       <ul>
-        <li><a href="#" data-section="accueil">Accueil</a></li>
         <li><a href="#" data-section="verification-debit">Vérification des Débits</a></li>
         <li><a href="#" data-section="faq">FAQ VMC</a></li>
-        <li><a href="#" data-section="methodologie">Méthodologie d'Installation</a></li>
         <li><a href="#" data-section="depannage">Guide de Dépannage</a></li>
-        <li><a href="#" data-section="dsc-constructeurs">DSC par constructeur</a></li>
-        <li><a href="#" data-section="info">Informations Techniques</a></li>
+        <li><a href="#" data-section="dsc-constructeurs">DSC par Constructeur</a></li>
+        <li><a href="#" data-section="reglementation">Réglementation</a></li>
+        <li><a href="#" data-section="entretien">Entretien &amp; Maintenance</a></li>
+        <li><a href="#" data-section="vmc-simple">VMC Simple Flux</a></li>
+        <li><a href="#" data-section="vmc-double">VMC Double Flux</a></li>
+        <li><a href="#" data-section="vmc-hygro">VMC Hygroréglable</a></li>
+        <li><a href="#" data-section="vmc-thermo">VMC Thermodynamique</a></li>
+        <li><a href="#" data-section="vmc-gaz">VMC Gaz</a></li>
         <li><a href="#" data-section="cgu">Conditions d'utilisation</a></li>
       </ul>
     </nav>
   </div>
-  
   <div class="menu-overlay" id="menuOverlay"></div>
-  
-  <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Mémo VMC Logo" id="logo">
-    </div>
-    <h1>Mémo Technique - VMC par type d'installation</h1>
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Rechercher...">
-      <button id="searchButton">Rechercher</button>
-    </div>
-  </header>
-  
-  <div id="content">
-    <!-- Ajouter un conteneur dédié aux annonces en haut -->
-    <div class="ad-container top-ad" id="top-ad">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-6664265722735791"
-           data-ad-slot="votre-ad-slot-id"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-    </div>
 
+  <!-- Contenu principal -->
+  <main id="content" aria-live="polite">
     <div class="section-container">
-      <h2 class="section-title">Chargement...</h2>
-      <p>Veuillez patienter pendant le chargement du contenu.</p>
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement…</p>
+      </div>
     </div>
+  </main>
 
-    <!-- Ajouter un conteneur dédié aux annonces en bas -->
-    <div class="ad-container bottom-ad" id="bottom-ad">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-6664265722735791"
-           data-ad-slot="votre-ad-slot-id"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-    </div>
+  <div id="offline-status" class="offline-banner hidden" role="alert">
+    ⚠️ Mode hors ligne activé
   </div>
-  
-  <div id="offline-status" class="hidden">
-    Mode hors ligne activé
-  </div>
-  
-  <!-- Script initial pour éviter des erreurs -->
+
   <script>
-    // Garantir l'existence de l'espace de noms VMC
     window.vmcContent = window.vmcContent || {};
-    
-    // Initialisation du menu mobile
-    document.addEventListener('DOMContentLoaded', function() {
-      const menuButton = document.getElementById('menuButton');
-      const sideMenu = document.getElementById('sideMenu');
-      const menuOverlay = document.getElementById('menuOverlay');
-      
-      if (menuButton && sideMenu && menuOverlay) {
-        menuButton.addEventListener('click', function() {
-          sideMenu.classList.toggle('open');
-          menuOverlay.style.display = sideMenu.classList.contains('open') ? 'block' : 'none';
-        });
-        
-        menuOverlay.addEventListener('click', function() {
-          sideMenu.classList.remove('open');
-          menuOverlay.style.display = 'none';
-        });
-        
-        // Configurer les liens du menu
-        const menuLinks = sideMenu.querySelectorAll('nav a');
-        menuLinks.forEach(link => {
-          link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const section = this.getAttribute('data-section');
-            if (typeof loadContent === 'function') {
-              loadContent(section);
-            } else {
-              console.log('Chargement de section:', section);
-              const event = new CustomEvent('sectionRequest', { 
-                detail: { section: section } 
-              });
-              document.dispatchEvent(event);
-            }
-            
-            // Fermer le menu
-            sideMenu.classList.remove('open');
-            menuOverlay.style.display = 'none';
-          });
-        });
+
+    (function() {
+      // Thème
+      var savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      var themeBtn = document.getElementById('themeToggle');
+      if (themeBtn) themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+      themeBtn && themeBtn.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme');
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        this.textContent = next === 'dark' ? '☀️' : '🌙';
+      });
+
+      // Menu mobile
+      var toggle  = document.getElementById('menuToggle');
+      var side    = document.getElementById('sideMenu');
+      var overlay = document.getElementById('menuOverlay');
+      var closeBtn = document.getElementById('sideMenuClose');
+
+      function openMenu() {
+        side.classList.add('open');
+        side.setAttribute('aria-hidden', 'false');
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+        overlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
       }
-    });
+
+      function closeMenu() {
+        side.classList.remove('open');
+        side.setAttribute('aria-hidden', 'true');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        overlay.classList.remove('visible');
+        document.body.style.overflow = '';
+      }
+
+      if (toggle)   toggle.addEventListener('click', openMenu);
+      if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+      if (overlay)  overlay.addEventListener('click', closeMenu);
+
+      side.querySelectorAll('nav a').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          var section = this.getAttribute('data-section');
+          closeMenu();
+          if (typeof window.loadContent === 'function') {
+            window.loadContent(section);
+          }
+        });
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+      });
+    })();
   </script>
-  
-  <!-- Scripts principaux, un seul exemplaire -->
+
   <script src="script.js"></script>
   <script src="verification-debit.js"></script>
   <script src="cgu-module.js"></script>
@@ -218,38 +166,16 @@
   <script src="dsc-constructeurs.js"></script>
   <script src="fix-mobile-display.js"></script>
   <script src="sw-register.js"></script>
-  
-  <!-- Script AdSense avec attributs de sécurité -->
+
   <script>
     (function() {
-      // Attendre que la page soit totalement chargée
       window.addEventListener('load', function() {
-        // Ne pas charger les annonces en mode développement
-        if (window.location.hostname.includes('localhost') || 
-            window.location.hostname.includes('192.168.')) {
-          console.log('Mode développement : AdSense désactivé');
-          return;
-        }
-
-        // Charger le script AdSense
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791';
-        script.crossOrigin = 'anonymous';
-        
-        script.onload = function() {
-          // Initialiser toutes les annonces une fois le script chargé
-          const ads = document.querySelectorAll('.adsbygoogle');
-          ads.forEach(ad => {
-            try {
-              (adsbygoogle = window.adsbygoogle || []).push({});
-            } catch(e) {
-              console.error('Erreur initialisation AdSense:', e);
-            }
-          });
-        };
-
-        document.head.appendChild(script);
+        if (window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.')) return;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6664265722735791';
+        s.crossOrigin = 'anonymous';
+        document.head.appendChild(s);
       });
     })();
   </script>
