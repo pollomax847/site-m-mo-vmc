@@ -1,8 +1,0 @@
-{
-  "version": "1.0.2",
-  "lastUpdate": "2023-11-29",
-  "features": [
-    "Correction des problèmes d'affichage sur mobile",
-    "Mise à jour automatique de l'application"
-  ]
-}

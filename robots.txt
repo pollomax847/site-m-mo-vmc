@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /style.css
-Allow: /script.js
-Allow: /logo.png
-Allow: /logo-192.png
-Allow: /manifest.json
-
-Sitemap: http://192.168.1.23:3000/sitemap.xml 
