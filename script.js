@@ -891,16 +891,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Fonction pour charger le contenu - S'assurer qu'elle est globale
   function loadContent(section = 'verification-debit') {
-    // Vérifier si la section existe avant de l'afficher
-    if (!vmcContent[section]) {
-      console.error(`Section "${section}" non trouvée dans le contenu disponible`);
-      section = 'verification-debit';  // Section par défaut
+    // Fusionner le contenu local et celui ajouté par les modules externes (ex: dsc-constructeurs.js)
+    const allContent = Object.assign({}, vmcContent, window.vmcContent);
+
+    if (!allContent[section]) {
+      console.error(`Section "${section}" non trouvée`);
+      section = 'verification-debit';
     }
-    
-    // Nettoyer le contenu précédent
+
     const contentDiv = document.getElementById('content');
     if (contentDiv) {
-      contentDiv.innerHTML = vmcContent[section].content;
+      contentDiv.innerHTML = allContent[section].content;
     }
     
     // Mettre à jour le lien actif dans le menu
