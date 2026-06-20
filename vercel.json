@@ -1,14 +1,19 @@
 {
-  "version": 2,
-  "builds": [
+  "outputDirectory": "web",
+  "headers": [
     {
-      "src": "build.sh",
-      "use": "@vercel/static-build"
+      "source": "/service-worker.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
     }
-  ],
-  "routes": [
-    { "src": "/service-worker.js", "dest": "/web/service-worker.js" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ],
-  "outputDirectory": "dist"
+  ]
 }
