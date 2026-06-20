@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function initVerificationDebitModule() {
     // Importer le module d'export PDF
-    import('./pdf-export.js').then(({ addExportButton }) => {
+    import('./js/pdf-export.js').then(({ addExportButton }) => {
       console.log('Module PDF export chargé');
       window.addExportButton = addExportButton;
     }).catch(error => {

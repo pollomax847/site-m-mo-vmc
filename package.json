@@ -4,7 +4,8 @@
   "description": "Mémo technique VMC - Documentation technique pour les différents types d'installations VMC",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && npm run copy-static",
+    "copy-static": "cp dom-fix-patch.js error-handler.js dom-fix.js dev-utils.js cleanup.js cgu-module.js aerations-help.js dsc-constructeurs.js fix-mobile-display.js sw-register.js service-worker.js logo.png manifest.json dist/ && cp logo.png dist/logo-192.png && cp logo.png dist/logo-512.png",
     "preview": "vite preview",
     "test": "jest",
     "test:e2e": "playwright test",
